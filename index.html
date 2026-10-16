@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="業務自動化（スプレッドシート・Excel）と、小さなお店・教室のホームページ制作をお引き受けしています。">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.5 -apple-system,BlinkMacSystemFont,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Rinka 制作室</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;700&family=DM+Mono:wght@500&display=swap">
+<style>
+/* Layout: 固定ナビ → ヒーロー（言葉＋ビフォーアフター見本）→ できること → サンプル → 料金 → 流れ → 対応 → 作業記録 → お問い合わせ。1ページで完結する小規模店向けサイトの見本を兼ねる */
+:root{
+  --bg:#F4F7F6; --surface:#FFFFFF; --ink:#13201C; --muted:#5A6B65; --line:#D9E2DF;
+  --accent:#0F766E; --accent-ink:#FFFFFF; --accent-soft:#DDF0EC; --mark:#E8B53A; --mark-soft:#FBF0D3;
+  --f-display:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Sans",sans-serif;
+  --f-body:"Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif;
+  --f-num:"DM Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0F1715; --surface:#16211E; --ink:#E4EEEA; --muted:#93A69F; --line:#26352F;
+  --accent:#4FC2B4; --accent-ink:#0B1513; --accent-soft:#183530; --mark:#F0C65A; --mark-soft:#332A14; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1715; --surface:#16211E; --ink:#E4EEEA; --muted:#93A69F; --line:#26352F;
+  --accent:#4FC2B4; --accent-ink:#0B1513; --accent-soft:#183530; --mark:#F0C65A; --mark-soft:#332A14; color-scheme:dark}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15.5px;line-height:1.85}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+h1,h2,h3{font-family:var(--f-display);margin:0;line-height:1.4;text-wrap:balance}
+p{margin:0}
+.inner{max-width:1040px;margin:0 auto;padding-inline:20px}
+
+/* ナビ */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.nav .inner{display:flex;align-items:center;gap:16px;padding-block:10px}
+.logo{font-family:var(--f-display);font-weight:900;font-size:1.15rem;color:var(--ink);text-decoration:none;white-space:nowrap}
+.logo span{color:var(--accent)}
+.nav ul{list-style:none;margin:0 0 0 auto;padding:0;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;min-width:0}
+.nav ul::-webkit-scrollbar{display:none}
+.nav li a{display:block;white-space:nowrap;text-decoration:none;color:var(--ink);font-size:.86rem;padding:6px 10px;border-radius:999px}
+.nav li a:hover{background:var(--accent-soft)}
+.nav li a.cta{background:var(--accent);color:var(--accent-ink);font-weight:700}
+
+/* ヒーロー */
+.hero{padding-block:56px 48px}
+.hero .inner{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:40px;align-items:center}
+.kicker{font-family:var(--f-num);font-size:.78rem;letter-spacing:.18em;color:var(--accent)}
+.hero h1{font-size:clamp(2rem,5.4vw,3.3rem);font-weight:900;margin-top:10px;line-height:1.3}
+.hero h1 em{font-style:normal;background:linear-gradient(transparent 62%,var(--mark-soft) 62%)}
+.hero .lede{margin-top:18px;color:var(--muted);max-width:34em}
+.btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;text-decoration:none;border-radius:999px;padding:11px 22px;font-size:.95rem}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{border:1.5px solid var(--ink);color:var(--ink)}
+
+/* ビフォーアフター見本 */
+.ba{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px;box-shadow:0 18px 40px -28px rgba(15,60,50,.45)}
+.ba-label{font-size:.72rem;color:var(--muted);letter-spacing:.08em}
+.sheet{border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:.78rem}
+.sheet table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+.sheet th,.sheet td{border-bottom:1px solid var(--line);padding:5px 8px;text-align:left}
+.sheet th{background:var(--bg);color:var(--muted);font-weight:700}
+.sheet td.n{text-align:right;font-family:var(--f-num)}
+.sheet tr.sum td{background:var(--accent-soft);font-weight:700}
+.ba-step{display:flex;flex-direction:column;gap:8px}
+.ba-head{display:flex;flex-direction:column;gap:4px}
+.ba-head b{font-size:.86rem;line-height:1.5}
+.ba-tag{align-self:flex-start;font-size:.7rem;font-weight:700;border-radius:4px;padding:1px 8px;background:var(--mark-soft);color:var(--ink)}
+.ba-tag.on{background:var(--accent);color:var(--accent-ink)}
+.ba-step.before .sheet{opacity:.85}
+.ba-arrow{text-align:center;font-size:.8rem;font-weight:700;color:var(--accent);padding:2px 0}
+.ba small{font-size:.74rem;color:var(--muted);line-height:1.6}
+.ba small.fine{font-size:.68rem}
+
+/* セクション共通 */
+section.block{padding-block:56px;border-top:1px solid var(--line)}
+.head{display:flex;flex-direction:column;gap:8px;margin-bottom:28px}
+.head .kicker{font-size:.74rem}
+.head h2{font-size:clamp(1.45rem,3.4vw,2rem);font-weight:700}
+.head p{color:var(--muted);max-width:40em}
+
+/* できること */
+.services{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.svc{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.svc.main{border-color:var(--accent)}
+.svc .tag{align-self:flex-start;font-size:.72rem;font-weight:700;color:var(--accent);background:var(--accent-soft);border-radius:4px;padding:1px 8px}
+.svc h3{font-size:1.2rem}
+.svc ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:4px;font-size:.92rem}
+.svc .for{font-size:.84rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:10px}
+.subs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:16px}
+.sub{border-top:2px solid var(--ink);padding-top:12px;display:flex;flex-direction:column;gap:4px;font-size:.92rem;min-width:0}
+.sub h3{font-size:1rem}
+.sub p{color:var(--muted)}
+
+.more{margin-top:28px;background:var(--surface);border:1.5px dashed var(--accent);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:16px;align-items:flex-start}
+.more-head{display:flex;flex-direction:column;gap:6px}
+.more-head h3{font-size:1.15rem}
+.more-head p{color:var(--muted);font-size:.92rem;max-width:44em}
+.more-head p.fee{color:var(--ink);background:var(--mark-soft);border-radius:8px;padding:8px 12px;font-size:.88rem}
+.ideas{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.ideas li{font-size:.86rem;background:var(--accent-soft);border-radius:999px;padding:5px 14px}
+
+/* サンプル */
+.samples{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.smp{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.smp .thumb{aspect-ratio:16/7;max-width:100%;display:grid;place-items:center;font-family:var(--f-display);font-weight:700;font-size:1.05rem;color:var(--accent);background:repeating-linear-gradient(135deg,var(--accent-soft) 0 12px,var(--surface) 12px 24px);border-bottom:1px solid var(--line)}
+.smp .thumb.live{background:var(--accent);color:var(--accent-ink)}
+.smp.wide{grid-column:1/-1;flex-direction:row}
+.smp.wide .thumb{aspect-ratio:auto;width:34%;min-height:150px;border-bottom:0;border-right:1px solid var(--line)}
+@media (max-width:600px){.smp.wide{flex-direction:column}.smp.wide .thumb{width:auto;aspect-ratio:16/7;border-right:0;border-bottom:1px solid var(--line)}}
+.smp .body{padding:16px 18px;display:flex;flex-direction:column;gap:8px;flex:1}
+.smp .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.status{font-size:.72rem;font-weight:700;border-radius:4px;padding:1px 8px}
+.status.ok{background:var(--accent);color:var(--accent-ink)}
+.status.wip{background:var(--mark-soft);color:var(--ink)}
+.kind{font-size:.74rem;color:var(--muted)}
+.smp h3{font-size:1.05rem}
+.smp p{font-size:.9rem;color:var(--muted)}
+.smp .go{margin-top:auto;font-weight:700;font-size:.9rem;text-decoration:none}
+.smp .go[aria-disabled="true"]{color:var(--muted);pointer-events:none}
+.specs{display:flex;gap:6px;flex-wrap:wrap}
+.specs span{font-size:.72rem;border:1px solid var(--line);border-radius:4px;padding:0 7px;color:var(--muted)}
+
+/* 料金 */
+.prices{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.price{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 20px;padding:16px 20px;border-bottom:1px solid var(--line)}
+.price:last-child{border-bottom:0}
+.price h3{font-size:1rem}
+.price p{grid-column:1;font-size:.86rem;color:var(--muted)}
+.price .yen{grid-column:2;grid-row:1/span 2;align-self:center;font-family:var(--f-num);font-size:1.2rem;white-space:nowrap;font-variant-numeric:tabular-nums}
+.price .yen small{font-family:var(--f-body);font-size:.75rem;color:var(--muted)}
+.note{font-size:.82rem;color:var(--muted);margin-top:12px}
+
+/* 流れ */
+.flow{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;counter-reset:f}
+.flow li{counter-increment:f;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.flow li::before{content:counter(f);font-family:var(--f-num);width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:.85rem}
+.flow h3{font-size:.98rem}
+.flow p{font-size:.84rem;color:var(--muted)}
+
+/* 対応 */
+.terms{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.term{display:flex;flex-direction:column;gap:4px;font-size:.9rem;min-width:0}
+.term b{font-family:var(--f-display);font-size:1rem}
+.term p{color:var(--muted)}
+
+/* ご依頼の範囲 */
+.scope-main{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.scope-lead{background:var(--surface);border:1.5px solid var(--ink);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.scope-lead b{font-family:var(--f-display);font-size:1.1rem}
+.scope-lead p{font-size:.92rem}
+.scope-lead strong{background:linear-gradient(transparent 60%,var(--mark-soft) 60%)}
+.scope-h{font-size:1.02rem;margin:28px 0 12px}
+.scope-flow{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;counter-reset:sf}
+.scope-flow li{counter-increment:sf;background:var(--accent-soft);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;font-size:.88rem;min-width:0}
+.scope-flow li::before{content:counter(sf);font-family:var(--f-num);font-size:.8rem;color:var(--accent)}
+.scope-flow span{color:var(--muted)}
+.scope-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.scope-cols > div{min-width:0}
+.scope-cols ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;font-size:.9rem}
+.scope-note{margin-top:12px;font-size:.84rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:10px}
+@media (max-width:700px){.scope-main,.scope-flow,.scope-cols{grid-template-columns:minmax(0,1fr)}}
+
+/* 作業記録 */
+.logband{background:var(--accent-soft);border-radius:16px;padding:24px;display:flex;gap:20px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.logband div{display:flex;flex-direction:column;gap:6px;max-width:38em}
+.logband h3{font-size:1.2rem}
+.logband p{color:var(--muted);font-size:.92rem}
+
+/* お問い合わせ */
+.contact{background:var(--ink);color:var(--bg);border-radius:20px;padding:32px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px}
+.contact .kicker{color:var(--mark)}
+.contact h2{font-size:clamp(1.5rem,3.6vw,2.1rem);margin-top:6px}
+.contact p{opacity:.85;margin-top:10px;font-size:.92rem}
+.card-id{background:var(--bg);color:var(--ink);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.card-id .lbl{font-size:.72rem;color:var(--muted);letter-spacing:.08em}
+.card-id .nick{font-family:var(--f-display);font-weight:900;font-size:1.5rem}
+.mail{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.mail code{font-family:var(--f-num);font-size:.95rem;user-select:all;overflow-wrap:anywhere;background:var(--accent-soft);padding:4px 10px;border-radius:6px;min-width:0}
+.copy{font:inherit;font-size:.8rem;font-weight:700;border:1.5px solid var(--ink);background:none;color:var(--ink);border-radius:999px;padding:4px 12px;cursor:pointer}
+.mailto{font-size:.85rem}
+.template{font-size:.82rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:10px}
+.template ul{margin:4px 0 0;padding-left:1.2em}
+footer{padding-block:32px;font-size:.8rem;color:var(--muted)}
+footer .inner{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+@media (max-width:820px){
+  .hero .inner{grid-template-columns:minmax(0,1fr);gap:28px}
+  .flow{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .terms{grid-template-columns:minmax(0,1fr)}
+  .contact{grid-template-columns:minmax(0,1fr);padding:24px}
+}
+@media (max-width:600px){
+  .inner{padding-inline:16px}
+  .nav .inner{flex-wrap:wrap;gap:6px}
+  .nav ul{margin-left:0;width:100%}
+  .services,.subs,.samples{grid-template-columns:minmax(0,1fr)}
+  .flow{grid-template-columns:minmax(0,1fr)}
+  .hero{padding-block:36px}
+  section.block{padding-block:44px}
+}
+</style>
+</head>
+<body>
+
+
+<nav class="nav" aria-label="ページ内メニュー">
+  <div class="inner">
+    <a class="logo" href="#top">Rinka<span> 制作室</span></a>
+    <ul>
+      <li><a href="#services">できること</a></li>
+      <li><a href="#samples">制作サンプル</a></li>
+      <li><a href="#price">料金</a></li>
+      <li><a href="#flow">ご依頼の流れ</a></li>
+      <li><a href="#scope">ご依頼の範囲</a></li>
+      <li><a href="#log">作業記録</a></li>
+      <li><a class="cta" href="#contact">お問い合わせ</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="inner">
+    <div>
+      <span class="kicker">AUTOMATION ・ WEB</span>
+      <h1>毎日の手作業を、<em>ボタンひとつ</em>に。<br>お店の魅力を、ウェブに。</h1>
+      <p class="lede">スプレッドシートやExcelの作業の自動化と、小さなお店・教室のホームページ制作を、ひとりで丁寧にお引き受けしています。やり取りはすべてメッセージで完結します。</p>
+      <div class="btns">
+        <a class="btn primary" href="#samples">制作サンプルを見る</a>
+        <a class="btn ghost" href="#contact">相談してみる</a>
+      </div>
+    </div>
+    <div class="ba" aria-label="自動化の例">
+      <span class="ba-label">自動化の例：美容室の月末の売上集計</span>
+      <div class="ba-step before">
+        <div class="ba-head"><span class="ba-tag">これまで</span><b>予約記録を見ながら、1件ずつ数えて電卓で合計</b></div>
+        <div class="sheet">
+          <table>
+            <thead><tr><th>日付</th><th>メニュー</th><th>金額</th></tr></thead>
+            <tbody>
+              <tr><td class="n">10/01</td><td>カット</td><td class="n">¥4,400</td></tr>
+              <tr><td class="n">10/01</td><td>カラー</td><td class="n">¥6,500</td></tr>
+              <tr><td class="n">10/02</td><td>カット</td><td class="n">¥4,400</td></tr>
+              <tr><td class="n">10/03</td><td>トリートメント</td><td class="n">¥3,000</td></tr>
+              <tr><td class="n">10/03</td><td>カット</td><td class="n">¥4,400</td></tr>
+              <tr><td class="n">10/04</td><td>カラー</td><td class="n">¥6,500</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <small>数え間違い・計算ミスが起きやすく、月末に時間がとられる</small>
+      </div>
+      <div class="ba-arrow" aria-hidden="true">↓ 予約を記録するだけで、集計表が自動で更新</div>
+      <div class="ba-step after">
+        <div class="ba-head"><span class="ba-tag on">自動化後</span><b>メニュー別の件数と売上が、いつでも最新</b></div>
+        <div class="sheet">
+          <table>
+            <thead><tr><th>メニュー</th><th>件数</th><th>売上</th></tr></thead>
+            <tbody>
+              <tr><td>カット</td><td class="n">3</td><td class="n">¥13,200</td></tr>
+              <tr><td>カラー</td><td class="n">2</td><td class="n">¥13,000</td></tr>
+              <tr><td>トリートメント</td><td class="n">1</td><td class="n">¥3,000</td></tr>
+              <tr class="sum"><td>合計</td><td class="n">6</td><td class="n">¥29,200</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <small>月末の集計作業がなくなり、月の途中でも売上を確認できる</small>
+      </div>
+      <small class="fine">お店・数字は説明用の架空の例です。</small>
+    </div>
+  </div>
+</header>
+
+<main>
+<section class="block" id="services">
+  <div class="inner">
+    <div class="head">
+      <span class="kicker">SERVICES</span>
+      <h2>お引き受けしていること</h2>
+      <p>「毎回同じ作業をしている」「お店のページがほしいけれど何から始めればいいかわからない」といったご相談を、形にしてお渡しします。</p>
+    </div>
+    <div class="services">
+      <article class="svc main">
+        <span class="tag">いちばん多いご相談</span>
+        <h3>スプレッドシート・Excelの業務自動化</h3>
+        <ul>
+          <li>予約表や売上表から、月ごとの集計表を自動で作成</li>
+          <li>フォームの回答をまとめて、決まった形の表に整理</li>
+          <li>毎週の報告メールや請求書の下書きを自動で作成</li>
+          <li>複数のファイルに分かれたデータを1つにまとめる</li>
+        </ul>
+        <p class="for">こんな方に：個人事業主の方、小さなお店・教室の方、事務作業を減らしたい方</p>
+      </article>
+      <article class="svc main">
+        <span class="tag">ホームページ</span>
+        <h3>小さなお店・教室のホームページ制作</h3>
+        <ul>
+          <li>1〜5ページほどの紹介サイト（メニュー・料金・アクセス）</li>
+          <li>スマートフォンで見やすい作り（このページも対応しています）</li>
+          <li>予約ページやInstagram、LINEへの案内ボタン</li>
+          <li>公開の手順までご案内します</li>
+        </ul>
+        <p class="for">こんな方に：開業したばかりの方、SNSしかなくて情報がまとまっていない方</p>
+      </article>
+    </div>
+    <div class="subs">
+      <div class="sub"><h3>資料・データ整理の作成代行</h3><p>集計表、マニュアル、説明資料の作成など、プログラミング以外のご相談もどうぞ。</p></div>
+      <div class="sub"><h3>既存サイト・ファイルの修正</h3><p>「ここだけ直したい」という小さな修正もお引き受けします。</p></div>
+    </div>
+
+    <div class="more">
+      <div class="more-head">
+        <h3>こんなご相談もどうぞ</h3>
+        <p>上に挙げたもの以外でも、「これってできる？」という段階でお気軽にご相談ください。内容をうかがって、お引き受けできるかどうかをお返事します。</p>
+        <p class="fee"><b>ご相談・お見積りは無料です。</b>実際に作業が必要になる場合は、内容に応じた料金をいただきます。作業前に必ずお見積りをお送りし、ご了承いただいてから着手します。</p>
+      </div>
+      <ul class="ideas">
+        <li>申込フォーム・アンケートの作成と、回答の自動集計</li>
+        <li>予約や締め切りのリマインドメールを自動で送る</li>
+        <li>顧客リスト・在庫表・会員名簿の管理表づくり</li>
+        <li>見積書・請求書を決まった形で作るテンプレート</li>
+        <li>LINE公式アカウントの自動返信・メニューの設定</li>
+        <li>バラバラのファイルやCSVを1つの表にまとめる</li>
+        <li>グラフ入りの月次レポートを自動で作る</li>
+        <li>社内やご家族で使う、ちょっとしたWebツール</li>
+        <li>既存のExcelマクロ・関数が動かないときの修正</li>
+        <li>Instagram・お知らせ用の文章や画像の作成</li>
+      </ul>
+      <a class="btn primary" href="#contact">相談してみる</a>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="samples">
+  <div class="inner">
+    <div class="head">
+      <span class="kicker">WORKS</span>
+      <h2>制作サンプル</h2>
+      <p>実際に動くものを見て、ご依頼のイメージを決めていただけます。サンプルは順次追加しています。</p>
+    </div>
+    <div class="samples">
+      <article class="smp">
+        <div class="thumb live">このページ</div>
+        <div class="body">
+          <div class="row"><span class="status ok">公開中</span><span class="kind">ホームページ制作</span></div>
+          <h3>Rinka 制作室（このサイト）</h3>
+          <p>メニュー、サンプル、料金、お問い合わせまでを1ページにまとめた紹介サイトです。お店や教室のサイトも、この形でお作りできます。</p>
+          <div class="specs"><span>スマホ対応</span><span>ダークモード対応</span><span>ページ内メニュー</span></div>
+          <a class="go" href="#top">ページの先頭へ戻る ↑</a>
+        </div>
+      </article>
+      <article class="smp">
+        <div class="thumb live">売上集計の自動化</div>
+        <div class="body">
+          <div class="row"><span class="status ok">公開中</span><span class="kind">業務自動化</span></div>
+          <h3>売上集計の自動化デモ</h3>
+          <p>美容室の予約記録を付けるだけで、月ごとの売上・メニュー別・スタッフ別の集計とグラフが自動でできる仕組みの体験版です。記録を追加・削除して試せます。</p>
+          <div class="specs"><span>自動集計</span><span>グラフ</span><span>前月比</span></div>
+          <a class="go" href="./sample-sales.html">デモを触ってみる →</a>
+        </div>
+      </article>
+      <article class="smp">
+        <div class="thumb live">教室のサイト見本</div>
+        <div class="body">
+          <div class="row"><span class="status ok">公開中</span><span class="kind">ホームページ制作</span></div>
+          <h3>こもれび音楽教室（架空のピアノ教室）</h3>
+          <p>コースと月謝、時間割と空き状況、講師紹介、よくある質問、アクセス、体験レッスンの申込フォームまでをそろえた教室サイトの見本です。</p>
+          <div class="specs"><span>スマホ対応</span><span>申込フォーム</span><span>空き状況表示</span></div>
+          <a class="go" href="./sample-school.html">サイトを見てみる →</a>
+        </div>
+      </article>
+      <article class="smp">
+        <div class="thumb live">料金シミュレーター</div>
+        <div class="body">
+          <div class="row"><span class="status ok">公開中</span><span class="kind">業務自動化 ・ ホームページ</span></div>
+          <h3>お見積りシミュレーター（架空のハウスクリーニング店）</h3>
+          <p>お掃除したい場所と数を選ぶと、セット割・平日割・出張費まで含めた料金の目安がその場で出ます。お店のホームページに組み込める部品の見本です。</p>
+          <div class="specs"><span>自動計算</span><span>割引ルール</span><span>サイトに組み込み可</span></div>
+          <a class="go" href="./sample-estimate.html">シミュレーターを試す →</a>
+        </div>
+      </article>
+      <article class="smp wide">
+        <div class="thumb">ふたり家計簿</div>
+        <div class="body">
+          <div class="row"><span class="status wip">デモ準備中</span><span class="kind">自作アプリ</span></div>
+          <h3>ふたり家計簿</h3>
+          <p>夫婦で同じ家計簿をリアルタイムに共有できるWebアプリ。自分たちの家計管理のために設計から作り、日々使っています。</p>
+          <div class="specs"><span>Webアプリ</span><span>リアルタイム共有</span><span>スマホ対応</span></div>
+          <a class="go" aria-disabled="true">デモ公開準備中</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="price">
+  <div class="inner">
+    <div class="head">
+      <span class="kicker">PRICE</span>
+      <h2>料金の目安</h2>
+      <p>内容をうかがってから、作業前にお見積りをお送りします。お見積りまでは無料です。</p>
+    </div>
+    <div class="prices">
+      <div class="price"><h3>業務自動化（小さな作業1つ）</h3><p>例：月ごとの売上集計を自動化する</p><div class="yen">15,000<small> 円〜</small></div></div>
+      <div class="price"><h3>業務自動化（複数の作業をまとめて）</h3><p>例：フォーム回答の整理＋集計＋月初のレポートメール</p><div class="yen">40,000<small> 円〜</small></div></div>
+      <div class="price"><h3>ホームページ（1ページ）</h3><p>このページのような1ページ完結の紹介サイト</p><div class="yen">50,000<small> 円〜</small></div></div>
+      <div class="price"><h3>ホームページ（3〜5ページ）</h3><p>トップ・メニュー・アクセスなどページを分けたサイト</p><div class="yen">120,000<small> 円〜</small></div></div>
+      <div class="price"><h3>料金シミュレーターの組み込み</h3><p>見積り計算と問い合わせフォームを、お使いのサイトに設置</p><div class="yen">30,000<small> 円〜</small></div></div>
+      <div class="price"><h3>修正・資料作成</h3><p>既存サイトやファイルの小さな修正、資料の作成</p><div class="yen">5,000<small> 円〜</small></div></div>
+    </div>
+    <p class="note">ご相談・お見積りは無料です。お見積り後の機能の追加や内容の変更は、新しいご依頼として追加分を別途お見積りします（<a href="#scope">ご依頼の範囲について</a>）。公開後の保守は行っていません。ドメインやサーバーなどの費用が別途かかる場合も、お見積りの段階でお伝えします。</p>
+  </div>
+</section>
+
+<section class="block" id="flow">
+  <div class="inner">
+    <div class="head">
+      <span class="kicker">FLOW</span>
+      <h2>ご依頼の流れ</h2>
+      <p>やり取りはすべてメッセージで進めます。電話や打ち合わせの時間をとっていただく必要はありません。</p>
+    </div>
+    <ol class="flow">
+      <li><h3>ご相談</h3><p>下のお問い合わせから、困っていることを教えてください。</p></li>
+      <li><h3>ヒアリング</h3><p>今のやり方や、使っているファイルについて質問させていただきます。</p></li>
+      <li><h3>お見積り</h3><p>内容・料金・納期をお伝えし、ご了承いただいてから着手します。</p></li>
+      <li><h3>制作・途中確認</h3><p>途中で一度お見せして、方向がずれていないか確認します。お見積りの範囲内の修正は2回まで無料です。</p></li>
+      <li><h3>納品・完了</h3><p>使い方の説明をつけてお渡しします。納品から7日間の確認期間を経て完了です。</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="block" id="terms">
+  <div class="inner">
+    <div class="head">
+      <span class="kicker">POLICY</span>
+      <h2>対応について</h2>
+    </div>
+    <div class="terms">
+      <div class="term"><b>ご連絡はメールのみ</b><p>子育てと両立しているため、電話・ビデオ通話でのご対応はしていません。</p></div>
+      <div class="term"><b>返信は1日以内が目安</b><p>土日祝は返信が遅れることがあります。お急ぎの場合は最初にお知らせください。</p></div>
+      <div class="term"><b>納期は1週間〜が目安</b><p>内容によって変わります。お見積りの際に具体的な日にちをお伝えします。</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="scope">
+  <div class="inner">
+    <div class="head">
+      <span class="kicker">SCOPE</span>
+      <h2>ご依頼の範囲について</h2>
+      <p>お引き受けする前に、必ずご確認ください。お見積りの際にも同じ内容をお送りします。</p>
+    </div>
+    <div class="scope-main">
+      <div class="scope-lead">
+        <b>制作のみのお引き受けです</b>
+        <p>お引き受けするのは、お見積りでお約束した内容の制作と納品までです。納品をもってご依頼は完了となり、<strong>公開後の保守・運用・監視・定期的な更新は行っていません。</strong></p>
+      </div>
+      <div class="scope-lead">
+        <b>納品後の確認期間は7日間</b>
+        <p>納品から7日間は、お見積りの内容どおりに動かない点があれば無料で修正します。この期間を過ぎた後のご要望は、新しいご依頼として承ります。</p>
+      </div>
+    </div>
+
+    <h3 class="scope-h">要件の追加・変更があるとき</h3>
+    <ol class="scope-flow">
+      <li><b>新しいご依頼としてご相談</b><span>追加したい機能や変更したい点をお知らせください。</span></li>
+      <li><b>追加分のお見積り</b><span>追加分の内容・料金・納期をお送りします。</span></li>
+      <li><b>ご了承後に着手</b><span>ご了承いただいてから作業します。お見積り前に作業を始めることはありません。</span></li>
+    </ol>
+
+    <div class="scope-cols">
+      <div>
+        <h3 class="scope-h">安全のためにお願いしていること</h3>
+        <ul>
+          <li>ドメイン・サーバー・Googleアカウントなどは、お客様の名義でご用意いただきます。こちらでパスワードをお預かりすることはありません。</li>
+          <li>制作には架空のデータを使い、お客様の顧客情報などをこちらで保管することはありません。</li>
+          <li>ファイルの共有設定やスクリプトの権限は、必要な範囲に絞ったうえで納品します。</li>
+          <li>各アカウントには2段階認証の設定をおすすめしています。</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="scope-h">対象外となるもの</h3>
+        <ul>
+          <li>Google・サーバー会社など外部サービスの障害や仕様変更によって生じた不具合</li>
+          <li>第三者による不正アクセスなどの被害</li>
+          <li>お客様が管理するアカウント・パスワード・端末に関する問題</li>
+          <li>納品後に、お客様または第三者が変更した部分</li>
+        </ul>
+        <p class="scope-note">当方の責任は、故意または重大な過失による場合を除き、そのご依頼で受け取った制作料金の額を上限とします。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="log">
+  <div class="inner">
+    <div class="logband">
+      <div>
+        <span class="kicker">WORK LOG</span>
+        <h3>作業記録を公開しています</h3>
+        <p>これまでに制作したもの、お引き受けしたお仕事を日付順にまとめています。どんなものを作れるかの参考にどうぞ。</p>
+      </div>
+      <a class="btn primary" href="./worklog.html">作業記録を見る →</a>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="contact">
+  <div class="inner">
+    <div class="contact">
+      <div>
+        <span class="kicker">CONTACT</span>
+        <h2>ご相談・お問い合わせ</h2>
+        <p>「こんなことはできますか？」という段階のご相談でも大丈夫です。メールでお気軽にご連絡ください。</p>
+      </div>
+      <div class="card-id">
+        <span class="lbl">担当</span>
+        <span class="nick">Rinka</span>
+        <span class="lbl">メールアドレス</span>
+        <div class="mail"><code id="mail">rrrrrr.19971001@gmail.com</code><button class="copy" id="copy-mail" type="button">コピー</button></div>
+        <a class="mailto" href="mailto:rrrrrr.19971001@gmail.com?subject=%E3%81%94%E7%9B%B8%E8%AB%87%EF%BC%88Rinka%20%E5%88%B6%E4%BD%9C%E5%AE%A4%EF%BC%89">メールアプリで開く</a>
+        <div class="template">お問い合わせの際は、次の3点を書いていただくとスムーズです。
+          <ul><li>お困りのこと・作りたいもの</li><li>ご希望の納期</li><li>ご予算の目安</li></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="inner"><span>© 2026 Rinka 制作室</span><a href="#top">ページの先頭へ ↑</a></div>
+</footer>
+
+<script>
+(function(){
+  var btn=document.getElementById('copy-mail'), mail=document.getElementById('mail');
+  if(!btn) return;
+  btn.addEventListener('click',function(){
+    var t=mail.textContent;
+    function selectIt(){var r=document.createRange();r.selectNodeContents(mail);var s=window.getSelection();s.removeAllRanges();s.addRange(r);btn.textContent='選択しました';}
+    try{
+      navigator.clipboard.writeText(t).then(function(){btn.textContent='コピーしました';setTimeout(function(){btn.textContent='コピー'},2000)},selectIt);
+    }catch(e){selectIt()}
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="予約記録から売上・メニュー別・スタッフ別の集計とグラフが自動でできる仕組みの体験版です。">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.5 -apple-system,BlinkMacSystemFont,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>売上集計の自動化デモ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;700&family=DM+Mono:wght@500&display=swap">
+<style>
+/* Layout: 説明 → 使い方3手順 → 左「記録（入力）」右「集計（自動）」の2面 → これまでとの違い → 本番での動き → 相談導線 */
+:root{
+  --bg:#F4F7F6; --surface:#FFFFFF; --ink:#13201C; --muted:#5A6B65; --line:#D9E2DF;
+  --accent:#0F766E; --accent-ink:#FFFFFF; --accent-soft:#DDF0EC; --mark:#C98A0C; --mark-soft:#FBF0D3;
+  --b2:#3B63B8; --up:#0F766E; --down:#B4232C; --flash:#FDE7A6;
+  --f-display:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Sans",sans-serif;
+  --f-body:"Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif;
+  --f-num:"DM Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0F1715; --surface:#16211E; --ink:#E4EEEA; --muted:#93A69F; --line:#26352F;
+  --accent:#4FC2B4; --accent-ink:#0B1513; --accent-soft:#183530; --mark:#F0C65A; --mark-soft:#332A14;
+  --b2:#86A8EE; --up:#4FC2B4; --down:#F07C82; --flash:#4A3D12; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1715; --surface:#16211E; --ink:#E4EEEA; --muted:#93A69F; --line:#26352F;
+  --accent:#4FC2B4; --accent-ink:#0B1513; --accent-soft:#183530; --mark:#F0C65A; --mark-soft:#332A14;
+  --b2:#86A8EE; --up:#4FC2B4; --down:#F07C82; --flash:#4A3D12; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.75}
+.wrap{max-width:1140px;margin:0 auto;padding-inline:20px;padding-block:24px 72px;display:flex;flex-direction:column;gap:36px}
+a{color:var(--accent)}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-display);margin:0;line-height:1.4;text-wrap:balance}
+p{margin:0}
+.n{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+.back{font-size:.85rem;text-decoration:none}
+.kicker{font-family:var(--f-num);font-size:.74rem;letter-spacing:.16em;color:var(--accent)}
+header.top{display:flex;flex-direction:column;gap:10px}
+header.top h1{font-size:clamp(1.6rem,4.2vw,2.3rem);font-weight:900}
+header.top p{color:var(--muted);max-width:46em}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;counter-reset:s}
+.steps li{counter-increment:s;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;font-size:.88rem;min-width:0}
+.steps li::before{content:counter(s);flex:none;font-family:var(--f-num);width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:.8rem;margin-top:2px}
+.board{display:grid;grid-template-columns:minmax(0,0.9fr) minmax(0,1.1fr);gap:18px;align-items:start}
+.side{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.side.auto{border:1.5px solid var(--accent)}
+.side-h{display:flex;flex-direction:column;gap:4px}
+.side-h .tag{align-self:flex-start;font-size:.72rem;font-weight:700;border-radius:4px;padding:1px 8px;background:var(--mark-soft)}
+.side.auto .side-h .tag{background:var(--accent);color:var(--accent-ink)}
+.side-h h2{font-size:1.15rem}
+.side-h p{font-size:.84rem;color:var(--muted)}
+.shop{font-size:.78rem;color:var(--muted)}
+form.add{display:grid;grid-template-columns:1.25fr 1.3fr .8fr 1fr auto;gap:8px;align-items:end;background:var(--accent-soft);border-radius:12px;padding:12px}
+form.add label{display:flex;flex-direction:column;gap:3px;font-size:.74rem;color:var(--muted);min-width:0}
+form.add input,form.add select{font:inherit;font-size:.88rem;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 8px;width:100%;box-sizing:border-box;min-width:0}
+.btn{font:inherit;font-weight:700;border:0;border-radius:999px;padding:8px 16px;background:var(--accent);color:var(--accent-ink);cursor:pointer;white-space:nowrap}
+.btn.sub{background:none;color:var(--ink);border:1.5px solid var(--line);font-weight:400;font-size:.82rem;padding:5px 12px}
+.price-hint{grid-column:1/-1;font-size:.78rem;color:var(--muted)}
+.prices-box{border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.pb-h{display:flex;flex-direction:column;gap:2px}
+.pb-h h3{font-size:.98rem}
+.pb-h span,.note{font-size:.76rem;color:var(--muted)}
+.ptable td{padding:4px 10px}
+.pin{display:inline-flex;align-items:center;gap:4px;justify-content:flex-end}
+.pin input{font:inherit;font-family:var(--f-num);font-size:.86rem;width:90px;text-align:right;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:4px 6px}
+.pin input.changed{background:var(--flash)}
+form.newmenu{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) auto;gap:8px;align-items:end}
+form.newmenu label{display:flex;flex-direction:column;gap:3px;font-size:.74rem;color:var(--muted);min-width:0}
+form.newmenu input{font:inherit;font-size:.86rem;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 8px;width:100%;box-sizing:border-box}
+.msg{font-size:.82rem;color:var(--down);min-height:1.2em}
+.ledger-meta{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:.82rem;color:var(--muted)}
+.ledger{max-height:460px;overflow:auto;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.84rem}
+th,td{padding:6px 10px;border-bottom:1px solid var(--line);text-align:left}
+th{position:sticky;top:0;background:var(--bg);font-size:.72rem;color:var(--muted);z-index:1}
+td.n,th.n{text-align:right}
+td.x{width:28px;text-align:center;padding:2px}
+.del{font:inherit;border:0;background:none;color:var(--muted);cursor:pointer;width:26px;height:26px;border-radius:50%}
+.del:hover{background:var(--line);color:var(--down)}
+tr.new td{background:var(--flash);transition:background 1.6s ease}
+.months{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font:inherit;font-size:.82rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 14px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.kpis{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:10px}
+.kpi{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.kpi span{font-size:.72rem;color:var(--muted)}
+.kpi b{font-size:1.3rem;font-weight:500}
+.kpi b small{font-size:.75rem;margin-left:2px}
+.kpi.main{background:var(--accent-soft);border-color:transparent}
+.kpi.main b{font-size:1.6rem}
+.kpi .up{color:var(--up);font-size:.78rem;font-weight:700}
+.kpi .down{color:var(--down);font-size:.78rem;font-weight:700}
+.muted{color:var(--muted);font-size:.78rem}
+.flash .kpi.main{animation:fl 1.4s ease}
+@keyframes fl{0%{background:var(--flash)}100%{background:var(--accent-soft)}}
+.panel{display:flex;flex-direction:column;gap:6px}
+.panel h3{font-size:.95rem}
+.chart{overflow-x:auto}
+.chart svg{display:block;width:100%;min-width:420px;height:auto}
+.chart .grid{stroke:var(--line);stroke-width:1}
+.chart .ax{fill:var(--muted);font-size:10px;font-family:"DM Mono",monospace}
+.chart .bar{fill:var(--accent)}
+.tbl{overflow-x:auto}
+.tbl table{min-width:360px}
+.share{display:flex;align-items:center;gap:6px;min-width:110px}
+.sbar{flex:1;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.sbar i{display:block;height:100%}
+.sbar.b1 i{background:var(--accent)}
+.sbar.b2 i{background:var(--b2)}
+.share .n{font-size:.76rem;width:44px;text-align:right}
+tr.sum td{font-weight:700;background:var(--bg)}
+.empty{color:var(--muted);text-align:center}
+.compare{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.cmp{border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.cmp.before{background:var(--mark-soft)}
+.cmp.after{background:var(--accent-soft)}
+.cmp h3{font-size:1.05rem}
+.cmp ul{margin:0;padding-left:1.2em;font-size:.9rem;display:flex;flex-direction:column;gap:4px}
+section.prod{display:flex;flex-direction:column;gap:12px}
+section.prod h2,section.compare-wrap h2{font-size:1.3rem}
+.prodgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.prodgrid div{border-top:2px solid var(--ink);padding-top:10px;font-size:.88rem;min-width:0}
+.prodgrid b{display:block;font-family:var(--f-display)}
+.prodgrid p{color:var(--muted)}
+section.compare-wrap{display:flex;flex-direction:column;gap:12px}
+.cta{background:var(--ink);color:var(--bg);border-radius:18px;padding:24px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.cta p{opacity:.85;font-size:.9rem;margin-top:4px}
+.cta a{background:var(--bg);color:var(--ink);text-decoration:none;font-weight:700;border-radius:999px;padding:10px 20px}
+footer{font-size:.78rem;color:var(--muted)}
+@media (max-width:900px){.board{grid-template-columns:minmax(0,1fr)}.prodgrid{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:600px){
+  .wrap{padding-inline:16px}
+  .steps{grid-template-columns:minmax(0,1fr)}
+  form.add{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  form.newmenu{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  form.newmenu .btn{grid-column:1/-1}
+  form.add .btn{grid-column:1/-1}
+  .kpis{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .kpi.main{grid-column:1/-1}
+  .compare{grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:reduce){tr.new td{transition:none}.flash .kpi.main{animation:none}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+<header class="top">
+  <a class="back" href="./">← Rinka 制作室に戻る</a>
+  <span class="kicker">SAMPLE 01 ・ 業務自動化</span>
+  <h1>売上集計の自動化デモ</h1>
+  <p>美容室の予約記録から、月ごとの売上・メニュー別・スタッフ別の集計とグラフが自動でできる仕組みの体験版です。左の記録を追加したり消したりすると、右の集計がその場で作り直されます。</p>
+</header>
+
+<ol class="steps">
+  <li><span>「料金表」で、メニューの<b>値段を決める</b>（メニューの追加もできます）</span></li>
+  <li><span>「予約記録」に日付・メニュー・担当を入れて<b>追加</b>（金額は料金表から自動で入ります）</span></li>
+  <li><span>右の集計表とグラフが<b>自動で更新</b>される。月を切り替えると前月比も見られる</span></li>
+</ol>
+
+<div class="board">
+  <section class="side" aria-labelledby="h-ledger">
+    <div class="side-h">
+      <span class="tag">入力するところ</span>
+      <h2 id="h-ledger">① 予約記録</h2>
+      <p>お店の方がふだん付けている記録です。ここに1行足すだけで、ほかの作業はいりません。</p>
+      <span class="shop">架空のお店「ヘアサロン ことり」の記録（火曜定休）</span>
+    </div>
+    <div class="prices-box">
+      <div class="pb-h"><h3>料金表</h3><span>値段を書き換えると、これから追加する記録に使われます</span></div>
+      <table class="ptable"><thead><tr><th>メニュー</th><th class="n">料金</th></tr></thead><tbody id="prices"><tr><td>カット</td><td class="n"><label class="pin"><span>¥</span><input type="number" min="0" step="100" inputmode="numeric" id="price-0" data-pi="0" value="4400" aria-label="カットの料金"></label></td></tr><tr><td>カラー</td><td class="n"><label class="pin"><span>¥</span><input type="number" min="0" step="100" inputmode="numeric" id="price-1" data-pi="1" value="6500" aria-label="カラーの料金"></label></td></tr><tr><td>カット＋カラー</td><td class="n"><label class="pin"><span>¥</span><input type="number" min="0" step="100" inputmode="numeric" id="price-2" data-pi="2" value="10000" aria-label="カット＋カラーの料金"></label></td></tr><tr><td>パーマ</td><td class="n"><label class="pin"><span>¥</span><input type="number" min="0" step="100" inputmode="numeric" id="price-3" data-pi="3" value="8800" aria-label="パーマの料金"></label></td></tr><tr><td>トリートメント</td><td class="n"><label class="pin"><span>¥</span><input type="number" min="0" step="100" inputmode="numeric" id="price-4" data-pi="4" value="3000" aria-label="トリートメントの料金"></label></td></tr><tr><td>ヘッドスパ</td><td class="n"><label class="pin"><span>¥</span><input type="number" min="0" step="100" inputmode="numeric" id="price-5" data-pi="5" value="3500" aria-label="ヘッドスパの料金"></label></td></tr></tbody></table>
+      <form class="newmenu" id="newmenu" novalidate>
+        <label>新しいメニュー<input id="nm-name" type="text" maxlength="20" placeholder="例：前髪カット"></label>
+        <label>料金<input id="nm-price" type="number" min="0" step="100" inputmode="numeric" placeholder="1100"></label>
+        <button class="btn sub" type="submit">メニューを追加</button>
+      </form>
+      <p class="note">すでに付けた記録の金額は、そのときの料金のまま残ります（値上げ前の売上が変わらないように）。</p>
+    </div>
+    <form class="add" id="add" novalidate>
+      <label>日付<input id="in-date" type="date" value="2026-10-31" min="2026-01-01" max="2026-12-31"></label>
+      <label>メニュー<select id="in-menu"><option selected>カット</option><option>カラー</option><option>カット＋カラー</option><option>パーマ</option><option>トリートメント</option><option>ヘッドスパ</option></select></label>
+      <label>担当<select id="in-staff"><option>佐藤</option><option>鈴木</option><option>高橋</option></select></label>
+      <label>金額<input id="in-amount" type="number" min="0" step="100" inputmode="numeric" value="4400"></label>
+      <button class="btn" type="submit">追加</button>
+      <span class="price-hint">金額はメニューを選ぶと料金表から自動で入ります。割引などがあれば書き換えてください。</span>
+    </form>
+    <p class="msg" id="msg" role="status"></p>
+    <div class="ledger-meta"><span>記録 <b class="n" id="rec-count">170</b> 件（新しい順）</span><button class="btn sub" type="button" id="reset">最初の状態に戻す</button></div>
+    <div class="ledger"><table><thead><tr><th class="n">日付</th><th>メニュー</th><th>担当</th><th class="n">金額</th><th><span class="sr" hidden>削除</span></th></tr></thead><tbody id="ledger"><tr data-id="170"><td class="n">10/31</td><td>カット＋カラー</td><td>高橋</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="170" aria-label="この記録を削除">×</button></td></tr><tr data-id="169"><td class="n">10/31</td><td>カット＋カラー</td><td>鈴木</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="169" aria-label="この記録を削除">×</button></td></tr><tr data-id="168"><td class="n">10/31</td><td>トリートメント</td><td>鈴木</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="168" aria-label="この記録を削除">×</button></td></tr><tr data-id="167"><td class="n">10/31</td><td>トリートメント</td><td>佐藤</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="167" aria-label="この記録を削除">×</button></td></tr><tr data-id="166"><td class="n">10/31</td><td>カラー</td><td>佐藤</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="166" aria-label="この記録を削除">×</button></td></tr><tr data-id="165"><td class="n">10/30</td><td>カット</td><td>高橋</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="165" aria-label="この記録を削除">×</button></td></tr><tr data-id="164"><td class="n">10/30</td><td>カット</td><td>鈴木</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="164" aria-label="この記録を削除">×</button></td></tr><tr data-id="163"><td class="n">10/29</td><td>カラー</td><td>高橋</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="163" aria-label="この記録を削除">×</button></td></tr><tr data-id="162"><td class="n">10/29</td><td>カット＋カラー</td><td>鈴木</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="162" aria-label="この記録を削除">×</button></td></tr><tr data-id="161"><td class="n">10/29</td><td>カット</td><td>高橋</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="161" aria-label="この記録を削除">×</button></td></tr><tr data-id="160"><td class="n">10/28</td><td>カット</td><td>高橋</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="160" aria-label="この記録を削除">×</button></td></tr><tr data-id="159"><td class="n">10/28</td><td>カット＋カラー</td><td>佐藤</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="159" aria-label="この記録を削除">×</button></td></tr><tr data-id="158"><td class="n">10/26</td><td>トリートメント</td><td>鈴木</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="158" aria-label="この記録を削除">×</button></td></tr><tr data-id="157"><td class="n">10/26</td><td>カット</td><td>鈴木</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="157" aria-label="この記録を削除">×</button></td></tr><tr data-id="156"><td class="n">10/25</td><td>カット＋カラー</td><td>佐藤</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="156" aria-label="この記録を削除">×</button></td></tr><tr data-id="155"><td class="n">10/25</td><td>トリートメント</td><td>高橋</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="155" aria-label="この記録を削除">×</button></td></tr><tr data-id="154"><td class="n">10/25</td><td>ヘッドスパ</td><td>高橋</td><td class="n">¥3,500</td><td class="x"><button type="button" class="del" data-del="154" aria-label="この記録を削除">×</button></td></tr><tr data-id="153"><td class="n">10/25</td><td>カット＋カラー</td><td>鈴木</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="153" aria-label="この記録を削除">×</button></td></tr><tr data-id="152"><td class="n">10/25</td><td>ヘッドスパ</td><td>鈴木</td><td class="n">¥3,500</td><td class="x"><button type="button" class="del" data-del="152" aria-label="この記録を削除">×</button></td></tr><tr data-id="151"><td class="n">10/24</td><td>カット＋カラー</td><td>高橋</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="151" aria-label="この記録を削除">×</button></td></tr><tr data-id="150"><td class="n">10/24</td><td>カラー</td><td>佐藤</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="150" aria-label="この記録を削除">×</button></td></tr><tr data-id="149"><td class="n">10/24</td><td>カット＋カラー</td><td>高橋</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="149" aria-label="この記録を削除">×</button></td></tr><tr data-id="148"><td class="n">10/24</td><td>トリートメント</td><td>鈴木</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="148" aria-label="この記録を削除">×</button></td></tr><tr data-id="147"><td class="n">10/24</td><td>ヘッドスパ</td><td>佐藤</td><td class="n">¥3,500</td><td class="x"><button type="button" class="del" data-del="147" aria-label="この記録を削除">×</button></td></tr><tr data-id="146"><td class="n">10/23</td><td>トリートメント</td><td>高橋</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="146" aria-label="この記録を削除">×</button></td></tr><tr data-id="145"><td class="n">10/23</td><td>カラー</td><td>高橋</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="145" aria-label="この記録を削除">×</button></td></tr><tr data-id="144"><td class="n">10/23</td><td>カット</td><td>高橋</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="144" aria-label="この記録を削除">×</button></td></tr><tr data-id="143"><td class="n">10/22</td><td>カット＋カラー</td><td>佐藤</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="143" aria-label="この記録を削除">×</button></td></tr><tr data-id="142"><td class="n">10/22</td><td>トリートメント</td><td>高橋</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="142" aria-label="この記録を削除">×</button></td></tr><tr data-id="141"><td class="n">10/22</td><td>カット＋カラー</td><td>高橋</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="141" aria-label="この記録を削除">×</button></td></tr><tr data-id="140"><td class="n">10/21</td><td>カット</td><td>高橋</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="140" aria-label="この記録を削除">×</button></td></tr><tr data-id="139"><td class="n">10/21</td><td>カット＋カラー</td><td>鈴木</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="139" aria-label="この記録を削除">×</button></td></tr><tr data-id="138"><td class="n">10/19</td><td>カット</td><td>佐藤</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="138" aria-label="この記録を削除">×</button></td></tr><tr data-id="137"><td class="n">10/19</td><td>カット＋カラー</td><td>佐藤</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="137" aria-label="この記録を削除">×</button></td></tr><tr data-id="136"><td class="n">10/18</td><td>カット</td><td>高橋</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="136" aria-label="この記録を削除">×</button></td></tr><tr data-id="135"><td class="n">10/18</td><td>ヘッドスパ</td><td>鈴木</td><td class="n">¥3,500</td><td class="x"><button type="button" class="del" data-del="135" aria-label="この記録を削除">×</button></td></tr><tr data-id="134"><td class="n">10/18</td><td>トリートメント</td><td>鈴木</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="134" aria-label="この記録を削除">×</button></td></tr><tr data-id="133"><td class="n">10/18</td><td>トリートメント</td><td>高橋</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="133" aria-label="この記録を削除">×</button></td></tr><tr data-id="132"><td class="n">10/17</td><td>トリートメント</td><td>鈴木</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="132" aria-label="この記録を削除">×</button></td></tr><tr data-id="131"><td class="n">10/17</td><td>カット</td><td>鈴木</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="131" aria-label="この記録を削除">×</button></td></tr><tr data-id="130"><td class="n">10/17</td><td>カット</td><td>佐藤</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="130" aria-label="この記録を削除">×</button></td></tr><tr data-id="129"><td class="n">10/17</td><td>パーマ</td><td>高橋</td><td class="n">¥8,800</td><td class="x"><button type="button" class="del" data-del="129" aria-label="この記録を削除">×</button></td></tr><tr data-id="128"><td class="n">10/17</td><td>カット</td><td>高橋</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="128" aria-label="この記録を削除">×</button></td></tr><tr data-id="127"><td class="n">10/16</td><td>トリートメント</td><td>鈴木</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="127" aria-label="この記録を削除">×</button></td></tr><tr data-id="126"><td class="n">10/16</td><td>トリートメント</td><td>鈴木</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="126" aria-label="この記録を削除">×</button></td></tr><tr data-id="125"><td class="n">10/16</td><td>カット</td><td>鈴木</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="125" aria-label="この記録を削除">×</button></td></tr><tr data-id="124"><td class="n">10/15</td><td>トリートメント</td><td>高橋</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="124" aria-label="この記録を削除">×</button></td></tr><tr data-id="123"><td class="n">10/15</td><td>トリートメント</td><td>高橋</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="123" aria-label="この記録を削除">×</button></td></tr><tr data-id="122"><td class="n">10/14</td><td>カラー</td><td>佐藤</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="122" aria-label="この記録を削除">×</button></td></tr><tr data-id="121"><td class="n">10/14</td><td>カット</td><td>鈴木</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="121" aria-label="この記録を削除">×</button></td></tr><tr data-id="120"><td class="n">10/12</td><td>ヘッドスパ</td><td>鈴木</td><td class="n">¥3,500</td><td class="x"><button type="button" class="del" data-del="120" aria-label="この記録を削除">×</button></td></tr><tr data-id="119"><td class="n">10/12</td><td>カラー</td><td>高橋</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="119" aria-label="この記録を削除">×</button></td></tr><tr data-id="118"><td class="n">10/12</td><td>カット</td><td>鈴木</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="118" aria-label="この記録を削除">×</button></td></tr><tr data-id="117"><td class="n">10/12</td><td>カット</td><td>高橋</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="117" aria-label="この記録を削除">×</button></td></tr><tr data-id="116"><td class="n">10/11</td><td>ヘッドスパ</td><td>高橋</td><td class="n">¥3,500</td><td class="x"><button type="button" class="del" data-del="116" aria-label="この記録を削除">×</button></td></tr><tr data-id="115"><td class="n">10/11</td><td>トリートメント</td><td>佐藤</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="115" aria-label="この記録を削除">×</button></td></tr><tr data-id="114"><td class="n">10/11</td><td>カラー</td><td>高橋</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="114" aria-label="この記録を削除">×</button></td></tr><tr data-id="113"><td class="n">10/11</td><td>カット</td><td>高橋</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="113" aria-label="この記録を削除">×</button></td></tr><tr data-id="112"><td class="n">10/11</td><td>トリートメント</td><td>佐藤</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="112" aria-label="この記録を削除">×</button></td></tr><tr data-id="111"><td class="n">10/10</td><td>ヘッドスパ</td><td>鈴木</td><td class="n">¥3,500</td><td class="x"><button type="button" class="del" data-del="111" aria-label="この記録を削除">×</button></td></tr><tr data-id="110"><td class="n">10/10</td><td>カット</td><td>高橋</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="110" aria-label="この記録を削除">×</button></td></tr><tr data-id="109"><td class="n">10/10</td><td>カット</td><td>高橋</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="109" aria-label="この記録を削除">×</button></td></tr><tr data-id="108"><td class="n">10/10</td><td>カラー</td><td>高橋</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="108" aria-label="この記録を削除">×</button></td></tr><tr data-id="107"><td class="n">10/10</td><td>カット</td><td>佐藤</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="107" aria-label="この記録を削除">×</button></td></tr><tr data-id="106"><td class="n">10/09</td><td>ヘッドスパ</td><td>佐藤</td><td class="n">¥3,500</td><td class="x"><button type="button" class="del" data-del="106" aria-label="この記録を削除">×</button></td></tr><tr data-id="105"><td class="n">10/09</td><td>カット＋カラー</td><td>佐藤</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="105" aria-label="この記録を削除">×</button></td></tr><tr data-id="104"><td class="n">10/08</td><td>カット</td><td>佐藤</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="104" aria-label="この記録を削除">×</button></td></tr><tr data-id="103"><td class="n">10/08</td><td>パーマ</td><td>佐藤</td><td class="n">¥8,800</td><td class="x"><button type="button" class="del" data-del="103" aria-label="この記録を削除">×</button></td></tr><tr data-id="102"><td class="n">10/08</td><td>カット＋カラー</td><td>高橋</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="102" aria-label="この記録を削除">×</button></td></tr><tr data-id="101"><td class="n">10/07</td><td>カラー</td><td>鈴木</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="101" aria-label="この記録を削除">×</button></td></tr><tr data-id="100"><td class="n">10/07</td><td>トリートメント</td><td>佐藤</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="100" aria-label="この記録を削除">×</button></td></tr><tr data-id="99"><td class="n">10/07</td><td>カラー</td><td>鈴木</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="99" aria-label="この記録を削除">×</button></td></tr><tr data-id="98"><td class="n">10/07</td><td>カラー</td><td>高橋</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="98" aria-label="この記録を削除">×</button></td></tr><tr data-id="97"><td class="n">10/05</td><td>カット</td><td>高橋</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="97" aria-label="この記録を削除">×</button></td></tr><tr data-id="96"><td class="n">10/05</td><td>トリートメント</td><td>佐藤</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="96" aria-label="この記録を削除">×</button></td></tr><tr data-id="95"><td class="n">10/05</td><td>カット</td><td>鈴木</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="95" aria-label="この記録を削除">×</button></td></tr><tr data-id="94"><td class="n">10/04</td><td>トリートメント</td><td>高橋</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="94" aria-label="この記録を削除">×</button></td></tr><tr data-id="93"><td class="n">10/04</td><td>カット＋カラー</td><td>鈴木</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="93" aria-label="この記録を削除">×</button></td></tr><tr data-id="92"><td class="n">10/04</td><td>ヘッドスパ</td><td>鈴木</td><td class="n">¥3,500</td><td class="x"><button type="button" class="del" data-del="92" aria-label="この記録を削除">×</button></td></tr><tr data-id="91"><td class="n">10/04</td><td>パーマ</td><td>高橋</td><td class="n">¥8,800</td><td class="x"><button type="button" class="del" data-del="91" aria-label="この記録を削除">×</button></td></tr><tr data-id="90"><td class="n">10/03</td><td>カット＋カラー</td><td>佐藤</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="90" aria-label="この記録を削除">×</button></td></tr><tr data-id="89"><td class="n">10/03</td><td>カット＋カラー</td><td>鈴木</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="89" aria-label="この記録を削除">×</button></td></tr><tr data-id="88"><td class="n">10/03</td><td>パーマ</td><td>佐藤</td><td class="n">¥8,800</td><td class="x"><button type="button" class="del" data-del="88" aria-label="この記録を削除">×</button></td></tr><tr data-id="87"><td class="n">10/03</td><td>カラー</td><td>鈴木</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="87" aria-label="この記録を削除">×</button></td></tr><tr data-id="86"><td class="n">10/03</td><td>カット</td><td>鈴木</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="86" aria-label="この記録を削除">×</button></td></tr><tr data-id="85"><td class="n">10/03</td><td>ヘッドスパ</td><td>佐藤</td><td class="n">¥3,500</td><td class="x"><button type="button" class="del" data-del="85" aria-label="この記録を削除">×</button></td></tr><tr data-id="84"><td class="n">10/02</td><td>カット＋カラー</td><td>鈴木</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="84" aria-label="この記録を削除">×</button></td></tr><tr data-id="83"><td class="n">10/02</td><td>カラー</td><td>佐藤</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="83" aria-label="この記録を削除">×</button></td></tr><tr data-id="82"><td class="n">10/01</td><td>カラー</td><td>佐藤</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="82" aria-label="この記録を削除">×</button></td></tr><tr data-id="81"><td class="n">10/01</td><td>カラー</td><td>佐藤</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="81" aria-label="この記録を削除">×</button></td></tr><tr data-id="80"><td class="n">09/30</td><td>カラー</td><td>高橋</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="80" aria-label="この記録を削除">×</button></td></tr><tr data-id="79"><td class="n">09/30</td><td>カット＋カラー</td><td>高橋</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="79" aria-label="この記録を削除">×</button></td></tr><tr data-id="78"><td class="n">09/30</td><td>カット＋カラー</td><td>佐藤</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="78" aria-label="この記録を削除">×</button></td></tr><tr data-id="77"><td class="n">09/28</td><td>パーマ</td><td>鈴木</td><td class="n">¥8,800</td><td class="x"><button type="button" class="del" data-del="77" aria-label="この記録を削除">×</button></td></tr><tr data-id="76"><td class="n">09/28</td><td>トリートメント</td><td>佐藤</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="76" aria-label="この記録を削除">×</button></td></tr><tr data-id="75"><td class="n">09/27</td><td>トリートメント</td><td>鈴木</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="75" aria-label="この記録を削除">×</button></td></tr><tr data-id="74"><td class="n">09/27</td><td>カット</td><td>鈴木</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="74" aria-label="この記録を削除">×</button></td></tr><tr data-id="73"><td class="n">09/27</td><td>カラー</td><td>高橋</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="73" aria-label="この記録を削除">×</button></td></tr><tr data-id="72"><td class="n">09/27</td><td>ヘッドスパ</td><td>鈴木</td><td class="n">¥3,500</td><td class="x"><button type="button" class="del" data-del="72" aria-label="この記録を削除">×</button></td></tr><tr data-id="71"><td class="n">09/27</td><td>カラー</td><td>鈴木</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="71" aria-label="この記録を削除">×</button></td></tr><tr data-id="70"><td class="n">09/26</td><td>カット</td><td>高橋</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="70" aria-label="この記録を削除">×</button></td></tr><tr data-id="69"><td class="n">09/26</td><td>カット</td><td>佐藤</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="69" aria-label="この記録を削除">×</button></td></tr><tr data-id="68"><td class="n">09/26</td><td>カット＋カラー</td><td>高橋</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="68" aria-label="この記録を削除">×</button></td></tr><tr data-id="67"><td class="n">09/26</td><td>カラー</td><td>佐藤</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="67" aria-label="この記録を削除">×</button></td></tr><tr data-id="66"><td class="n">09/25</td><td>トリートメント</td><td>鈴木</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="66" aria-label="この記録を削除">×</button></td></tr><tr data-id="65"><td class="n">09/25</td><td>カット＋カラー</td><td>佐藤</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="65" aria-label="この記録を削除">×</button></td></tr><tr data-id="64"><td class="n">09/24</td><td>カラー</td><td>佐藤</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="64" aria-label="この記録を削除">×</button></td></tr><tr data-id="63"><td class="n">09/24</td><td>トリートメント</td><td>佐藤</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="63" aria-label="この記録を削除">×</button></td></tr><tr data-id="62"><td class="n">09/23</td><td>カット＋カラー</td><td>高橋</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="62" aria-label="この記録を削除">×</button></td></tr><tr data-id="61"><td class="n">09/23</td><td>カラー</td><td>鈴木</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="61" aria-label="この記録を削除">×</button></td></tr><tr data-id="60"><td class="n">09/23</td><td>カット</td><td>高橋</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="60" aria-label="この記録を削除">×</button></td></tr><tr data-id="59"><td class="n">09/21</td><td>カット</td><td>佐藤</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="59" aria-label="この記録を削除">×</button></td></tr><tr data-id="58"><td class="n">09/21</td><td>ヘッドスパ</td><td>高橋</td><td class="n">¥3,500</td><td class="x"><button type="button" class="del" data-del="58" aria-label="この記録を削除">×</button></td></tr><tr data-id="57"><td class="n">09/21</td><td>パーマ</td><td>佐藤</td><td class="n">¥8,800</td><td class="x"><button type="button" class="del" data-del="57" aria-label="この記録を削除">×</button></td></tr><tr data-id="56"><td class="n">09/20</td><td>カラー</td><td>鈴木</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="56" aria-label="この記録を削除">×</button></td></tr><tr data-id="55"><td class="n">09/20</td><td>カット</td><td>佐藤</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="55" aria-label="この記録を削除">×</button></td></tr><tr data-id="54"><td class="n">09/20</td><td>パーマ</td><td>高橋</td><td class="n">¥8,800</td><td class="x"><button type="button" class="del" data-del="54" aria-label="この記録を削除">×</button></td></tr><tr data-id="53"><td class="n">09/20</td><td>ヘッドスパ</td><td>佐藤</td><td class="n">¥3,500</td><td class="x"><button type="button" class="del" data-del="53" aria-label="この記録を削除">×</button></td></tr><tr data-id="52"><td class="n">09/20</td><td>カット＋カラー</td><td>佐藤</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="52" aria-label="この記録を削除">×</button></td></tr><tr data-id="51"><td class="n">09/19</td><td>カット＋カラー</td><td>高橋</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="51" aria-label="この記録を削除">×</button></td></tr><tr data-id="50"><td class="n">09/19</td><td>カット</td><td>高橋</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="50" aria-label="この記録を削除">×</button></td></tr><tr data-id="49"><td class="n">09/19</td><td>カット</td><td>高橋</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="49" aria-label="この記録を削除">×</button></td></tr><tr data-id="48"><td class="n">09/19</td><td>カット＋カラー</td><td>高橋</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="48" aria-label="この記録を削除">×</button></td></tr><tr data-id="47"><td class="n">09/19</td><td>カット＋カラー</td><td>高橋</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="47" aria-label="この記録を削除">×</button></td></tr><tr data-id="46"><td class="n">09/18</td><td>カット＋カラー</td><td>高橋</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="46" aria-label="この記録を削除">×</button></td></tr><tr data-id="45"><td class="n">09/18</td><td>カット＋カラー</td><td>鈴木</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="45" aria-label="この記録を削除">×</button></td></tr><tr data-id="44"><td class="n">09/17</td><td>カラー</td><td>高橋</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="44" aria-label="この記録を削除">×</button></td></tr><tr data-id="43"><td class="n">09/17</td><td>カット＋カラー</td><td>佐藤</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="43" aria-label="この記録を削除">×</button></td></tr><tr data-id="42"><td class="n">09/17</td><td>ヘッドスパ</td><td>高橋</td><td class="n">¥3,500</td><td class="x"><button type="button" class="del" data-del="42" aria-label="この記録を削除">×</button></td></tr><tr data-id="41"><td class="n">09/16</td><td>パーマ</td><td>高橋</td><td class="n">¥8,800</td><td class="x"><button type="button" class="del" data-del="41" aria-label="この記録を削除">×</button></td></tr><tr data-id="40"><td class="n">09/16</td><td>カット＋カラー</td><td>鈴木</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="40" aria-label="この記録を削除">×</button></td></tr><tr data-id="39"><td class="n">09/14</td><td>カラー</td><td>高橋</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="39" aria-label="この記録を削除">×</button></td></tr><tr data-id="38"><td class="n">09/14</td><td>カット</td><td>鈴木</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="38" aria-label="この記録を削除">×</button></td></tr><tr data-id="37"><td class="n">09/13</td><td>カット</td><td>佐藤</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="37" aria-label="この記録を削除">×</button></td></tr><tr data-id="36"><td class="n">09/13</td><td>トリートメント</td><td>佐藤</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="36" aria-label="この記録を削除">×</button></td></tr><tr data-id="35"><td class="n">09/13</td><td>トリートメント</td><td>佐藤</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="35" aria-label="この記録を削除">×</button></td></tr><tr data-id="34"><td class="n">09/13</td><td>カット</td><td>高橋</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="34" aria-label="この記録を削除">×</button></td></tr><tr data-id="33"><td class="n">09/13</td><td>カラー</td><td>高橋</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="33" aria-label="この記録を削除">×</button></td></tr><tr data-id="32"><td class="n">09/12</td><td>カット</td><td>高橋</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="32" aria-label="この記録を削除">×</button></td></tr><tr data-id="31"><td class="n">09/12</td><td>カット</td><td>鈴木</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="31" aria-label="この記録を削除">×</button></td></tr><tr data-id="30"><td class="n">09/12</td><td>パーマ</td><td>鈴木</td><td class="n">¥8,800</td><td class="x"><button type="button" class="del" data-del="30" aria-label="この記録を削除">×</button></td></tr><tr data-id="29"><td class="n">09/12</td><td>カラー</td><td>鈴木</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="29" aria-label="この記録を削除">×</button></td></tr><tr data-id="28"><td class="n">09/12</td><td>カット＋カラー</td><td>鈴木</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="28" aria-label="この記録を削除">×</button></td></tr><tr data-id="27"><td class="n">09/11</td><td>カラー</td><td>高橋</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="27" aria-label="この記録を削除">×</button></td></tr><tr data-id="26"><td class="n">09/11</td><td>パーマ</td><td>高橋</td><td class="n">¥8,800</td><td class="x"><button type="button" class="del" data-del="26" aria-label="この記録を削除">×</button></td></tr><tr data-id="25"><td class="n">09/10</td><td>トリートメント</td><td>鈴木</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="25" aria-label="この記録を削除">×</button></td></tr><tr data-id="24"><td class="n">09/10</td><td>ヘッドスパ</td><td>鈴木</td><td class="n">¥3,500</td><td class="x"><button type="button" class="del" data-del="24" aria-label="この記録を削除">×</button></td></tr><tr data-id="23"><td class="n">09/10</td><td>トリートメント</td><td>佐藤</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="23" aria-label="この記録を削除">×</button></td></tr><tr data-id="22"><td class="n">09/09</td><td>カラー</td><td>高橋</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="22" aria-label="この記録を削除">×</button></td></tr><tr data-id="21"><td class="n">09/09</td><td>カット</td><td>高橋</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="21" aria-label="この記録を削除">×</button></td></tr><tr data-id="20"><td class="n">09/09</td><td>カット</td><td>鈴木</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="20" aria-label="この記録を削除">×</button></td></tr><tr data-id="19"><td class="n">09/07</td><td>カラー</td><td>佐藤</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="19" aria-label="この記録を削除">×</button></td></tr><tr data-id="18"><td class="n">09/07</td><td>トリートメント</td><td>鈴木</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="18" aria-label="この記録を削除">×</button></td></tr><tr data-id="17"><td class="n">09/07</td><td>カラー</td><td>高橋</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="17" aria-label="この記録を削除">×</button></td></tr><tr data-id="16"><td class="n">09/06</td><td>トリートメント</td><td>佐藤</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="16" aria-label="この記録を削除">×</button></td></tr><tr data-id="15"><td class="n">09/06</td><td>ヘッドスパ</td><td>高橋</td><td class="n">¥3,500</td><td class="x"><button type="button" class="del" data-del="15" aria-label="この記録を削除">×</button></td></tr><tr data-id="14"><td class="n">09/06</td><td>カラー</td><td>高橋</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="14" aria-label="この記録を削除">×</button></td></tr><tr data-id="13"><td class="n">09/06</td><td>カット</td><td>鈴木</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="13" aria-label="この記録を削除">×</button></td></tr><tr data-id="12"><td class="n">09/06</td><td>カラー</td><td>高橋</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="12" aria-label="この記録を削除">×</button></td></tr><tr data-id="11"><td class="n">09/05</td><td>カット＋カラー</td><td>佐藤</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="11" aria-label="この記録を削除">×</button></td></tr><tr data-id="10"><td class="n">09/05</td><td>カラー</td><td>高橋</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="10" aria-label="この記録を削除">×</button></td></tr><tr data-id="9"><td class="n">09/05</td><td>カット＋カラー</td><td>高橋</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="9" aria-label="この記録を削除">×</button></td></tr><tr data-id="8"><td class="n">09/05</td><td>ヘッドスパ</td><td>高橋</td><td class="n">¥3,500</td><td class="x"><button type="button" class="del" data-del="8" aria-label="この記録を削除">×</button></td></tr><tr data-id="7"><td class="n">09/04</td><td>カラー</td><td>高橋</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="7" aria-label="この記録を削除">×</button></td></tr><tr data-id="6"><td class="n">09/04</td><td>カット</td><td>高橋</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="6" aria-label="この記録を削除">×</button></td></tr><tr data-id="5"><td class="n">09/03</td><td>カラー</td><td>鈴木</td><td class="n">¥6,500</td><td class="x"><button type="button" class="del" data-del="5" aria-label="この記録を削除">×</button></td></tr><tr data-id="4"><td class="n">09/03</td><td>カット＋カラー</td><td>佐藤</td><td class="n">¥10,000</td><td class="x"><button type="button" class="del" data-del="4" aria-label="この記録を削除">×</button></td></tr><tr data-id="3"><td class="n">09/03</td><td>カット</td><td>高橋</td><td class="n">¥4,400</td><td class="x"><button type="button" class="del" data-del="3" aria-label="この記録を削除">×</button></td></tr><tr data-id="2"><td class="n">09/02</td><td>パーマ</td><td>鈴木</td><td class="n">¥8,800</td><td class="x"><button type="button" class="del" data-del="2" aria-label="この記録を削除">×</button></td></tr><tr data-id="1"><td class="n">09/02</td><td>トリートメント</td><td>高橋</td><td class="n">¥3,000</td><td class="x"><button type="button" class="del" data-del="1" aria-label="この記録を削除">×</button></td></tr></tbody></table></div>
+  </section>
+
+  <section class="side auto" aria-labelledby="h-sum">
+    <div class="side-h">
+      <span class="tag">自動で作られるところ</span>
+      <h2 id="h-sum">② 月次の集計</h2>
+      <p>記録をもとに、いつでも最新の状態で表示されます。</p>
+    </div>
+    <div class="months" id="months"><button type="button" class="chip" data-m="2026-09" aria-pressed="false">2026年9月</button><button type="button" class="chip" data-m="2026-10" aria-pressed="true">2026年10月</button></div>
+    <div id="summary"><div class="kpis"><div class="kpi main"><span>売上合計</span><b class="n">¥510,300</b><span class="up">前月比 +2.4%</span></div><div class="kpi"><span>来店件数</span><b class="n">90<small>件</small></b></div><div class="kpi"><span>客単価</span><b class="n">¥5,670</b></div></div><div class="panel"><h3>日別の売上</h3><div class="chart"><svg viewBox="0 0 640 200" role="img" aria-label="2026年10月の日別売上"><line x1="44" x2="632" y1="174.0" y2="174.0" class="grid"/><text x="38" y="178.0" text-anchor="end" class="ax">0万</text><line x1="44" x2="632" y1="141.6" y2="141.6" class="grid"/><text x="38" y="145.6" text-anchor="end" class="ax">1万</text><line x1="44" x2="632" y1="109.2" y2="109.2" class="grid"/><text x="38" y="113.2" text-anchor="end" class="ax">2万</text><line x1="44" x2="632" y1="76.8" y2="76.8" class="grid"/><text x="38" y="80.8" text-anchor="end" class="ax">3万</text><line x1="44" x2="632" y1="44.4" y2="44.4" class="grid"/><text x="38" y="48.4" text-anchor="end" class="ax">4万</text><line x1="44" x2="632" y1="12.0" y2="12.0" class="grid"/><text x="38" y="16.0" text-anchor="end" class="ax">5万</text><rect x="46.8" y="131.9" width="13.3" height="42.1" rx="2" class="bar"><title>10/1 ¥13,000</title></rect><text x="53.5" y="192" text-anchor="middle" class="ax">1日</text><rect x="65.8" y="120.5" width="13.3" height="53.5" rx="2" class="bar"><title>10/2 ¥16,500</title></rect><rect x="84.8" y="34.0" width="13.3" height="140.0" rx="2" class="bar"><title>10/3 ¥43,200</title></rect><rect x="103.7" y="92.0" width="13.3" height="82.0" rx="2" class="bar"><title>10/4 ¥25,300</title></rect><rect x="122.7" y="135.8" width="13.3" height="38.2" rx="2" class="bar"><title>10/5 ¥11,800</title></rect><text x="129.4" y="192" text-anchor="middle" class="ax">5日</text><rect x="160.7" y="101.1" width="13.3" height="72.9" rx="2" class="bar"><title>10/7 ¥22,500</title></rect><rect x="179.6" y="98.8" width="13.3" height="75.2" rx="2" class="bar"><title>10/8 ¥23,200</title></rect><rect x="198.6" y="130.3" width="13.3" height="43.7" rx="2" class="bar"><title>10/9 ¥13,500</title></rect><rect x="217.6" y="98.8" width="13.3" height="75.2" rx="2" class="bar"><title>10/10 ¥23,200</title></rect><text x="224.2" y="192" text-anchor="middle" class="ax">10日</text><rect x="236.5" y="107.9" width="13.3" height="66.1" rx="2" class="bar"><title>10/11 ¥20,400</title></rect><rect x="255.5" y="113.1" width="13.3" height="60.9" rx="2" class="bar"><title>10/12 ¥18,800</title></rect><rect x="293.4" y="138.7" width="13.3" height="35.3" rx="2" class="bar"><title>10/14 ¥10,900</title></rect><rect x="312.4" y="154.6" width="13.3" height="19.4" rx="2" class="bar"><title>10/15 ¥6,000</title></rect><text x="319.0" y="192" text-anchor="middle" class="ax">15日</text><rect x="331.4" y="140.3" width="13.3" height="33.7" rx="2" class="bar"><title>10/16 ¥10,400</title></rect><rect x="350.3" y="93.0" width="13.3" height="81.0" rx="2" class="bar"><title>10/17 ¥25,000</title></rect><rect x="369.3" y="129.0" width="13.3" height="45.0" rx="2" class="bar"><title>10/18 ¥13,900</title></rect><rect x="388.3" y="127.3" width="13.3" height="46.7" rx="2" class="bar"><title>10/19 ¥14,400</title></rect><text x="413.9" y="192" text-anchor="middle" class="ax">20日</text><rect x="426.2" y="127.3" width="13.3" height="46.7" rx="2" class="bar"><title>10/21 ¥14,400</title></rect><rect x="445.2" y="99.5" width="13.3" height="74.5" rx="2" class="bar"><title>10/22 ¥23,000</title></rect><rect x="464.1" y="129.0" width="13.3" height="45.0" rx="2" class="bar"><title>10/23 ¥13,900</title></rect><rect x="483.1" y="67.1" width="13.3" height="106.9" rx="2" class="bar"><title>10/24 ¥33,000</title></rect><rect x="502.1" y="76.8" width="13.3" height="97.2" rx="2" class="bar"><title>10/25 ¥30,000</title></rect><text x="508.7" y="192" text-anchor="middle" class="ax">25日</text><rect x="521.0" y="150.0" width="13.3" height="24.0" rx="2" class="bar"><title>10/26 ¥7,400</title></rect><rect x="559.0" y="127.3" width="13.3" height="46.7" rx="2" class="bar"><title>10/28 ¥14,400</title></rect><rect x="577.9" y="106.3" width="13.3" height="67.7" rx="2" class="bar"><title>10/29 ¥20,900</title></rect><rect x="596.9" y="145.5" width="13.3" height="28.5" rx="2" class="bar"><title>10/30 ¥8,800</title></rect><text x="603.5" y="192" text-anchor="middle" class="ax">30日</text><rect x="615.9" y="68.7" width="13.3" height="105.3" rx="2" class="bar"><title>10/31 ¥32,500</title></rect></svg></div></div><div class="panel"><h3>メニュー別</h3><div class="tbl"><table><thead><tr><th>メニュー</th><th class="n">件数</th><th class="n">売上</th><th>構成比</th></tr></thead><tbody><tr><td>カット＋カラー</td><td class="n">18件</td><td class="n">¥180,000</td><td class="share"><span class="sbar b1"><i style="width:35.3%"></i></span><span class="n">35.3%</span></td></tr><tr><td>カット</td><td class="n">24件</td><td class="n">¥105,600</td><td class="share"><span class="sbar b1"><i style="width:20.7%"></i></span><span class="n">20.7%</span></td></tr><tr><td>カラー</td><td class="n">15件</td><td class="n">¥97,500</td><td class="share"><span class="sbar b1"><i style="width:19.1%"></i></span><span class="n">19.1%</span></td></tr><tr><td>トリートメント</td><td class="n">19件</td><td class="n">¥57,000</td><td class="share"><span class="sbar b1"><i style="width:11.2%"></i></span><span class="n">11.2%</span></td></tr><tr><td>パーマ</td><td class="n">4件</td><td class="n">¥35,200</td><td class="share"><span class="sbar b1"><i style="width:6.9%"></i></span><span class="n">6.9%</span></td></tr><tr><td>ヘッドスパ</td><td class="n">10件</td><td class="n">¥35,000</td><td class="share"><span class="sbar b1"><i style="width:6.9%"></i></span><span class="n">6.9%</span></td></tr><tr class="sum"><td>合計</td><td class="n">90件</td><td class="n">¥510,300</td><td></td></tr></tbody></table></div></div><div class="panel"><h3>担当スタッフ別</h3><div class="tbl"><table><thead><tr><th>担当</th><th class="n">件数</th><th class="n">売上</th><th>構成比</th></tr></thead><tbody><tr><td>高橋</td><td class="n">34件</td><td class="n">¥187,400</td><td class="share"><span class="sbar b2"><i style="width:36.7%"></i></span><span class="n">36.7%</span></td></tr><tr><td>鈴木</td><td class="n">30件</td><td class="n">¥163,200</td><td class="share"><span class="sbar b2"><i style="width:32.0%"></i></span><span class="n">32.0%</span></td></tr><tr><td>佐藤</td><td class="n">26件</td><td class="n">¥159,700</td><td class="share"><span class="sbar b2"><i style="width:31.3%"></i></span><span class="n">31.3%</span></td></tr><tr class="sum"><td>合計</td><td class="n">90件</td><td class="n">¥510,300</td><td></td></tr></tbody></table></div></div></div>
+  </section>
+</div>
+
+<section class="compare-wrap">
+  <h2>これまでとの違い</h2>
+  <div class="compare">
+    <div class="cmp before"><h3>これまで（手作業）</h3><ul>
+      <li>月末に記録を見返して、メニューごとに件数を数える</li>
+      <li>電卓で合計し、数え間違いがあればやり直し</li>
+      <li>スタッフ別や前月比は、さらに別に計算が必要</li>
+      <li>月の途中では、今月の売上がわからない</li>
+    </ul></div>
+    <div class="cmp after"><h3>自動化後</h3><ul>
+      <li>記録を付けるだけで、集計表とグラフが自動で完成</li>
+      <li>計算ミスがなくなる</li>
+      <li>メニュー別・スタッフ別・前月比が一度に見られる</li>
+      <li>月の途中でも、今の売上がすぐにわかる</li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="prod">
+  <h2>本番ではこう動きます</h2>
+  <div class="prodgrid">
+    <div><b>いつもの表のまま</b><p>お使いのGoogleスプレッドシートやExcelの中に、同じ集計の仕組みを組み込みます。今の記録の付け方によっては、集計しやすい形に整えるところからお手伝いします。</p></div>
+    <div><b>Googleフォームの予約と連携</b><p>Googleフォームで予約を受けている場合は、予約が記録の表に自動で入るようにできます。ほかの予約サービスをお使いの場合は、予約データ（CSV）の取り込みで対応します。</p></div>
+    <div><b>月初にレポートをメールで</b><p>Googleスプレッドシートをお使いの場合は、毎月1日に先月の集計をメールで届けることもできます。Excelをお使いの場合は、ご相談のうえ方法をご提案します。</p></div>
+  </div>
+  <p class="muted">このページはブラウザ上で動く体験版です。追加・削除した内容は保存されず、ページを開き直すと元に戻ります。</p>
+</section>
+
+<div class="cta">
+  <div><h3>お店に合わせて作れます</h3><p>メニューや記録の付け方はお店ごとに違います。今お使いの表に合わせて作りますので、お気軽にご相談ください。</p></div>
+  <a href="./">Rinka 制作室で相談する →</a>
+</div>
+
+<footer>お店の名前・スタッフ名・数字はすべて説明用の架空のものです。</footer>
+</div>
+
+<script>
+var DEFAULT_MENUS=[
+  {name:"カット",price:4400},
+  {name:"カラー",price:6500},
+  {name:"カット＋カラー",price:10000},
+  {name:"パーマ",price:8800},
+  {name:"トリートメント",price:3000},
+  {name:"ヘッドスパ",price:3500}
+];
+var MENUS=DEFAULT_MENUS.map(function(m){return {name:m.name,price:m.price}});
+var STAFF=["佐藤","鈴木","高橋"];
+function priceOf(m){for(var i=0;i<MENUS.length;i++)if(MENUS[i].name===m)return MENUS[i].price;return 0;}
+function yen(n){return "¥"+Math.round(n).toLocaleString("ja-JP");}
+function escH(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]});}
+function makeSample(){
+  // 決まった乱数で、2026年9月〜10月の予約記録を作る（火曜定休）
+  var seed=20261012; function rnd(){seed=(seed*1103515245+12345)%2147483648;return seed/2147483648;}
+  var weights=[30,16,18,8,18,10], rows=[], id=1;
+  for(var m=9;m<=10;m++){
+    var days=m===9?30:31;
+    for(var d=1;d<=days;d++){
+      var dt=new Date(2026,m-1,d), wd=dt.getDay();
+      if(wd===2) continue;
+      var n=(wd===0||wd===6?4:2)+Math.floor(rnd()*2)+(m===10?Math.floor(rnd()*1.6):0);
+      for(var k=0;k<n;k++){
+        var r=rnd()*100, acc=0, mi=0;
+        for(var j=0;j<weights.length;j++){acc+=weights[j];if(r<acc){mi=j;break;}}
+        rows.push({id:id++,date:"2026-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0"),menu:DEFAULT_MENUS[mi].name,staff:STAFF[Math.floor(rnd()*3)],amount:DEFAULT_MENUS[mi].price});
+      }
+    }
+  }
+  return rows;
+}
+function monthsOf(rows){var s={};rows.forEach(function(r){s[r.date.slice(0,7)]=1});return Object.keys(s).sort();}
+function monthLabel(ym){var p=ym.split("-");return p[0]+"年"+Number(p[1])+"月";}
+function prevMonth(ym){var p=ym.split("-").map(Number);var y=p[0],m=p[1]-1;if(m===0){y--;m=12;}return y+"-"+String(m).padStart(2,"0");}
+function summarize(rows,ym){
+  var mr=rows.filter(function(r){return r.date.slice(0,7)===ym});
+  var total=0,byMenu={},byStaff={},byDay={};
+  MENUS.forEach(function(m){byMenu[m.name]={count:0,sum:0}});
+  STAFF.forEach(function(s){byStaff[s]={count:0,sum:0}});
+  mr.forEach(function(r){
+    total+=r.amount;
+    if(!byMenu[r.menu])byMenu[r.menu]={count:0,sum:0};
+    byMenu[r.menu].count++;byMenu[r.menu].sum+=r.amount;
+    if(!byStaff[r.staff])byStaff[r.staff]={count:0,sum:0};
+    byStaff[r.staff].count++;byStaff[r.staff].sum+=r.amount;
+    var d=Number(r.date.slice(8,10));byDay[d]=(byDay[d]||0)+r.amount;
+  });
+  var prev=rows.filter(function(r){return r.date.slice(0,7)===prevMonth(ym)}).reduce(function(s,r){return s+r.amount},0);
+  return {ym:ym,count:mr.length,total:total,avg:mr.length?total/mr.length:0,prev:prev,byMenu:byMenu,byStaff:byStaff,byDay:byDay};
+}
+function renderLedger(rows){
+  var sorted=rows.slice().sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:b.id-a.id});
+  return sorted.map(function(r){
+    return '<tr data-id="'+r.id+'"><td class="n">'+r.date.slice(5).replace("-","/")+'</td><td>'+escH(r.menu)+'</td><td>'+escH(r.staff)+'</td><td class="n">'+yen(r.amount)+'</td><td class="x"><button type="button" class="del" data-del="'+r.id+'" aria-label="この記録を削除">×</button></td></tr>';
+  }).join("");
+}
+function daysIn(ym){var p=ym.split("-").map(Number);return new Date(p[0],p[1],0).getDate();}
+function renderChart(s){
+  var W=640,H=200,L=44,R=8,T=12,B=26,n=daysIn(s.ym);
+  var max=0;for(var d=1;d<=n;d++)max=Math.max(max,s.byDay[d]||0);
+  var step=10000, top=Math.max(step,Math.ceil(max/step)*step);
+  var bw=(W-L-R)/n, g='';
+  for(var v=0;v<=top;v+=step){
+    var y=T+(H-T-B)*(1-v/top);
+    g+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y.toFixed(1)+'" y2="'+y.toFixed(1)+'" class="grid"/><text x="'+(L-6)+'" y="'+(y+4).toFixed(1)+'" text-anchor="end" class="ax">'+(v/10000)+'万</text>';
+  }
+  for(var d2=1;d2<=n;d2++){
+    var val=s.byDay[d2]||0,h=(H-T-B)*(val/top),x=L+(d2-1)*bw+bw*0.15;
+    if(val>0)g+='<rect x="'+x.toFixed(1)+'" y="'+(H-B-h).toFixed(1)+'" width="'+(bw*0.7).toFixed(1)+'" height="'+h.toFixed(1)+'" rx="2" class="bar"><title>'+Number(s.ym.slice(5))+'/'+d2+' '+yen(val)+'</title></rect>';
+    if(d2===1||d2%5===0)g+='<text x="'+(L+(d2-0.5)*bw).toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle" class="ax">'+d2+'日</text>';
+  }
+  return '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+monthLabel(s.ym)+'の日別売上">'+g+'</svg>';
+}
+function renderBreakdown(obj,total,cls){
+  var keys=Object.keys(obj).filter(function(k){return obj[k].count>0}).sort(function(a,b){return obj[b].sum-obj[a].sum});
+  if(!keys.length)return '<tr><td colspan="4" class="empty">この月の記録はありません</td></tr>';
+  return keys.map(function(k){
+    var pct=total?obj[k].sum/total*100:0;
+    return '<tr><td>'+escH(k)+'</td><td class="n">'+obj[k].count+'件</td><td class="n">'+yen(obj[k].sum)+'</td><td class="share"><span class="sbar '+cls+'"><i style="width:'+pct.toFixed(1)+'%"></i></span><span class="n">'+pct.toFixed(1)+'%</span></td></tr>';
+  }).join("")+'<tr class="sum"><td>合計</td><td class="n">'+keys.reduce(function(s,k){return s+obj[k].count},0)+'件</td><td class="n">'+yen(total)+'</td><td></td></tr>';
+}
+function renderSummary(rows,ym){
+  var s=summarize(rows,ym);
+  var diff=s.prev?((s.total-s.prev)/s.prev*100):null;
+  var diffTxt=diff===null?'<span class="muted">前月の記録なし</span>':'<span class="'+(diff>=0?'up':'down')+'">前月比 '+(diff>=0?'+':'')+diff.toFixed(1)+'%</span>';
+  return '<div class="kpis">'+
+    '<div class="kpi main"><span>売上合計</span><b class="n">'+yen(s.total)+'</b>'+diffTxt+'</div>'+
+    '<div class="kpi"><span>来店件数</span><b class="n">'+s.count+'<small>件</small></b></div>'+
+    '<div class="kpi"><span>客単価</span><b class="n">'+yen(s.avg)+'</b></div></div>'+
+    '<div class="panel"><h3>日別の売上</h3><div class="chart">'+renderChart(s)+'</div></div>'+
+    '<div class="panel"><h3>メニュー別</h3><div class="tbl"><table><thead><tr><th>メニュー</th><th class="n">件数</th><th class="n">売上</th><th>構成比</th></tr></thead><tbody>'+renderBreakdown(s.byMenu,s.total,"b1")+'</tbody></table></div></div>'+
+    '<div class="panel"><h3>担当スタッフ別</h3><div class="tbl"><table><thead><tr><th>担当</th><th class="n">件数</th><th class="n">売上</th><th>構成比</th></tr></thead><tbody>'+renderBreakdown(s.byStaff,s.total,"b2")+'</tbody></table></div></div>';
+}
+
+function renderPrices(){
+  return MENUS.map(function(m,i){
+    return '<tr><td>'+escH(m.name)+'</td><td class="n"><label class="pin"><span>¥</span><input type="number" min="0" step="100" inputmode="numeric" id="price-'+i+'" data-pi="'+i+'" value="'+m.price+'" aria-label="'+escH(m.name)+'の料金"></label></td></tr>';
+  }).join("");
+}
+function renderMenuOpts(sel){return MENUS.map(function(m){return '<option'+(m.name===sel?' selected':'')+'>'+escH(m.name)+'</option>'}).join("");}
+
+(function(){
+  var rows=makeSample(), nextId=rows.length+1, months=monthsOf(rows), cur=months[months.length-1];
+  var $=function(id){return document.getElementById(id)};
+  function renderMonths(){
+    months=monthsOf(rows); if(months.indexOf(cur)<0)cur=months[months.length-1]||cur;
+    $("months").innerHTML=months.map(function(m){return '<button type="button" class="chip" data-m="'+m+'" aria-pressed="'+(m===cur)+'">'+monthLabel(m)+'</button>'}).join("");
+  }
+  function renderAll(flashId){
+    $("ledger").innerHTML=renderLedger(rows);
+    $("rec-count").textContent=rows.length;
+    renderMonths();
+    var sum=$("summary"); sum.innerHTML=renderSummary(rows,cur);
+    if(flashId){
+      var tr=$("ledger").querySelector('tr[data-id="'+flashId+'"]');
+      if(tr){tr.className="new";tr.scrollIntoView({block:"nearest"});setTimeout(function(){tr.className=""},1800);}
+      sum.classList.remove("flash");void sum.offsetWidth;sum.classList.add("flash");
+    }
+  }
+  function fillAmount(){$("in-amount").value=priceOf($("in-menu").value);}
+  function renderMenus(sel){$("prices").innerHTML=renderPrices();$("in-menu").innerHTML=renderMenuOpts(sel||$("in-menu").value);fillAmount();}
+  $("in-menu").addEventListener("change",fillAmount);
+  $("prices").addEventListener("input",function(e){
+    var el=e.target;if(!el.dataset||el.dataset.pi===undefined)return;
+    var v=Math.max(0,Math.round(Number(el.value)||0));MENUS[Number(el.dataset.pi)].price=v;
+    el.classList.add("changed");setTimeout(function(){el.classList.remove("changed")},900);
+    if($("in-menu").value===MENUS[Number(el.dataset.pi)].name)fillAmount();
+  });
+  $("newmenu").addEventListener("submit",function(e){
+    e.preventDefault();
+    var name=$("nm-name").value.trim(),price=Math.round(Number($("nm-price").value));
+    if(!name){$("msg").textContent="新しいメニューの名前を入れてください。";return;}
+    if(!(price>=0)||$("nm-price").value===""){$("msg").textContent="新しいメニューの料金を入れてください。";return;}
+    if(MENUS.some(function(m){return m.name===name})){$("msg").textContent="同じ名前のメニューがすでにあります。";return;}
+    MENUS.push({name:name,price:price});$("nm-name").value="";$("nm-price").value="";$("msg").textContent="";
+    renderMenus(name);
+  });
+  $("months").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;cur=b.dataset.m;renderAll();});
+  $("ledger").addEventListener("click",function(e){
+    var b=e.target.closest("[data-del]");if(!b)return;
+    var id=Number(b.dataset.del); rows=rows.filter(function(r){return r.id!==id});
+    $("msg").textContent=""; renderAll();
+  });
+  $("add").addEventListener("submit",function(e){
+    e.preventDefault();
+    var d=$("in-date").value;
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(d)){$("msg").textContent="日付を選んでください。";return;}
+    var amt=Number($("in-amount").value);
+    if($("in-amount").value===""||!(amt>=0)){$("msg").textContent="金額を入れてください。";return;}
+    var m=$("in-menu").value, r={id:nextId++,date:d,menu:m,staff:$("in-staff").value,amount:Math.round(amt)};
+    rows.push(r); cur=d.slice(0,7); $("msg").textContent="";
+    renderAll(r.id);
+  });
+  $("reset").addEventListener("click",function(){MENUS=DEFAULT_MENUS.map(function(m){return {name:m.name,price:m.price}});renderMenus(MENUS[0].name);rows=makeSample();nextId=rows.length+1;cur=monthsOf(rows).slice(-1)[0];$("msg").textContent="";renderAll();});
+  fillAmount(); renderAll();
+})();
+</script>
+
+</body>
+</html>

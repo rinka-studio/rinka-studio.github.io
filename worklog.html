@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Rinka 制作室の制作・お仕事の記録です。">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.5 -apple-system,BlinkMacSystemFont,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Rinka の作業記録</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=Noto+Sans+JP:wght@400;700&family=DM+Mono:wght@500&display=swap"><style id="pg-style">/* Layout: 縦一列の作業ログ。左に日付の軸、右に記録カード。受託ページと同じ色・書体 */
+:root{
+  --bg:#F4F7F6; --surface:#FFFFFF; --ink:#13201C; --muted:#5A6B65; --line:#D9E2DF;
+  --accent:#0F766E; --accent-ink:#FFFFFF; --accent-soft:#DDF0EC; --mark:#E8B53A; --danger:#B4232C;
+  --f-display:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Sans",sans-serif;
+  --f-body:"Noto Sans JP","Hiragino Sans","Yu Gothic",sans-serif;
+  --f-num:"DM Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0F1715; --surface:#16211E; --ink:#E4EEEA; --muted:#93A69F; --line:#26352F;
+  --accent:#4FC2B4; --accent-ink:#0B1513; --accent-soft:#183530; --mark:#F0C65A; --danger:#F07C82; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1715; --surface:#16211E; --ink:#E4EEEA; --muted:#93A69F; --line:#26352F;
+  --accent:#4FC2B4; --accent-ink:#0B1513; --accent-soft:#183530; --mark:#F0C65A; --danger:#F07C82; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.8}
+.wrap{max-width:860px;margin:0 auto;padding-inline:20px;padding-block:28px 72px;display:flex;flex-direction:column;gap:32px}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.back{font-size:.85rem;text-decoration:none;display:inline-flex;gap:6px;align-items:center}
+.eyebrow{font-family:var(--f-num);font-size:.75rem;letter-spacing:.18em;color:var(--accent)}
+h1,h2,h3{font-family:var(--f-display);margin:0;line-height:1.4;text-wrap:balance}
+h1{font-size:clamp(1.7rem,4.5vw,2.4rem);font-weight:700}
+.intro{display:flex;flex-direction:column;gap:10px}
+.intro p{margin:0;color:var(--muted);max-width:62ch}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:420px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.stat span{font-size:.75rem;color:var(--muted)}
+.stat b{font-family:var(--f-num);font-weight:500;font-size:1.35rem;font-variant-numeric:tabular-nums}
+.editor{background:var(--accent-soft);border-radius:12px;padding:16px 18px}
+.editor summary{cursor:pointer;font-family:var(--f-display);font-weight:700}
+.editor form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
+.editor label{display:flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--muted);min-width:0}
+.editor .full{grid-column:1/-1}
+.editor input,.editor select,.editor textarea{font:inherit;font-size:.92rem;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%;box-sizing:border-box}
+.editor textarea{min-height:90px;resize:vertical}
+.editor .row{grid-column:1/-1;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.btn{font:inherit;font-weight:700;border:0;border-radius:999px;padding:9px 20px;background:var(--accent);color:var(--accent-ink);cursor:pointer}
+.btn[disabled]{opacity:.6;cursor:default}
+.msg{font-size:.85rem;color:var(--muted)}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font:inherit;font-size:.8rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 12px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.log{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.entry{display:grid;grid-template-columns:96px minmax(0,1fr);gap:16px;padding-bottom:22px;position:relative}
+.entry::before{content:"";position:absolute;left:103px;top:10px;bottom:0;width:2px;background:var(--line)}
+.entry:last-child::before{display:none}
+.when{font-family:var(--f-num);font-size:.82rem;color:var(--muted);text-align:right;padding-top:2px;font-variant-numeric:tabular-nums}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;margin-left:16px;position:relative;min-width:0}
+.card::before{content:"";position:absolute;left:-23px;top:8px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:3px solid var(--bg)}
+.meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:.78rem;color:var(--muted)}
+.cat{background:var(--accent-soft);color:var(--accent);border-radius:4px;padding:1px 8px;font-weight:700}
+.card h3{font-size:1.05rem}
+.card p{margin:0;font-size:.9rem;white-space:pre-wrap;overflow-wrap:anywhere}
+.tools{display:flex;gap:6px;flex-wrap:wrap}
+.tools span{font-size:.74rem;border:1px solid var(--line);border-radius:4px;padding:0 7px;color:var(--muted)}
+.card a{font-size:.85rem;overflow-wrap:anywhere}
+.del{align-self:flex-start;font:inherit;font-size:.76rem;color:var(--danger);background:none;border:1px solid var(--line);border-radius:6px;padding:2px 10px;cursor:pointer}
+.empty{color:var(--muted);text-align:center;padding:24px}
+footer{font-size:.78rem;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+@media (max-width:560px){
+  .wrap{padding-inline:16px}
+  .stats{gap:8px}
+  .stat b{font-size:1.1rem}
+  .editor form{grid-template-columns:minmax(0,1fr)}
+  .entry{grid-template-columns:minmax(0,1fr);gap:4px}
+  .entry::before{display:none}
+  .when{text-align:left}
+  .card{margin-left:0}
+  .card::before{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main class="wrap"><div><a class="back" href="./">← Rinka 制作室のトップへ</a></div><header class="intro"><span class="eyebrow">WORK LOG</span><h1>Rinka の作業記録</h1><p>これまでに制作したもの、お引き受けしたお仕事を日付順にまとめています。どんなものを作れるかの参考にしてください。</p></header><div class="stats"><div class="stat"><span>記録</span><b>1件</b></div><div class="stat"><span>最終更新</span><b>2026.10.12</b></div></div><section class="editor" id="editor" hidden><details id="editor-details"><summary>記録を追加する</summary><form id="log-form" novalidate><label>日付<input id="f-date" type="date" required></label><label>分類<select id="f-cat"><option>受託の仕事</option><option>サンプル制作</option><option>自作アプリ</option><option>SNS運用</option><option>学習・調査</option><option>その他</option></select></label><label class="full">タイトル<input id="f-title" type="text" maxlength="80" placeholder="例：美容室の予約管理シートを自動化" required></label><label class="full">キーワード（カンマ区切り・任意）<input id="f-tools" type="text" placeholder="スマホ対応, 予約管理"></label><label class="full">内容・工夫したこと<textarea id="f-summary" maxlength="600" placeholder="何を作り、どこを工夫したか"></textarea></label><label class="full">リンク（任意）<input id="f-link" type="url" placeholder="https://"></label><div class="row"><button class="btn" id="f-save" type="submit">保存して公開</button><span class="msg" id="f-msg">保存すると、このページを見る人全員に表示されます。</span></div></form></details></section><nav class="filters" id="filters" aria-label="分類で絞り込み"></nav><ol class="log" id="log"><li class="entry" data-key="e2" data-cat="サンプル制作"><div class="when">2026.10.12</div><article class="card"><div class="meta"><span class="cat">サンプル制作</span></div><h3>受託用のホームページを制作</h3><p>業務自動化とホームページ制作の紹介サイトを制作。メニュー・料金・ご依頼の流れ・お問い合わせを1ページにまとめ、スマートフォンでも見やすい作りにしました。</p><div class="tools"><span>スマホ対応</span><span>ダークモード対応</span><span>1ページ完結</span></div><button class="del" type="button" data-del="e2" hidden>この記録を削除</button></article></li></ol><footer>記録は本人が更新しています。お仕事のご相談はトップページのお問い合わせからどうぞ。</footer></main><script type="application/json" id="pg-data">{"homeUrl":"./","entries":[{"id":"e2","date":"2026-10-12","cat":"サンプル制作","title":"受託用のホームページを制作","tools":"スマホ対応, ダークモード対応, 1ページ完結","summary":"業務自動化とホームページ制作の紹介サイトを制作。メニュー・料金・ご依頼の流れ・お問い合わせを1ページにまとめ、スマートフォンでも見やすい作りにしました。","link":"./"}]}</script><script id="pg-app">var LOG_CATS=["受託の仕事","サンプル制作","自作アプリ","SNS運用","学習・調査","その他"];
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]});}
+function sortEntries(a){return a.slice().sort(function(x,y){return x.date<y.date?1:x.date>y.date?-1:(y.id>x.id?1:-1)});}
+function fmtDate(d){var p=String(d).split("-");return p.length===3?p[0]+"."+p[1]+"."+p[2]:esc(d);}
+function renderMain(state){
+  var es=sortEntries(state.entries||[]);
+  var last=es.length?fmtDate(es[0].date):"—";
+  var h='<main class="wrap">';
+  h+='<div>'+(state.homeUrl?'<a class="back" href="'+esc(state.homeUrl)+'">← Rinka 制作室のトップへ</a>':'')+'</div>';
+  h+='<header class="intro"><span class="eyebrow">WORK LOG</span><h1>Rinka の作業記録</h1>';
+  h+='<p>これまでに制作したもの、お引き受けしたお仕事を日付順にまとめています。どんなものを作れるかの参考にしてください。</p></header>';
+  h+='<div class="stats"><div class="stat"><span>記録</span><b>'+es.length+'件</b></div><div class="stat"><span>最終更新</span><b>'+last+'</b></div></div>';
+  h+='<section class="editor" id="editor" hidden><details id="editor-details"><summary>記録を追加する</summary>';
+  h+='<form id="log-form" novalidate>';
+  h+='<label>日付<input id="f-date" type="date" required></label>';
+  h+='<label>分類<select id="f-cat">'+LOG_CATS.map(function(c){return '<option>'+c+'</option>'}).join("")+'</select></label>';
+  h+='<label class="full">タイトル<input id="f-title" type="text" maxlength="80" placeholder="例：美容室の予約管理シートを自動化" required></label>';
+  h+='<label class="full">キーワード（カンマ区切り・任意）<input id="f-tools" type="text" placeholder="スマホ対応, 予約管理"></label>';
+  h+='<label class="full">内容・工夫したこと<textarea id="f-summary" maxlength="600" placeholder="何を作り、どこを工夫したか"></textarea></label>';
+  h+='<label class="full">リンク（任意）<input id="f-link" type="url" placeholder="https://"></label>';
+  h+='<div class="row"><button class="btn" id="f-save" type="submit">保存して公開</button><span class="msg" id="f-msg">保存すると、このページを見る人全員に表示されます。</span></div>';
+  h+='</form></details></section>';
+  h+='<nav class="filters" id="filters" aria-label="分類で絞り込み"></nav>';
+  if(!es.length){h+='<p class="empty">まだ記録がありません。</p>';}
+  h+='<ol class="log" id="log">';
+  es.forEach(function(e){
+    var tools=String(e.tools||"").split(/[,、]/).map(function(t){return t.trim()}).filter(Boolean);
+    h+='<li class="entry" data-key="'+esc(e.id)+'" data-cat="'+esc(e.cat)+'"><div class="when">'+fmtDate(e.date)+'</div><article class="card">';
+    h+='<div class="meta"><span class="cat">'+esc(e.cat)+'</span>'+'</div>';
+    h+='<h3>'+esc(e.title)+'</h3>';
+    if(e.summary)h+='<p>'+esc(e.summary)+'</p>';
+    if(tools.length)h+='<div class="tools">'+tools.map(function(t){return '<span>'+esc(t)+'</span>'}).join("")+'</div>';
+    if(e.link&&/^https?:\/\//.test(e.link))h+='<a href="'+esc(e.link)+'">'+esc(e.link)+'</a>';
+    h+='<button class="del" type="button" data-del="'+esc(e.id)+'" hidden>この記録を削除</button>';
+    h+='</article></li>';
+  });
+  h+='</ol><footer>記録は本人が更新しています。お仕事のご相談はトップページのお問い合わせからどうぞ。</footer></main>';
+  return h;
+}
+var FONTS='<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=Noto+Sans+JP:wght@400;700&family=DM+Mono:wght@500&display=swap">';
+var RESET=':root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}';
+function PAGE(state,css,app){
+  var json=JSON.stringify(state).replace(/</g,"\\u003c");
+  return '<title>Rinka の作業記録</title>'+FONTS+'<style id="pg-style">'+css+'</style>'+renderMain(state)+
+    '<script type="application/json" id="pg-data">'+json+'</'+'script><script id="pg-app">'+app+'</'+'script>';
+}
+function DOC(state,css,app){
+  return '<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>'+RESET+'</style></head><body>\n'+PAGE(state,css,app)+'</body></html>';
+}
+if(typeof window!=="undefined"){(function(){
+  var state; try{state=JSON.parse(document.getElementById("pg-data").textContent)}catch(e){return}
+  var css=document.getElementById("pg-style").textContent, app=document.getElementById("pg-app").textContent;
+  var cat="すべて", filters=document.getElementById("filters");
+  ["すべて"].concat(LOG_CATS).forEach(function(c,i){
+    var b=document.createElement("button");b.type="button";b.className="chip";b.id="flt-"+i;b.textContent=c;
+    b.setAttribute("aria-pressed",String(c===cat));
+    b.onclick=function(){cat=c;filters.querySelectorAll("button").forEach(function(x){x.setAttribute("aria-pressed",String(x.textContent===cat))});
+      document.querySelectorAll("#log .entry").forEach(function(li){li.hidden=!(cat==="すべて"||li.dataset.cat===cat)})};
+    filters.appendChild(b);
+  });
+  if(!window.claude||!window.claude.use)return;
+  var msg=document.getElementById("f-msg"), save=document.getElementById("f-save");
+  function readOnly(){document.getElementById("editor").hidden=true;document.querySelectorAll("[data-del]").forEach(function(b){b.hidden=true})}
+  function publish(next){
+    return window.claude.use("artifact").then(function(art){
+      if(!art)throw {code:"not_granted"};
+      return art.publish(DOC(next,css,app));
+    }).catch(function(err){
+      var c=err&&err.code;
+      if(c==="conflict"){msg.textContent="ほかの画面で更新されたため、最新の内容に切り替えます。";return}
+      if(c==="not_writer"||c==="not_granted"||c==="consent_required"||c==="capability_disabled"){readOnly();return}
+      if(c==="rate_limited"){msg.textContent="保存が続いたため少し待ってからもう一度お試しください。"}
+      else{msg.textContent="保存できませんでした。時間をおいてもう一度お試しください。"}
+      save.disabled=false;
+    });
+  }
+  window.claude.use("user").then(function(user){
+    var can=user&&user.isOwner?(user.isOwner()||(user.canEdit&&user.canEdit())):false;
+    if(!can)return;
+    document.getElementById("editor").hidden=false;
+    var today=new Date(),pad=function(n){return String(n).padStart(2,"0")};
+    document.getElementById("f-date").value=today.getFullYear()+"-"+pad(today.getMonth()+1)+"-"+pad(today.getDate());
+    document.querySelectorAll("[data-del]").forEach(function(b){
+      b.hidden=false;
+      var armed=false;
+      b.onclick=function(){
+        if(!armed){armed=true;b.textContent="もう一度押すと削除";setTimeout(function(){armed=false;b.textContent="この記録を削除"},4000);return}
+        b.disabled=true;
+        var next=JSON.parse(JSON.stringify(state));
+        next.entries=next.entries.filter(function(e){return e.id!==b.dataset.del});
+        publish(next);
+      };
+    });
+    document.getElementById("log-form").addEventListener("submit",function(ev){
+      ev.preventDefault();
+      var v=function(id){return document.getElementById(id).value.trim()};
+      if(!v("f-date")||!v("f-title")){msg.textContent="日付とタイトルを入力してください。";return}
+      var link=v("f-link");
+      if(link&&!/^https?:\/\//.test(link)){msg.textContent="リンクは https:// から始まるURLを入力してください。";return}
+      var next=JSON.parse(JSON.stringify(state));
+      next.entries.push({id:"e"+Date.now(),date:v("f-date"),cat:v("f-cat"),title:v("f-title"),tools:v("f-tools"),summary:v("f-summary"),link:link});
+      save.disabled=true;msg.textContent="保存しています…";
+      publish(next);
+    });
+  });
+})();}
+</script>
+</body>
+</html>

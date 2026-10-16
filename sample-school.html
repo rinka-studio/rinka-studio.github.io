@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="架空のピアノ教室のサイト見本（Rinka 制作室の制作サンプル）。">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.5 -apple-system,BlinkMacSystemFont,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>こもれび音楽教室</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&family=BIZ+UDPGothic:wght@400;700&family=DM+Mono:wght@500&display=swap">
+<style>
+/* Layout: サンプル表示帯 → 固定ヘッダー → ヒーロー（五線と音符）→ 特徴 → コースと月謝 → 時間割と空き → 講師 → 1年の流れ → よくある質問 → アクセス → 体験申込（入力→確認→完了）→ フッター。スマホは下部に申込ボタン固定 */
+:root{
+  --bg:#F3F8FB; --surface:#FFFFFF; --ink:#1D2B3A; --muted:#5B6B7A; --line:#D6E3EC;
+  --primary:#E0604C; --primary-ink:#FFFFFF; --primary-soft:#FCE7E2; --sun:#F2C14E; --sun-soft:#FDF3D6; --sky:#3E86C6; --sky-soft:#E1EEF8;
+  --ok:#2E8B57; --few:#C8800C; --full:#9AA7B3;
+  --f-display:"M PLUS Rounded 1c","Hiragino Maru Gothic ProN","Hiragino Sans",sans-serif;
+  --f-body:"BIZ UDPGothic","Hiragino Sans","Yu Gothic",sans-serif;
+  --f-num:"DM Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111A22; --surface:#18232D; --ink:#E6EEF4; --muted:#9FB0BE; --line:#2A3A47;
+  --primary:#F08A78; --primary-ink:#1A0E0B; --primary-soft:#3A2420; --sun:#F2C96A; --sun-soft:#3A3018; --sky:#7FB4E4; --sky-soft:#1C2E3E;
+  --ok:#5FC98D; --few:#E9AE4E; --full:#6E7E8B; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111A22; --surface:#18232D; --ink:#E6EEF4; --muted:#9FB0BE; --line:#2A3A47;
+  --primary:#F08A78; --primary-ink:#1A0E0B; --primary-soft:#3A2420; --sun:#F2C96A; --sun-soft:#3A3018; --sky:#7FB4E4; --sky-soft:#1C2E3E;
+  --ok:#5FC98D; --few:#E9AE4E; --full:#6E7E8B; color-scheme:dark}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15.5px;line-height:1.85}
+a{color:var(--sky)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-display);margin:0;line-height:1.4;text-wrap:balance}
+p{margin:0}
+.n{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+.inner{max-width:1040px;margin:0 auto;padding-inline:20px}
+
+.sampleband{background:var(--ink);color:var(--bg);font-size:.78rem}
+.sampleband .inner{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding-block:6px}
+.sampleband a{color:var(--sun)}
+
+.hdr{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.hdr .inner{display:flex;align-items:center;gap:14px;padding-block:10px}
+.brand{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink);font-family:var(--f-display);font-weight:800;font-size:1.08rem;white-space:nowrap}
+.brand svg{width:26px;height:26px}
+.hdr nav{margin-left:auto;min-width:0}
+.hdr ul{list-style:none;margin:0;padding:0;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.hdr ul::-webkit-scrollbar{display:none}
+.hdr li a{display:block;white-space:nowrap;text-decoration:none;color:var(--ink);font-size:.85rem;padding:6px 10px;border-radius:999px}
+.hdr li a:hover{background:var(--sky-soft)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font:inherit;font-weight:700;text-decoration:none;border:0;border-radius:999px;padding:11px 22px;cursor:pointer}
+.btn.primary{background:var(--primary);color:var(--primary-ink)}
+.btn.line{background:none;border:1.5px solid var(--ink);color:var(--ink)}
+.hdr .btn{padding:7px 16px;font-size:.86rem;white-space:nowrap}
+
+.hero{position:relative;overflow:hidden;padding-block:56px 64px}
+.hero .inner{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:32px;align-items:center;position:relative}
+.staff{position:absolute;inset:auto 0 18px 0;height:70px;pointer-events:none;opacity:.55}
+.staff svg{width:100%;height:100%}
+.hero .eyebrow{display:inline-block;background:var(--sun-soft);border-radius:999px;padding:2px 12px;font-size:.8rem;font-weight:700}
+.hero h1{font-size:clamp(2rem,5.4vw,3.2rem);font-weight:800;margin-top:12px;line-height:1.3}
+.hero h1 span{color:var(--primary)}
+.hero p.lead{margin-top:16px;color:var(--muted);max-width:30em}
+.hero .btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.hero .facts{display:flex;gap:18px;flex-wrap:wrap;margin-top:22px;font-size:.84rem;color:var(--muted)}
+.hero .facts b{color:var(--ink);font-family:var(--f-display);font-size:1.1rem;margin-right:2px}
+.illust{background:var(--surface);border:1px solid var(--line);border-radius:28px;padding:24px;display:flex;flex-direction:column;gap:12px;box-shadow:0 20px 40px -30px rgba(30,60,90,.5)}
+.illust svg{width:100%;height:auto;max-width:100%}
+.illust p{font-size:.84rem;color:var(--muted);text-align:center}
+
+section.blk{padding-block:60px}
+section.blk.alt{background:var(--surface);border-block:1px solid var(--line)}
+.head{display:flex;flex-direction:column;gap:6px;margin-bottom:28px}
+.head .en{font-family:var(--f-num);font-size:.74rem;letter-spacing:.2em;color:var(--primary)}
+.head h2{font-size:clamp(1.45rem,3.6vw,2rem);font-weight:800}
+.head p{color:var(--muted);max-width:40em}
+
+.feats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.feat{display:flex;flex-direction:column;gap:8px;min-width:0}
+.feat .ic{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:var(--sky-soft)}
+.feat:nth-child(2) .ic{background:var(--sun-soft)}
+.feat:nth-child(3) .ic{background:var(--primary-soft)}
+.feat .ic svg{width:28px;height:28px}
+.feat h3{font-size:1.05rem}
+.feat p{font-size:.9rem;color:var(--muted)}
+
+.courses{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.course{background:var(--bg);border:1px solid var(--line);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.course .age{align-self:flex-start;font-size:.76rem;font-weight:700;border-radius:999px;padding:1px 10px;background:var(--sky-soft);color:var(--sky)}
+.course:nth-child(2) .age{background:var(--primary-soft);color:var(--primary)}
+.course:nth-child(3) .age{background:var(--sun-soft);color:var(--ink)}
+.course h3{font-size:1.15rem}
+.course p{font-size:.88rem;color:var(--muted)}
+.course dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:.86rem;border-top:1px dashed var(--line);padding-top:10px}
+.course dt{color:var(--muted)}
+.course dd{margin:0;text-align:right}
+.course .fee{font-family:var(--f-display);font-weight:800;font-size:1.5rem;text-align:right}
+.course .fee small{font-family:var(--f-body);font-size:.75rem;font-weight:400;color:var(--muted)}
+.feenote{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;font-size:.85rem}
+.feenote span{background:var(--sun-soft);border-radius:8px;padding:6px 12px}
+
+.tt-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:16px}
+table.tt{border-collapse:collapse;width:100%;min-width:640px;font-size:.86rem}
+.tt th,.tt td{border-bottom:1px solid var(--line);padding:10px 12px;text-align:center}
+.tt thead th{background:var(--sky-soft);font-weight:700}
+.tt tbody th{text-align:left;font-family:var(--f-num);font-weight:500;white-space:nowrap}
+.slot{display:inline-flex;flex-direction:column;gap:2px;align-items:center;font-size:.78rem;line-height:1.3}
+.slot b{font-size:.82rem}
+.st{border-radius:999px;padding:0 8px;font-size:.72rem;font-weight:700}
+.st.ok{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}
+.st.few{background:color-mix(in srgb,var(--few) 18%,transparent);color:var(--few)}
+.st.full{background:color-mix(in srgb,var(--full) 22%,transparent);color:var(--muted)}
+.closed{color:var(--muted);font-size:.78rem}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:.8rem;color:var(--muted);align-items:center}
+
+.teacher{display:grid;grid-template-columns:200px minmax(0,1fr);gap:28px;align-items:start}
+.avatar{aspect-ratio:1;max-width:100%;border-radius:50%;background:var(--sun-soft);display:grid;place-items:center}
+.avatar svg{width:62%;height:auto}
+.teacher h3{font-size:1.3rem}
+.teacher .role{color:var(--primary);font-weight:700;font-size:.85rem}
+.teacher p{margin-top:10px;color:var(--muted);max-width:40em}
+.teacher ul{margin:12px 0 0;padding-left:1.2em;font-size:.88rem;display:flex;flex-direction:column;gap:2px}
+
+.year{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.year li{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.year .mo{font-family:var(--f-num);font-size:.8rem;color:var(--primary)}
+.year h3{font-size:1rem}
+.year p{font-size:.84rem;color:var(--muted)}
+
+.faq{display:flex;flex-direction:column;gap:10px;max-width:780px}
+.faq details{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 18px}
+.faq summary{cursor:pointer;font-weight:700;list-style:none;display:flex;gap:10px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::before{content:"Q";font-family:var(--f-num);color:var(--primary)}
+.faq details[open] summary{margin-bottom:8px}
+.faq p{font-size:.9rem;color:var(--muted);padding-left:22px}
+
+.access{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
+.map{background:var(--surface);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.map svg{display:block;width:100%;height:auto}
+.addr dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:8px 16px;font-size:.92rem}
+.addr dt{color:var(--muted);white-space:nowrap}
+.addr dd{margin:0}
+
+.apply{background:var(--surface);border:2px solid var(--primary);border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:18px}
+.progress{list-style:none;margin:0;padding:0;display:flex;gap:8px;font-size:.82rem}
+.progress li{flex:1;text-align:center;border-bottom:3px solid var(--line);padding-bottom:6px;color:var(--muted)}
+.progress li.on{border-color:var(--primary);color:var(--ink);font-weight:700}
+form.ap{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+form.ap label,form.ap fieldset{display:flex;flex-direction:column;gap:4px;font-size:.84rem;min-width:0;margin:0}
+form.ap fieldset{border:0;padding:0}
+form.ap legend{padding:0;margin-bottom:4px}
+form.ap .full{grid-column:1/-1}
+form.ap .lab{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-weight:700}
+form.ap .req,form.ap .opt{font-size:.7rem;font-weight:700;border-radius:4px;padding:0 6px;line-height:1.6}
+form.ap .req{background:var(--primary);color:var(--primary-ink)}
+form.ap .opt{background:var(--line);color:var(--muted)}
+form.ap input,form.ap select,form.ap textarea{font:inherit;font-size:.95rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%;box-sizing:border-box}
+form.ap textarea{min-height:90px;resize:vertical}
+form.ap .err{color:var(--primary);font-size:.78rem;min-height:1em}
+form.ap [aria-invalid="true"]{border-color:var(--primary)}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.actions{grid-column:1/-1;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.small{font-size:.8rem;color:var(--muted)}
+.confirm dl{margin:0;display:grid;grid-template-columns:minmax(120px,auto) 1fr;gap:8px 16px;font-size:.92rem}
+.confirm dt{color:var(--muted)}
+.confirm dd{margin:0;overflow-wrap:anywhere;white-space:pre-wrap}
+.done{text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center;padding-block:10px}
+.done svg{width:64px;height:64px}
+.done h3{font-size:1.3rem}
+.done p{color:var(--muted);max-width:32em}
+
+footer{padding-block:36px 96px;font-size:.82rem;color:var(--muted)}
+footer .inner{display:flex;flex-direction:column;gap:8px}
+.mobile-cta{display:none}
+
+@media (max-width:860px){
+  .hero .inner{grid-template-columns:minmax(0,1fr)}
+  .feats,.courses{grid-template-columns:minmax(0,1fr)}
+  .year{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .access{grid-template-columns:minmax(0,1fr)}
+  .teacher{grid-template-columns:120px minmax(0,1fr);gap:18px}
+}
+@media (max-width:600px){
+  .inner{padding-inline:16px}
+  .hdr .btn{display:none}
+  .hdr .inner{flex-wrap:wrap;gap:4px}
+  .hdr nav{margin-left:0;width:100%}
+  form.ap{grid-template-columns:minmax(0,1fr)}
+  .teacher{grid-template-columns:minmax(0,1fr)}
+  .avatar{width:120px}
+  .year{grid-template-columns:minmax(0,1fr)}
+  .apply{padding:20px}
+  .mobile-cta{display:block;position:fixed;left:0;right:0;bottom:0;z-index:30;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-top:1px solid var(--line)}
+  .mobile-cta .btn{width:100%;box-sizing:border-box}
+}
+</style>
+</head>
+<body>
+
+
+<div class="sampleband"><div class="inner"><span>これは制作サンプルです。教室・講師・料金・住所はすべて架空のものです。</span><a href="./">Rinka 制作室に戻る →</a></div></div>
+
+<header class="hdr">
+  <div class="inner">
+    <a class="brand" href="#top" aria-label="こもれび音楽教室 トップ">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="var(--sun)"/><path d="M13 22.5a3 3 0 1 1-2-2.8V9l9-2v11.5a3 3 0 1 1-2-2.8V10.4l-5 1.1z" fill="var(--ink)"/></svg>
+      こもれび音楽教室
+    </a>
+    <nav aria-label="メニュー"><ul>
+      <li><a href="#feature">教室の特徴</a></li>
+      <li><a href="#course">コース・月謝</a></li>
+      <li><a href="#time">時間割</a></li>
+      <li><a href="#teacher">講師</a></li>
+      <li><a href="#faq">よくある質問</a></li>
+      <li><a href="#access">アクセス</a></li>
+    </ul></nav>
+    <a class="btn primary" href="#apply">体験レッスン申込</a>
+  </div>
+</header>
+
+<main>
+<section class="hero" id="top">
+  <div class="staff" aria-hidden="true"><svg viewBox="0 0 1200 70" preserveAspectRatio="none"><g stroke="var(--line)" stroke-width="2"><line x1="0" y1="6" x2="1200" y2="6"/><line x1="0" y1="20" x2="1200" y2="20"/><line x1="0" y1="34" x2="1200" y2="34"/><line x1="0" y1="48" x2="1200" y2="48"/><line x1="0" y1="62" x2="1200" y2="62"/></g></svg></div>
+  <div class="inner">
+    <div>
+      <span class="eyebrow">3歳から大人まで ・ 少人数の個人レッスン</span>
+      <h1>「弾けた！」が、<br><span>毎週ひとつ</span>増えていく。</h1>
+      <p class="lead">住宅街の小さなピアノ教室です。リトミックで音楽に親しむところから、弾きたい曲を目指す大人のレッスンまで、一人ひとりのペースに合わせて進めます。</p>
+      <div class="btns">
+        <a class="btn primary" href="#apply">無料体験レッスンを申し込む</a>
+        <a class="btn line" href="#course">コースと月謝を見る</a>
+      </div>
+      <div class="facts"><span><b>3</b>コース</span><span><b>30</b>分〜のレッスン</span><span><b>月3</b>回（大人は月2回）</span></div>
+    </div>
+    <div class="illust">
+      <svg viewBox="0 0 360 220" role="img" aria-label="グランドピアノと音符のイラスト">
+        <rect x="0" y="0" width="360" height="220" rx="18" fill="var(--sky-soft)"/>
+        <path d="M70 150 L70 92 Q70 62 120 60 L250 60 Q300 62 300 108 L300 150 Z" fill="var(--ink)"/>
+        <rect x="70" y="150" width="230" height="22" fill="var(--surface)" stroke="var(--ink)" stroke-width="3"/>
+        <g fill="var(--ink)">
+          <rect x="90" y="150" width="7" height="13"/><rect x="108" y="150" width="7" height="13"/><rect x="138" y="150" width="7" height="13"/><rect x="156" y="150" width="7" height="13"/><rect x="174" y="150" width="7" height="13"/><rect x="204" y="150" width="7" height="13"/><rect x="222" y="150" width="7" height="13"/><rect x="252" y="150" width="7" height="13"/><rect x="270" y="150" width="7" height="13"/>
+          <rect x="84" y="172" width="6" height="34" rx="2"/><rect x="280" y="172" width="6" height="34" rx="2"/>
+        </g>
+        <path d="M120 60 L215 22" stroke="var(--ink)" stroke-width="4" stroke-linecap="round"/>
+        <g fill="var(--primary)"><ellipse cx="290" cy="44" rx="9" ry="7"/><rect x="297" y="12" width="3" height="32"/></g>
+        <g fill="var(--sun)"><ellipse cx="44" cy="70" rx="8" ry="6"/><rect x="50" y="42" width="3" height="28"/><ellipse cx="324" cy="120" rx="8" ry="6"/><rect x="330" y="92" width="3" height="28"/></g>
+      </svg>
+      <p>グランドピアノでのレッスン ・ 防音室完備</p>
+    </div>
+  </div>
+</section>
+
+<section class="blk alt" id="feature">
+  <div class="inner">
+    <div class="head"><span class="en">FEATURE</span><h2>教室の特徴</h2></div>
+    <div class="feats">
+      <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="var(--sky)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-3.5 4-5 7-5s6 1.5 7 5"/></svg></div><h3>すべて個人レッスン</h3><p>1回のレッスンは講師と生徒の1対1。周りを気にせず、つまずいたところをその場で一緒に練習します。</p></div>
+      <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="var(--few)" stroke-width="2" stroke-linecap="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></div><h3>振替レッスンあり</h3><p>体調不良や行事でお休みの場合は、同じ月のうちに振替ができます。小さなお子さんも安心です。</p></div>
+      <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></div><h3>年に一度の小さな発表会</h3><p>無理なく出られる、アットホームな発表会です。出演は自由で、聴くだけの参加もできます。</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="blk" id="course">
+  <div class="inner">
+    <div class="head"><span class="en">COURSE</span><h2>コースと月謝</h2><p>表示はすべて税込みです。教材費は実費（目安：年2,000円前後）がかかります。</p></div>
+    <div class="courses">
+      <article class="course"><span class="age">3〜5歳</span><h3>リトミック＆はじめてのピアノ</h3><p>歌やリズム遊びで音楽に親しみながら、少しずつ鍵盤にさわっていきます。</p><dl><dt>回数</dt><dd>月3回</dd><dt>時間</dt><dd>30分</dd></dl><div class="fee n">6,600<small> 円／月</small></div></article>
+      <article class="course"><span class="age">小学生〜高校生</span><h3>こどもピアノ</h3><p>楽譜の読み方から、好きな曲・合唱の伴奏まで、目標に合わせて教材を選びます。</p><dl><dt>回数</dt><dd>月3回</dd><dt>時間</dt><dd>30分（高学年から45分も可）</dd></dl><div class="fee n">8,800<small> 円／月〜</small></div></article>
+      <article class="course"><span class="age">大人</span><h3>大人のピアノ</h3><p>「昔習っていた」「この1曲を弾きたい」など、目的に合わせて進めます。初めての方も歓迎です。</p><dl><dt>回数</dt><dd>月2回</dd><dt>時間</dt><dd>45分</dd></dl><div class="fee n">9,900<small> 円／月</small></div></article>
+    </div>
+    <div class="feenote"><span>入会金 5,500円</span><span>体験レッスンから1週間以内のご入会で入会金無料</span><span>ごきょうだいで通う場合は2人目の月謝から550円引き</span></div>
+  </div>
+</section>
+
+<section class="blk alt" id="time">
+  <div class="inner">
+    <div class="head"><span class="en">SCHEDULE</span><h2>時間割と空き状況</h2><p>2026年11月時点の空き状況です。ご希望の時間が埋まっている場合も、お気軽にご相談ください。</p></div>
+    <div class="tt-wrap"><table class="tt">
+      <thead><tr><th>時間</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th></tr></thead>
+      <tbody>
+        <tr><th>10:00〜12:00</th><td><span class="slot"><b>大人</b><span class="st ok">空きあり</span></span></td><td><span class="slot"><b>リトミック</b><span class="st few">残りわずか</span></span></td><td><span class="closed">—</span></td><td><span class="slot"><b>大人</b><span class="st ok">空きあり</span></span></td><td><span class="slot"><b>リトミック</b><span class="st ok">空きあり</span></span></td><td><span class="slot"><b>こども</b><span class="st full">満席</span></span></td></tr>
+        <tr><th>15:00〜17:00</th><td><span class="slot"><b>こども</b><span class="st few">残りわずか</span></span></td><td><span class="slot"><b>こども</b><span class="st ok">空きあり</span></span></td><td><span class="closed">—</span></td><td><span class="slot"><b>こども</b><span class="st full">満席</span></span></td><td><span class="slot"><b>こども</b><span class="st few">残りわずか</span></span></td><td><span class="slot"><b>こども</b><span class="st few">残りわずか</span></span></td></tr>
+        <tr><th>17:00〜19:00</th><td><span class="slot"><b>こども</b><span class="st full">満席</span></span></td><td><span class="slot"><b>こども・大人</b><span class="st ok">空きあり</span></span></td><td><span class="closed">—</span></td><td><span class="slot"><b>こども・大人</b><span class="st few">残りわずか</span></span></td><td><span class="slot"><b>大人</b><span class="st ok">空きあり</span></span></td><td><span class="closed">—</span></td></tr>
+      </tbody>
+    </table></div>
+    <div class="legend"><span class="st ok">空きあり</span><span class="st few">残りわずか</span><span class="st full">満席</span><span>水・日・祝日はお休みです</span></div>
+  </div>
+</section>
+
+<section class="blk" id="teacher">
+  <div class="inner">
+    <div class="head"><span class="en">TEACHER</span><h2>講師紹介</h2></div>
+    <div class="teacher">
+      <div class="avatar" aria-hidden="true"><svg viewBox="0 0 64 64"><circle cx="32" cy="24" r="12" fill="var(--ink)"/><path d="M10 58c2-12 11-18 22-18s20 6 22 18z" fill="var(--ink)"/><path d="M44 10a3 3 0 1 1-2-2.8V0l7 2v4l-5-1.4z" fill="var(--primary)"/></svg></div>
+      <div>
+        <span class="role">主宰・ピアノ講師</span>
+        <h3>森下 ゆり</h3>
+        <p>音楽大学ピアノ科を卒業後、楽器店の音楽教室で12年間講師を務め、自宅で教室を開きました。2人の子どもの母でもあり、「練習しなさい」と言わなくても続けられる工夫を大切にしています。</p>
+        <ul><li>担当：全コース</li><li>得意：導入期の子ども、大人の再開組、合唱伴奏の指導</li><li>好きな作曲家：ドビュッシー</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="blk alt" id="year">
+  <div class="inner">
+    <div class="head"><span class="en">YEAR</span><h2>1年の流れ</h2></div>
+    <ol class="year">
+      <li><span class="mo">4月</span><h3>新年度の目標づくり</h3><p>今年弾きたい曲を一緒に決めます。</p></li>
+      <li><span class="mo">7月</span><h3>夏のミニコンサート</h3><p>教室内で弾き合う、10分ほどの気軽な会。</p></li>
+      <li><span class="mo">11月</span><h3>発表会</h3><p>地域の小ホールで。出演は自由です。</p></li>
+      <li><span class="mo">3月</span><h3>1年のふりかえり</h3><p>弾けた曲を記録したカードをお渡しします。</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="blk" id="faq">
+  <div class="inner">
+    <div class="head"><span class="en">FAQ</span><h2>よくある質問</h2></div>
+    <div class="faq">
+      <details><summary>家にピアノがなくても大丈夫ですか？</summary><p>はじめは電子ピアノやキーボードでも問題ありません。続けるうちに、ご家庭に合った楽器選びもご相談に乗ります。</p></details>
+      <details><summary>体験レッスンでは何をしますか？</summary><p>30分ほど、実際のレッスンと同じ流れで進めます。保護者の方の見学もできます。体験は無料で、その場で入会を決める必要はありません。</p></details>
+      <details><summary>お休みしたときの振替はできますか？</summary><p>前日までにご連絡いただければ、同じ月のうちで空いている時間に振替ができます。</p></details>
+      <details><summary>駐車場はありますか？</summary><p>教室前に1台分あります。自転車は3台まで停められます。</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="blk alt" id="access">
+  <div class="inner">
+    <div class="head"><span class="en">ACCESS</span><h2>アクセス</h2></div>
+    <div class="access">
+      <div class="map" aria-hidden="true"><svg viewBox="0 0 400 240">
+        <rect width="400" height="240" fill="var(--sky-soft)"/>
+        <g fill="var(--surface)"><rect x="0" y="100" width="400" height="26"/><rect x="232" y="0" width="22" height="240"/></g>
+        <g fill="var(--line)"><rect x="20" y="20" width="80" height="60" rx="6"/><rect x="120" y="20" width="90" height="60" rx="6"/><rect x="20" y="146" width="90" height="70" rx="6"/><rect x="274" y="20" width="106" height="60" rx="6"/><rect x="274" y="146" width="106" height="70" rx="6"/></g>
+        <rect x="130" y="146" width="80" height="70" rx="6" fill="var(--sun-soft)" stroke="var(--sun)" stroke-width="2"/>
+        <g transform="translate(170 150)"><path d="M0 0c-9 0-15 7-15 15 0 11 15 25 15 25s15-14 15-25c0-8-6-15-15-15z" fill="var(--primary)"/><circle cy="15" r="5" fill="var(--surface)"/></g>
+        <rect x="300" y="104" width="80" height="18" rx="4" fill="var(--sky)"/>
+        <text x="340" y="117" text-anchor="middle" font-size="11" fill="var(--surface)" font-family="BIZ UDPGothic,sans-serif">こもれび駅</text>
+        <text x="170" y="208" text-anchor="middle" font-size="11" fill="var(--ink)" font-family="BIZ UDPGothic,sans-serif">教室</text>
+        <path d="M296 113 H200 V146" fill="none" stroke="var(--primary)" stroke-width="3" stroke-dasharray="6 5"/>
+      </svg></div>
+      <div class="addr">
+        <dl>
+          <dt>住所</dt><dd>こもれび市みどり町2-14（架空の住所です）</dd>
+          <dt>最寄り駅</dt><dd>こもれび駅 南口から徒歩5分</dd>
+          <dt>レッスン日</dt><dd>月・火・木・金・土（水・日・祝日はお休み）</dd>
+          <dt>駐車場</dt><dd>1台分あり ・ 駐輪場あり</dd>
+          <dt>お問い合わせ</dt><dd>体験レッスンのお申込みフォームからどうぞ</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="blk" id="apply">
+  <div class="inner">
+    <div class="apply">
+      <div class="head" style="margin:0"><span class="en">TRIAL LESSON</span><h2>無料体験レッスンのお申込み</h2><p>ご希望の日時をうかがい、2日以内にメールでご連絡します。</p></div>
+      <ol class="progress" aria-label="お申込みの手順"><li class="on" id="pg1">1. 入力</li><li id="pg2">2. 確認</li><li id="pg3">3. 完了</li></ol>
+
+      <form class="ap" id="ap" novalidate>
+        <label><span class="lab">お名前（保護者の方）<span class="req">必須</span></span><input id="a-name" type="text" autocomplete="name" placeholder="例：山田 花子"><span class="err" id="e-name"></span></label>
+        <label><span class="lab">レッスンを受ける方のお名前<span class="req">必須</span></span><input id="a-student" type="text" placeholder="例：山田 さくら（ご本人の場合は同じで構いません）"><span class="err" id="e-student"></span></label>
+        <label><span class="lab">年齢・学年<span class="req">必須</span></span><select id="a-age"><option value="">選んでください</option><option>3〜5歳</option><option>小学1〜3年生</option><option>小学4〜6年生</option><option>中学生・高校生</option><option>大人</option></select><span class="err" id="e-age"></span></label>
+        <label><span class="lab">ご希望のコース<span class="req">必須</span></span><select id="a-course"><option value="">選んでください</option><option>リトミック＆はじめてのピアノ</option><option>こどもピアノ</option><option>大人のピアノ</option><option>まだ決めていない</option></select><span class="err" id="e-course"></span></label>
+        <fieldset class="full"><legend><span class="lab">ご希望の日時<span class="req">必須</span></span></legend>
+          <div class="pair">
+            <label><span class="lab">第1希望</span><select id="a-day1"><option value="">選んでください</option></select></label>
+            <label><span class="lab">第2希望<span class="opt">任意</span></span><select id="a-day2"><option value="">選んでください</option></select></label>
+          </div><span class="err" id="e-day1"></span>
+        </fieldset>
+        <label><span class="lab">メールアドレス<span class="req">必須</span></span><input id="a-mail" type="email" autocomplete="email" placeholder="例：hanako@example.com"><span class="err" id="e-mail"></span></label>
+        <label><span class="lab">電話番号<span class="opt">任意</span></span><input id="a-tel" type="tel" autocomplete="tel" placeholder="例：090-0000-0000"><span class="err" id="e-tel"></span></label>
+        <label class="full"><span class="lab">ご質問・ご要望<span class="opt">任意</span></span><textarea id="a-note" maxlength="500" placeholder="例：家には電子ピアノしかありません／見学だけでも大丈夫ですか？"></textarea></label>
+        <div class="actions"><button class="btn primary" type="submit">入力内容を確認する</button><span class="small">サンプルのため、実際には送信されません。</span></div>
+      </form>
+
+      <div class="confirm" id="confirm" hidden>
+        <p style="margin-bottom:12px">以下の内容でお申込みします。よろしければ「申し込む」を押してください。</p>
+        <dl id="confirm-list"></dl>
+        <div class="actions" style="margin-top:18px"><button class="btn line" type="button" id="back">修正する</button><button class="btn primary" type="button" id="send">申し込む</button></div>
+      </div>
+
+      <div class="done" id="done" hidden>
+        <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="var(--primary-soft)"/><path d="M20 33l8 8 16-17" fill="none" stroke="var(--primary)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h3>お申込みありがとうございます</h3>
+        <p id="done-msg">2日以内に、ご入力のメールアドレスへ体験レッスンの日時をご連絡します。</p>
+        <p class="small">これは制作サンプルのため、実際には送信されていません。本番では、お申込みが教室のメールに届き、お客様にも受付メールが自動で送られる形にできます。</p>
+        <button class="btn line" type="button" id="again">もう一度試す</button>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="inner">
+    <span>© こもれび音楽教室（架空の教室）</span>
+    <span>このサイトは <a href="./">Rinka 制作室</a> の制作サンプルです。</span>
+  </div>
+</footer>
+
+<div class="mobile-cta"><a class="btn primary" href="#apply">無料体験レッスンを申し込む</a></div>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var slots=["月 10:00〜12:00","月 15:00〜17:00","火 10:00〜12:00","火 15:00〜17:00","火 17:00〜19:00","木 10:00〜12:00","木 17:00〜19:00","金 10:00〜12:00","金 15:00〜17:00","金 17:00〜19:00","土 15:00〜17:00"];
+  ["a-day1","a-day2"].forEach(function(id){var s=$(id);slots.forEach(function(t){var o=document.createElement("option");o.textContent=t;s.appendChild(o)})});
+  var fields=[
+    ["a-name","e-name","お名前を入力してください。",function(v){return v.trim()!==""}],
+    ["a-student","e-student","レッスンを受ける方のお名前を入力してください。",function(v){return v.trim()!==""}],
+    ["a-age","e-age","年齢・学年を選んでください。",function(v){return v!==""}],
+    ["a-course","e-course","コースを選んでください（未定でも構いません）。",function(v){return v!==""}],
+    ["a-day1","e-day1","第1希望の日時を選んでください。",function(v){return v!==""}],
+    ["a-mail","e-mail","メールアドレスを正しく入力してください（例：hanako@example.com）。",function(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())}],
+    ["a-tel","e-tel","電話番号は数字とハイフンで入力してください。",function(v){return v.trim()===""||/^[0-9\-]{10,13}$/.test(v.trim())}]
+  ];
+  function check(){
+    var ok=true,first=null;
+    fields.forEach(function(f){var el=$(f[0]),good=f[3](el.value);$(f[1]).textContent=good?"":f[2];el.setAttribute("aria-invalid",String(!good));if(!good&&!first)first=el;ok=ok&&good});
+    if(first)first.focus();
+    return ok;
+  }
+  function step(n){
+    $("ap").hidden=n!==1;$("confirm").hidden=n!==2;$("done").hidden=n!==3;
+    ["pg1","pg2","pg3"].forEach(function(id,i){$(id).className=i===n-1?"on":""});
+    $("apply").scrollIntoView({block:"start"});
+  }
+  var labels=[["お名前","a-name"],["受講される方","a-student"],["年齢・学年","a-age"],["ご希望のコース","a-course"],["第1希望","a-day1"],["第2希望","a-day2"],["メールアドレス","a-mail"],["電話番号","a-tel"],["ご質問・ご要望","a-note"]];
+  $("ap").addEventListener("submit",function(e){
+    e.preventDefault(); if(!check())return;
+    var dl=$("confirm-list"); dl.textContent="";
+    labels.forEach(function(l){var dt=document.createElement("dt"),dd=document.createElement("dd");dt.textContent=l[0];dd.textContent=$(l[1]).value.trim()||"（なし）";dl.appendChild(dt);dl.appendChild(dd)});
+    step(2);
+  });
+  $("back").addEventListener("click",function(){step(1)});
+  $("send").addEventListener("click",function(){$("done-msg").textContent=$("a-name").value.trim()+" 様、2日以内に "+$("a-mail").value.trim()+" へ体験レッスンの日時をご連絡します。";step(3)});
+  $("again").addEventListener("click",function(){$("ap").reset();fields.forEach(function(f){$(f[1]).textContent="";$(f[0]).removeAttribute("aria-invalid")});step(1)});
+})();
+</script>
+
+</body>
+</html>
