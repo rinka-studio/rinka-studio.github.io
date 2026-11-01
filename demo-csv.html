@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>会計ソフト用CSV整形デモ | Rinka 制作室</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#FAF7F1;color:#1E2430;font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;line-height:1.8;font-size:15px}
+.wrap{max-width:960px;margin:0 auto;padding:0 18px 56px}
+header.top{padding:28px 0 8px}
+.eyebrow{color:#C73E1D;font-size:12px;letter-spacing:.18em;font-weight:700;margin:0 0 6px}
+h1,h2,h3{font-family:'Hiragino Mincho ProN','Yu Mincho','Noto Serif JP',serif;line-height:1.5;margin:0}
+h1{font-size:28px}
+h2{font-size:22px;margin-bottom:6px}
+h3{font-size:18px;margin-bottom:6px}
+.mark{background:linear-gradient(transparent 55%,#F9D34D 55%)}
+.notice{background:#fff;border:1px solid #e6dfd0;border-radius:8px;padding:10px 14px;margin:14px 0;font-size:14px}
+.part{margin-top:38px}
+.card{background:#fff;border:1px solid #e6dfd0;border-radius:8px;padding:16px;margin:14px 0}
+.num{display:inline-block;background:#C73E1D;color:#fff;border-radius:50%;width:26px;height:26px;line-height:26px;text-align:center;font-size:14px;margin-right:6px;font-family:sans-serif}
+.lead{margin:0 0 10px;color:#4a5160;font-size:14px}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;min-width:480px;font-size:13px}
+th,td{border-bottom:1px solid #eee7d8;padding:6px 8px;text-align:left;white-space:nowrap}
+th{background:#F4EEDF;font-weight:700}
+td.n{text-align:right;font-variant-numeric:tabular-nums}
+pre{background:#1E2430;color:#f3efe4;border-radius:6px;padding:12px;overflow-x:auto;font-size:12.5px;line-height:1.6;margin:0}
+.disclaimer{background:#FDF1EC;border-left:5px solid #C73E1D;border-radius:0 8px 8px 0;padding:14px 16px;margin:18px 0}
+.disclaimer p{margin:0 0 4px}
+.disclaimer .big{font-weight:700}
+button{font:inherit;border:0;border-radius:6px;padding:9px 18px;cursor:pointer;background:#C73E1D;color:#fff;font-weight:700}
+button.sub{background:#fff;color:#C73E1D;border:1px solid #C73E1D}
+button:disabled{opacity:.4;cursor:not-allowed}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+tr.unmatched td{background:#FBE5DE}
+.flag{display:inline-block;background:#C73E1D;color:#fff;border-radius:6px;padding:0 7px;font-size:11px;margin-left:6px}
+.summary{display:flex;gap:12px;flex-wrap:wrap;margin:10px 0}
+.summary[hidden]{display:none}
+.summary div{background:#F4EEDF;border-radius:8px;padding:8px 14px}
+.summary b{font-family:'Hiragino Mincho ProN','Yu Mincho','Noto Serif JP',serif;font-size:22px;margin-right:6px}
+.summary .warn{background:#FBE5DE}
+.empty{color:#6b7280;font-size:14px;margin:6px 0}
+.shop{margin-top:40px}
+.shop a{display:inline-block;margin-top:8px;color:#C73E1D;font-weight:700;text-decoration:none}
+.shop ul{padding-left:20px;margin:8px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <p class="eyebrow">DEMO / ACCOUNTING CSV</p>
+  <h1><span class="mark">会計ソフト用CSV整形デモ</span></h1>
+  <p class="lead">銀行明細のCSVを、決めたルールで勘定科目に振り分け、会計ソフトに取り込みやすい形に整えます。</p>
+  <div class="notice">これは架空のお店のデータで作った体験デモです。登場する名前や金額はすべて架空です。</div>
+</header>
+
+<div class="disclaimer" id="disclaimer">
+  <p class="big">このデモが行うのは形式の変換と、決められたルールによる勘定科目の当てはめだけです。税務上の判断・助言は行いません。科目の割り当ては目安であり、実際の申告内容については税理士などの専門家にご確認ください。</p>
+  <p>税務相談・申告の代行はお受けしません。</p>
+</div>
+
+<section class="part">
+  <p class="eyebrow">INPUT</p>
+  <h2><span class="mark">入力するところ</span></h2>
+  <p class="lead">架空の個人事業主（デザイン業）の、2026年10月の銀行明細です。</p>
+
+  <div class="card">
+    <h3><span class="num">1</span>銀行明細のCSV</h3>
+    <p class="lead">下のCSVテキストと表は、同じデータから作っています。</p>
+    <pre id="csvText"></pre>
+    <div class="tw" style="margin-top:12px"><table id="srcTable"><thead></thead><tbody></tbody></table></div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">2</span>振り分けルール</h3>
+    <p class="lead">摘要にキーワードが含まれていれば、その科目に振り分けます。上の行から順に調べ、最初に当たったものを使います。全角半角や大文字小文字の違いは区別しません。入金は入金欄に金額がある行を、売上高にします。</p>
+    <div class="tw"><table id="ruleTable"><thead><tr><th>キーワード</th><th>勘定科目</th></tr></thead><tbody></tbody></table></div>
+  </div>
+</section>
+
+<section class="part">
+  <p class="eyebrow">OUTPUT</p>
+  <h2><span class="mark">自動で作られるところ</span></h2>
+  <p class="lead">ボタンを押すと、会計ソフトの取り込み形式に並べ替えます。</p>
+
+  <div class="card">
+    <h3><span class="num">3</span>変換結果</h3>
+    <div class="btns">
+      <button type="button" id="convertBtn">変換する</button>
+      <button type="button" id="dlBtn" class="sub" disabled>CSVをダウンロード</button>
+    </div>
+    <div class="summary" id="summary" hidden></div>
+    <p class="empty" id="emptyMsg">まだ変換していません。「変換する」を押してください。</p>
+    <div class="tw"><table id="outTable" hidden><thead></thead><tbody></tbody></table></div>
+    <p class="lead" style="margin-top:8px">ダウンロードするファイルは converted-sample.csv です（UTF-8、BOM付き）。</p>
+  </div>
+</section>
+
+<section class="shop card">
+  <p class="eyebrow">FOR SHOPS</p>
+  <h3>お店の方へ：このCSV整形について</h3>
+  <ul>
+    <li>お使いの会計ソフトの取り込み形式に合わせて作れます。</li>
+    <li>振り分けルールは、お店ごとの取引先や科目に合わせて変更できます。</li>
+    <li>ホームページや社内ツールへの組み込みもご相談ください。</li>
+  </ul>
+  <p class="lead">科目の判断が必要な部分は、税理士などの専門家にご確認ください。</p>
+  <a href="index.html">Rinka 制作室で相談する →</a>
+</section>
+</div>
+
+<script>
+// ---- 初期データ（架空） ----
+const SAMPLE_CSV = [
+  '日付,摘要,出金,入金',
+  '2026-10-01,みどり電力 10月分,8420,',
+  '2026-10-03,AWS 利用料,3180,',
+  '2026-10-05,Adobe 月額,6480,',
+  '2026-10-07,"Amazon 文具,梱包材",5290,',
+  '2026-10-09,さくらインターネット,1320,',
+  '2026-10-10,株式会社あおば商事 振込,,165000',
+  '2026-10-12,ENEOS 給油,4800,',
+  '2026-10-14,あおぞらガス 10月分,3560,',
+  '2026-10-16,JR 東日本 切符,1240,',
+  '2026-10-19,ひだまり文具店,2750,',
+  '2026-10-21,ミナト工房 振込,,88000',
+  '2026-10-24,国民健康保険 10月分,"15,800",',
+  '2026-10-27,かもめ雑貨店,1980,',
+  '2026-10-30,ことり商店 振込,,52000'
+].join('\n');
+
+// 出金側のルール。上から順に調べ、最初に当たったものを採用する。
+// 入金（deposit > 0）はルール配列を使わず、convertTransactions 内で必ず売上高として処理する。
+const RULES = [
+  { keyword: '電力', account: '水道光熱費' },
+  { keyword: 'ガス', account: '水道光熱費' },
+  { keyword: 'Amazon', account: '消耗品費' },
+  { keyword: 'ENEOS', account: '車両費' },
+  { keyword: 'ガソリン', account: '車両費' },
+  { keyword: 'Adobe', account: '支払手数料' },
+  { keyword: 'AWS', account: '支払手数料' },
+  { keyword: 'さくら', account: '支払手数料' },
+  { keyword: '電車', account: '旅費交通費' },
+  { keyword: 'JR', account: '旅費交通費' },
+  { keyword: '健康保険', account: '租税公課' }
+];
+const DEPOSIT_ACCOUNT = '売上高';
+const BANK_ACCOUNT = '普通預金';
+const UNSET_ACCOUNT = '未設定（要確認）';
+
+// ---- 純粋関数 ----
+function parseCsv(text) {
+  const rows = [];
+  let row = [], field = '', inQ = false;
+  const s = String(text);
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    if (inQ) {
+      if (c === '"') {
+        if (s[i + 1] === '"') { field += '"'; i++; } else { inQ = false; }
+      } else { field += c; }
+    } else if (c === '"') { inQ = true; }
+    else if (c === ',') { row.push(field); field = ''; }
+    else if (c === '\n' || c === '\r') {
+      if (c === '\r' && s[i + 1] === '\n') i++;
+      row.push(field); field = '';
+      rows.push(row); row = [];
+    } else { field += c; }
+  }
+  if (field !== '' || row.length > 0) { row.push(field); rows.push(row); }
+  return rows;
+}
+
+// parseCsv の結果（先頭は見出し行）を {date, description, withdrawal, deposit} の配列にする
+function rowsFromTable(table) {
+  return table.slice(1).filter(function (r) { return r.length >= 2; }).map(function (r) {
+    return { date: r[0], description: r[1], withdrawal: r[2] || '', deposit: r[3] || '' };
+  });
+}
+
+function toAmount(v) {
+  if (typeof v === 'number') return isFinite(v) ? v : 0;
+  const t = String(v == null ? '' : v).normalize('NFKC').replace(/[,\s¥円]/g, '');
+  const n = Number(t);
+  return t !== '' && isFinite(n) ? n : 0;
+}
+
+function normalizeText(s) {
+  return String(s == null ? '' : s).normalize('NFKC').toLowerCase();
+}
+
+function matchAccount(description, rules) {
+  const d = normalizeText(description);
+  for (let i = 0; i < rules.length; i++) {
+    const k = normalizeText(rules[i].keyword);
+    if (k !== '' && d.indexOf(k) !== -1) return rules[i].account;
+  }
+  return null;
+}
+
+// 出金（withdrawal > 0）: 借方=振り分け科目 / 貸方=普通預金。どのルールにも当たらなければ「未設定（要確認）」
+// 入金（deposit > 0）: 借方=普通預金 / 貸方=売上高。出金と入金が両方ある行は2行に分ける。金額が0の行は出力しない。
+function convertTransactions(rows, rules) {
+  const out = [];
+  rows.forEach(function (r) {
+    const w = toAmount(r.withdrawal);
+    const d = toAmount(r.deposit);
+    if (w > 0) {
+      const acc = matchAccount(r.description, rules);
+      out.push({
+        date: r.date, debitAccount: acc || UNSET_ACCOUNT, debitAmount: w,
+        creditAccount: BANK_ACCOUNT, creditAmount: w,
+        description: r.description, unmatched: acc === null
+      });
+    }
+    if (d > 0) {
+      out.push({
+        date: r.date, debitAccount: BANK_ACCOUNT, debitAmount: d,
+        creditAccount: DEPOSIT_ACCOUNT, creditAmount: d,
+        description: r.description, unmatched: false
+      });
+    }
+  });
+  return out;
+}
+
+function escapeCsvValue(v) {
+  const s = String(v == null ? '' : v);
+  return /[",\r\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
+
+// rows: 値の配列の配列（見出し行を含めて渡す）。BOM は付けない。
+function toCsv(rows) {
+  return rows.map(function (r) { return r.map(escapeCsvValue).join(','); }).join('\r\n');
+}
+
+const OUT_HEADER = ['取引日', '借方勘定科目', '借方金額', '貸方勘定科目', '貸方金額', '摘要'];
+function convertedToTable(conv) {
+  return [OUT_HEADER].concat(conv.map(function (c) {
+    return [c.date, c.debitAccount, c.debitAmount, c.creditAccount, c.creditAmount, c.description];
+  }));
+}
+
+// ---- DOM 配線 ----
+if (typeof document !== 'undefined') {
+  const $ = function (id) { return document.getElementById(id); };
+  const yen = function (n) { return Number(n).toLocaleString('ja-JP'); };
+  function addRow(tbody, cells, cls) {
+    const tr = document.createElement('tr');
+    if (cls) tr.className = cls;
+    cells.forEach(function (c) {
+      const td = document.createElement('td');
+      td.textContent = c.text;
+      if (c.num) td.className = 'n';
+      if (c.flag) { const f = document.createElement('span'); f.className = 'flag'; f.textContent = '要確認'; td.appendChild(f); }
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  }
+  function setHead(thead, cols) {
+    const tr = document.createElement('tr');
+    cols.forEach(function (c) { const th = document.createElement('th'); th.textContent = c; tr.appendChild(th); });
+    thead.appendChild(tr);
+  }
+
+  const table = parseCsv(SAMPLE_CSV);
+  const srcRows = rowsFromTable(table);
+  $('csvText').textContent = SAMPLE_CSV;
+  setHead($('srcTable').tHead, table[0]);
+  srcRows.forEach(function (r) {
+    addRow($('srcTable').tBodies[0], [
+      { text: r.date }, { text: r.description },
+      { text: r.withdrawal, num: true }, { text: r.deposit, num: true }
+    ]);
+  });
+
+  RULES.forEach(function (r) {
+    addRow($('ruleTable').tBodies[0], [{ text: r.keyword }, { text: r.account }]);
+  });
+  addRow($('ruleTable').tBodies[0], [{ text: '入金（入金欄に金額がある行）' }, { text: DEPOSIT_ACCOUNT }]);
+  addRow($('ruleTable').tBodies[0], [{ text: 'どのルールにも当たらない出金' }, { text: UNSET_ACCOUNT }]);
+
+  let lastCsv = null;
+  $('convertBtn').addEventListener('click', function () {
+    const conv = convertTransactions(srcRows, RULES);
+    const unmatched = conv.filter(function (c) { return c.unmatched; }).length;
+    const out = $('outTable');
+    out.tHead.textContent = '';
+    out.tBodies[0].textContent = '';
+    setHead(out.tHead, OUT_HEADER);
+    conv.forEach(function (c) {
+      addRow(out.tBodies[0], [
+        { text: c.date }, { text: c.debitAccount, flag: c.unmatched }, { text: yen(c.debitAmount), num: true },
+        { text: c.creditAccount }, { text: yen(c.creditAmount), num: true }, { text: c.description }
+      ], c.unmatched ? 'unmatched' : '');
+    });
+    out.hidden = false;
+    $('emptyMsg').hidden = true;
+    const sm = $('summary');
+    sm.textContent = '';
+    [['変換した件数', conv.length + ' 件', ''], ['未設定（要確認）', unmatched + ' 件', unmatched ? 'warn' : '']].forEach(function (x) {
+      const d = document.createElement('div');
+      if (x[2]) d.className = x[2];
+      const b = document.createElement('b'); b.textContent = x[1];
+      d.appendChild(b); d.appendChild(document.createTextNode(x[0]));
+      sm.appendChild(d);
+    });
+    sm.hidden = false;
+    lastCsv = toCsv(convertedToTable(conv));
+    $('dlBtn').disabled = false;
+  });
+
+  $('dlBtn').addEventListener('click', function () {
+    if (lastCsv === null) return;
+    const blob = new Blob(['﻿' + lastCsv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'converted-sample.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 0);
+  });
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { parseCsv, rowsFromTable, convertTransactions, toCsv, convertedToTable, SAMPLE_CSV, RULES, DEPOSIT_ACCOUNT, BANK_ACCOUNT, UNSET_ACCOUNT };
+}
+</script>
+</body>
+</html>

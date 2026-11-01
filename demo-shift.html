@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>シフト表の自動作成デモ | Rinka 制作室</title>
+<style>
+  :root {
+    --bg: #FAF7F1;
+    --card: #FFFFFF;
+    --ink: #1E2430;
+    --accent: #C73E1D;
+    --marker: #F9D34D;
+    --line: #E6E0D3;
+    --soft: #F3EEE3;
+    --muted: #5B6270;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;
+    line-height: 1.8;
+    font-size: 15px;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 16px 48px; }
+  header.site { padding: 24px 0 8px; }
+  .eyebrow {
+    color: var(--accent);
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin: 0 0 4px;
+  }
+  h1, h2, h3 {
+    font-family: 'Hiragino Mincho ProN','Yu Mincho','Noto Serif JP',serif;
+    line-height: 1.4;
+    margin: 0 0 8px;
+  }
+  h1 { font-size: 28px; }
+  h2 { font-size: 22px; }
+  h3 { font-size: 17px; }
+  .mark {
+    background: linear-gradient(transparent 55%, var(--marker) 55%);
+    padding: 0 2px;
+  }
+  .notice {
+    background: var(--soft);
+    border-left: 4px solid var(--accent);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin: 12px 0 24px;
+    font-size: 14px;
+  }
+  section.part { margin-top: 36px; }
+  .step { display: flex; align-items: baseline; gap: 10px; margin-top: 20px; }
+  .num {
+    display: inline-block;
+    min-width: 28px; height: 28px; line-height: 28px;
+    text-align: center;
+    background: var(--accent); color: #fff;
+    border-radius: 6px; font-weight: 700; font-size: 14px;
+  }
+  .lead { color: var(--muted); margin: 0 0 12px; font-size: 14px; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 10px;
+  }
+  .chip {
+    display: inline-block;
+    background: var(--soft);
+    border-radius: 6px;
+    padding: 1px 8px;
+    font-size: 12px;
+    margin: 0 4px 4px 0;
+  }
+  .controls { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; }
+  label.field { display: flex; flex-direction: column; font-size: 13px; gap: 2px; }
+  input[type=month], input[type=number] {
+    font: inherit;
+    padding: 6px 8px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+    color: var(--ink);
+  }
+  input[type=number] { width: 72px; }
+  input:disabled { background: var(--soft); color: var(--muted); }
+  .weekgrid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+  .weekgrid label.field { align-items: stretch; }
+  .weekgrid input[type=number] { width: 100%; }
+  .scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { border-collapse: collapse; font-size: 13px; width: 100%; }
+  th, td { border: 1px solid var(--line); padding: 4px 6px; text-align: center; white-space: nowrap; }
+  th { background: var(--soft); font-weight: 600; }
+  td.name, th.name { text-align: left; position: sticky; left: 0; background: var(--soft); }
+  td.off { background: #FBE3DC; color: var(--accent); font-weight: 700; cursor: pointer; }
+  td.on { cursor: pointer; }
+  td.on:hover { background: var(--soft); }
+  tr.closed td, th.closed, td.closedcell { background: #ECE8DF; color: var(--muted); }
+  th.sat { color: #2A5FA8; }
+  th.sun { color: var(--accent); }
+  button {
+    font: inherit;
+    background: var(--accent); color: #fff;
+    border: 0; border-radius: 6px;
+    padding: 10px 20px; cursor: pointer; font-weight: 700;
+  }
+  button:hover { opacity: 0.9; }
+  .legend { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .short td { background: #FFF4C2; }
+  ul.warn { margin: 6px 0 0; padding-left: 20px; }
+  .ok { color: var(--muted); font-size: 14px; }
+  .totals { display: flex; flex-wrap: wrap; gap: 10px; }
+  .total-box {
+    background: var(--soft); border-radius: 6px; padding: 8px 14px; text-align: center; min-width: 88px;
+  }
+  .total-box b { display: block; font-size: 22px; font-family: 'Hiragino Mincho ProN','Yu Mincho','Noto Serif JP',serif; }
+  .note { font-size: 13px; color: var(--muted); }
+  .for-shop { margin-top: 40px; }
+  .for-shop ul { padding-left: 20px; margin: 8px 0; }
+  a.cta { color: var(--accent); font-weight: 700; text-decoration: none; }
+  a.cta:hover { text-decoration: underline; }
+  @media (max-width: 640px) {
+    h1 { font-size: 23px; }
+    .weekgrid { grid-template-columns: repeat(4, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="site">
+    <p class="eyebrow">Demo / Shift</p>
+    <h1><span class="mark">シフト表の自動作成デモ</span></h1>
+    <p class="lead">希望休と必要人数を入れると、シフトの下書きができあがる仕組みの体験版です。</p>
+    <div class="notice">これは架空のお店のデータで作った体験デモです。お店は「ヘアサロン ことり」（火曜定休）、スタッフは5名で、名前も数字もすべて架空です。</div>
+  </header>
+
+  <section class="part" id="input">
+    <p class="eyebrow">Input</p>
+    <h2><span class="mark">入力するところ</span></h2>
+    <p class="lead">お店の方がふだん決めていることです。ここを入れるだけで、あとは自動で並びます。</p>
+
+    <div class="step"><span class="num">1</span><h3>月と人数のルール</h3></div>
+    <p class="lead">月、曜日ごとの必要人数、1人あたりの出勤上限を決めます。定休日は火曜で固定です。</p>
+    <div class="card">
+      <div class="controls">
+        <label class="field">月
+          <input type="month" id="month" value="2026-11">
+        </label>
+        <label class="field">1人あたり出勤上限（日）
+          <input type="number" id="maxShifts" value="20" min="1" max="31">
+        </label>
+      </div>
+      <p class="lead" style="margin-top:14px;margin-bottom:6px;">曜日ごとの必要人数</p>
+      <div class="weekgrid" id="weekgrid"></div>
+      <p class="note">火曜は定休日のため、必要人数は入力できません（固定）。</p>
+    </div>
+
+    <div class="step"><span class="num">2</span><h3>希望休</h3></div>
+    <p class="lead">マスをクリックすると、希望休（×）の付け外しができます。月を変えると日付の列が作り直され、希望休は日にち（日番号）のまま引き継がれます。</p>
+    <div class="card">
+      <div class="scroll"><table id="offTable"></table></div>
+      <p class="legend">× = 希望休　／　灰色 = 定休日（火曜）</p>
+    </div>
+  </section>
+
+  <section class="part" id="output">
+    <p class="eyebrow">Output</p>
+    <h2><span class="mark">自動で作られるところ</span></h2>
+    <p class="lead">ボタンを押すと、決まりを守りながら下書きを作ります。</p>
+
+    <div class="step"><span class="num">3</span><h3>シフトの下書き</h3></div>
+    <p class="lead">希望休の日と定休日は入れません。上限を超えた出勤も入れません。出勤日数の少ない人から順に割り当てます。</p>
+    <div class="card">
+      <button type="button" id="gen">シフトの下書きを作る</button>
+      <div id="result" style="margin-top:16px;"></div>
+    </div>
+    <p class="note">これは下書きです。最終的な調整はお店で行ってください。</p>
+  </section>
+
+  <section class="card for-shop">
+    <p class="eyebrow">For Shop</p>
+    <h2><span class="mark">お店の方へ：このシフト作成について</span></h2>
+    <ul>
+      <li>お店のホームページや、お使いの表計算ファイルに組み込めます。</li>
+      <li>定休日、必要人数、出勤上限などのルールは、お店に合わせて変更できます。</li>
+      <li>このデモは架空のデータで動いています。制作時もご用意いただくのは架空のデータで足ります。</li>
+    </ul>
+    <p><a class="cta" href="index.html">Rinka 制作室で相談する →</a></p>
+  </section>
+</div>
+
+<script>
+/* ===== ルールと初期データ ===== */
+const SALON_NAME = 'ヘアサロン ことり';
+const CLOSED_WEEKDAY = 2; // 火曜（固定）
+const WEEKDAY_LABELS = ['日', '月', '火', '水', '木', '金', '土'];
+const WEEKDAY_ORDER = [1, 2, 3, 4, 5, 6, 0]; // 表示は月曜はじまり
+const DEFAULT_REQUIRED = { 0: 3, 1: 2, 2: 0, 3: 2, 4: 2, 5: 2, 6: 3 };
+const DEFAULT_MAX_SHIFTS = 20;
+const DEFAULT_YEAR = 2026;
+const DEFAULT_MONTH = 11;
+const STAFF_NAMES = ['高橋', '鈴木', '佐藤', '田中', '山本'];
+// 初期の希望休（日 day 番号）。2026-11-07（土）は3人が重なり、必要3人に届きません。
+const DEFAULT_DAYS_OFF = {
+  '高橋': [7, 14, 20],
+  '鈴木': [7, 21, 27],
+  '佐藤': [5, 7, 28],
+  '田中': [12, 22],
+  '山本': [9, 29]
+};
+
+/* ===== 中核ロジック（DOM に触れない純粋関数） =====
+ * generateShift(state)
+ *   state: { year, month(1-12), closedWeekday(0-6), requiredByWeekday:{0..6},
+ *            maxShifts, staff:[{name, daysOff}] }
+ *   daysOff: Set または配列。要素は日(day)番号（数値/数字文字列）か 'YYYY-MM-DD' 文字列。
+ *            どちらも受け付ける。'YYYY-MM-DD' は対象の年月と一致するものだけを有効とする。
+ *   戻り値: { days:[{date, weekday, assigned, required, shortage, closed}],
+ *             totals:{name:count}, warnings:[string] }
+ *   定休日も days に含め、closed:true, required:0, shortage:0, assigned:[] とする。
+ *   割り当て: 希望休・定休日・上限超えは不可。出勤日数が少ない順、同数なら名前順（決定的）。
+ */
+function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+function daysInMonth(year, month) {
+  return new Date(Date.UTC(year, month, 0)).getUTCDate();
+}
+
+function normalizeDaysOff(daysOff, year, month) {
+  const out = new Set();
+  if (!daysOff) return out;
+  const prefix = year + '-' + pad2(month) + '-';
+  for (const v of Array.from(daysOff)) {
+    if (typeof v === 'string' && v.indexOf('-') >= 0) {
+      if (v.indexOf(prefix) === 0) {
+        const d = parseInt(v.slice(prefix.length), 10);
+        if (!isNaN(d)) out.add(d);
+      }
+    } else {
+      const d = parseInt(v, 10);
+      if (!isNaN(d)) out.add(d);
+    }
+  }
+  return out;
+}
+
+function generateShift(state) {
+  const year = state.year;
+  const month = state.month;
+  const closedWd = state.closedWeekday;
+  const maxShifts = state.maxShifts;
+  const n = daysInMonth(year, month);
+  const staff = state.staff.map(function (s) {
+    return { name: s.name, off: normalizeDaysOff(s.daysOff, year, month) };
+  });
+  const totals = {};
+  staff.forEach(function (s) { totals[s.name] = 0; });
+  const days = [];
+  const warnings = [];
+
+  for (let d = 1; d <= n; d++) {
+    const date = year + '-' + pad2(month) + '-' + pad2(d);
+    const weekday = new Date(Date.UTC(year, month - 1, d)).getUTCDay();
+    if (weekday === closedWd) {
+      days.push({ date: date, weekday: weekday, assigned: [], required: 0, shortage: 0, closed: true });
+      continue;
+    }
+    const required = Number(state.requiredByWeekday[weekday]) || 0;
+    const notOff = staff.filter(function (s) { return !s.off.has(d); });
+    const eligible = notOff.filter(function (s) { return totals[s.name] < maxShifts; });
+    eligible.sort(function (a, b) {
+      if (totals[a.name] !== totals[b.name]) return totals[a.name] - totals[b.name];
+      return a.name < b.name ? -1 : (a.name > b.name ? 1 : 0);
+    });
+    const picked = eligible.slice(0, required);
+    picked.forEach(function (s) { totals[s.name] += 1; });
+    const shortage = required - picked.length;
+    days.push({
+      date: date, weekday: weekday,
+      assigned: picked.map(function (s) { return s.name; }),
+      required: required, shortage: shortage, closed: false
+    });
+    if (shortage > 0) {
+      const offCount = staff.length - notOff.length;
+      const capped = notOff.length - eligible.length;
+      const reasons = [];
+      if (offCount > 0) reasons.push('希望休が' + offCount + '人');
+      if (capped > 0) reasons.push('上限に達した人が' + capped + '人');
+      warnings.push(month + '/' + d + '（' + WEEKDAY_LABELS[weekday] + '）は必要' + required +
+        '人に対して' + picked.length + '人です。理由: ' + (reasons.join('、') || '人数不足') + '。');
+    }
+  }
+  staff.forEach(function (s) {
+    if (totals[s.name] >= maxShifts) {
+      warnings.push(s.name + 'さんは出勤上限（' + maxShifts + '日）に達しました。');
+    }
+  });
+  return { days: days, totals: totals, warnings: warnings };
+}
+
+/* ===== DOM 配線 ===== */
+if (typeof document !== 'undefined') {
+  (function () {
+    const $ = function (id) { return document.getElementById(id); };
+    const daysOff = {};
+    STAFF_NAMES.forEach(function (nm) { daysOff[nm] = new Set(DEFAULT_DAYS_OFF[nm]); });
+
+    function el(tag, text, cls) {
+      const e = document.createElement(tag);
+      if (text !== undefined && text !== null) e.textContent = text;
+      if (cls) e.className = cls;
+      return e;
+    }
+    function getYM() {
+      let v = $('month').value;
+      if (!/^\d{4}-\d{2}$/.test(v)) v = DEFAULT_YEAR + '-' + pad2(DEFAULT_MONTH);
+      const p = v.split('-');
+      return { year: parseInt(p[0], 10), month: parseInt(p[1], 10) };
+    }
+    function wdClass(wd) { return wd === 6 ? 'sat' : (wd === 0 ? 'sun' : ''); }
+
+    function buildWeekGrid() {
+      const g = $('weekgrid');
+      g.textContent = '';
+      WEEKDAY_ORDER.forEach(function (wd) {
+        const lab = el('label', null, 'field');
+        lab.appendChild(document.createTextNode(WEEKDAY_LABELS[wd] + (wd === CLOSED_WEEKDAY ? '（定休）' : '')));
+        const inp = el('input');
+        inp.type = 'number'; inp.min = '0'; inp.max = '10';
+        inp.id = 'req' + wd;
+        inp.value = DEFAULT_REQUIRED[wd];
+        if (wd === CLOSED_WEEKDAY) inp.disabled = true;
+        lab.appendChild(inp);
+        g.appendChild(lab);
+      });
+    }
+
+    function buildOffTable() {
+      const ym = getYM();
+      const n = daysInMonth(ym.year, ym.month);
+      const t = $('offTable');
+      t.textContent = '';
+      const head = el('tr');
+      head.appendChild(el('th', '日', 'name'));
+      const head2 = el('tr');
+      head2.appendChild(el('th', 'スタッフ', 'name'));
+      for (let d = 1; d <= n; d++) {
+        const wd = new Date(Date.UTC(ym.year, ym.month - 1, d)).getUTCDay();
+        const cls = wd === CLOSED_WEEKDAY ? 'closed' : wdClass(wd);
+        head.appendChild(el('th', String(d), cls));
+        head2.appendChild(el('th', WEEKDAY_LABELS[wd], cls));
+      }
+      t.appendChild(head);
+      t.appendChild(head2);
+      STAFF_NAMES.forEach(function (nm) {
+        const tr = el('tr');
+        tr.appendChild(el('td', nm, 'name'));
+        for (let d = 1; d <= n; d++) {
+          const wd = new Date(Date.UTC(ym.year, ym.month - 1, d)).getUTCDay();
+          const td = el('td');
+          if (wd === CLOSED_WEEKDAY) {
+            td.className = 'closedcell';
+          } else {
+            const paint = function () {
+              const off = daysOff[nm].has(d);
+              td.className = off ? 'off' : 'on';
+              td.textContent = off ? '×' : '';
+            };
+            td.addEventListener('click', function () {
+              if (daysOff[nm].has(d)) daysOff[nm].delete(d); else daysOff[nm].add(d);
+              paint();
+            });
+            paint();
+          }
+          tr.appendChild(td);
+        }
+        t.appendChild(tr);
+      });
+    }
+
+    function readState() {
+      const ym = getYM();
+      const req = {};
+      for (let wd = 0; wd < 7; wd++) {
+        const inp = $('req' + wd);
+        const v = parseInt(inp.value, 10);
+        req[wd] = (wd === CLOSED_WEEKDAY || isNaN(v) || v < 0) ? 0 : v;
+      }
+      let mx = parseInt($('maxShifts').value, 10);
+      if (isNaN(mx) || mx < 0) mx = DEFAULT_MAX_SHIFTS;
+      return {
+        year: ym.year, month: ym.month, closedWeekday: CLOSED_WEEKDAY,
+        requiredByWeekday: req, maxShifts: mx,
+        staff: STAFF_NAMES.map(function (nm) { return { name: nm, daysOff: daysOff[nm] }; })
+      };
+    }
+
+    function render(res) {
+      const box = $('result');
+      box.textContent = '';
+
+      box.appendChild(el('h3', 'スタッフごとの出勤日数'));
+      const tot = el('div', null, 'totals');
+      STAFF_NAMES.forEach(function (nm) {
+        const b = el('div', null, 'total-box');
+        b.appendChild(el('span', nm));
+        b.appendChild(el('b', String(res.totals[nm])));
+        b.appendChild(el('span', '日'));
+        tot.appendChild(b);
+      });
+      box.appendChild(tot);
+
+      box.appendChild(el('h3', '注意リスト')).style.marginTop = '18px';
+      if (res.warnings.length === 0) {
+        box.appendChild(el('p', '注意する点はありません。', 'ok'));
+      } else {
+        const ul = el('ul', null, 'warn');
+        res.warnings.forEach(function (w) { ul.appendChild(el('li', w)); });
+        box.appendChild(ul);
+      }
+
+      box.appendChild(el('h3', '日付 × スタッフ（○ が出勤）')).style.marginTop = '18px';
+      const wrap = el('div', null, 'scroll');
+      const t = el('table');
+      const hr = el('tr');
+      hr.appendChild(el('th', '日付'));
+      STAFF_NAMES.forEach(function (nm) { hr.appendChild(el('th', nm)); });
+      hr.appendChild(el('th', '人数'));
+      t.appendChild(hr);
+      res.days.forEach(function (day) {
+        const tr = el('tr');
+        if (day.closed) tr.className = 'closed';
+        else if (day.shortage > 0) tr.className = 'short';
+        const dnum = parseInt(day.date.slice(8), 10);
+        tr.appendChild(el('td', dnum + '日（' + WEEKDAY_LABELS[day.weekday] + '）'));
+        STAFF_NAMES.forEach(function (nm) {
+          const mark = day.closed ? '休' : (day.assigned.indexOf(nm) >= 0 ? '○' : '');
+          tr.appendChild(el('td', mark));
+        });
+        tr.appendChild(el('td', day.closed ? '定休' : day.assigned.length + ' / ' + day.required));
+        t.appendChild(tr);
+      });
+      wrap.appendChild(t);
+      box.appendChild(wrap);
+      box.appendChild(el('p', '黄色の行は、必要人数に届かなかった日です。', 'legend'));
+    }
+
+    buildWeekGrid();
+    buildOffTable();
+    $('month').addEventListener('change', function () {
+      if (!$('month').value) $('month').value = DEFAULT_YEAR + '-' + pad2(DEFAULT_MONTH);
+      buildOffTable();
+      $('result').textContent = '';
+    });
+    $('gen').addEventListener('click', function () { render(generateShift(readState())); });
+  })();
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    generateShift, SALON_NAME, CLOSED_WEEKDAY, DEFAULT_REQUIRED, DEFAULT_MAX_SHIFTS,
+    DEFAULT_YEAR, DEFAULT_MONTH, STAFF_NAMES, DEFAULT_DAYS_OFF
+  };
+}
+</script>
+</body>
+</html>

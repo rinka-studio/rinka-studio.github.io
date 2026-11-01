@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>在庫・発注の見える化デモ | Rinka 制作室</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#FAF7F1;color:#1E2430;font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;line-height:1.8;font-size:15px}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px 48px}
+header.site{border-top:4px solid #C73E1D;background:#fff;border-bottom:1px solid #e8e2d6}
+header.site .wrap{padding-top:14px;padding-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.brand{font-family:'Hiragino Mincho ProN','Yu Mincho','Noto Serif JP',serif;font-weight:700;color:#1E2430;text-decoration:none}
+.back{color:#C73E1D;font-size:13px;text-decoration:none}
+.eyebrow{color:#C73E1D;font-size:12px;letter-spacing:.18em;font-weight:700;margin:32px 0 4px}
+h1,h2,h3{font-family:'Hiragino Mincho ProN','Yu Mincho','Noto Serif JP',serif;line-height:1.4;margin:0 0 10px}
+h1{font-size:28px}
+h2{font-size:22px}
+h3{font-size:18px}
+.mark{background:linear-gradient(transparent 55%,#F9D34D 55%)}
+.notice{background:#fff;border:1px solid #e8e2d6;border-left:4px solid #C73E1D;border-radius:6px;padding:10px 14px;margin:16px 0}
+.card{background:#fff;border:1px solid #e8e2d6;border-radius:8px;padding:16px;margin:12px 0}
+.lead{margin:0 0 12px}
+.num{display:inline-block;background:#C73E1D;color:#fff;border-radius:6px;width:26px;height:26px;line-height:26px;text-align:center;font-size:14px;margin-right:8px;font-family:sans-serif}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:720px;font-size:14px}
+th,td{padding:8px 10px;border-bottom:1px solid #eee7da;text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{background:#FAF7F1;font-weight:700;font-size:13px}
+tr.low td{background:#fdf1ec}
+input[type=number]{width:72px;padding:6px;border:1px solid #cfc7b6;border-radius:6px;font-size:14px;text-align:right;font-family:inherit}
+.badge{display:inline-block;background:#fdeae3;color:#C73E1D;border-radius:6px;padding:0 8px;font-size:12px;font-weight:700;margin-left:6px}
+.note{display:block;color:#C73E1D;font-size:12px;white-space:normal}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0;padding:0;list-style:none}
+.chips li{background:#f3eee2;border-radius:6px;padding:0 10px;font-size:12px}
+.total{font-size:20px;font-weight:700;text-align:right;margin:10px 0}
+button{background:#C73E1D;color:#fff;border:0;border-radius:6px;padding:10px 18px;font-size:14px;cursor:pointer;font-family:inherit}
+#copyResult{margin-left:10px;font-size:13px}
+.empty{color:#666}
+.cta{display:inline-block;margin-top:8px;color:#C73E1D;font-weight:700;text-decoration:none}
+footer{color:#666;font-size:12px;text-align:center;padding:24px 16px}
+</style>
+</head>
+<body>
+<header class="site"><div class="wrap">
+  <a class="brand" href="index.html">Rinka 制作室</a>
+  <a class="back" href="index.html">← トップへ戻る</a>
+</div></header>
+
+<main class="wrap">
+  <p class="eyebrow">DEMO / INVENTORY</p>
+  <h1><span class="mark">在庫・発注の見える化デモ</span></h1>
+  <p>入庫と出庫を入れると、現在庫が計算され、発注が必要な商品の下書きができます。</p>
+  <div class="notice">これは架空のお店「雑貨店 つむぎ」のデータで作った体験デモです。実在のお店とは関係ありません。</div>
+
+  <p class="eyebrow">INPUT</p>
+  <h2><span class="mark">入力するところ</span></h2>
+  <div class="card">
+    <h3><span class="num">1</span>入庫・出庫</h3>
+    <p class="lead">商品ごとに、入ってきた数と出ていった数を入れます。現在庫 = 初期在庫 + 入庫 − 出庫 です。現在庫が発注点以下になると「要発注」と表示されます。</p>
+    <p class="lead">入庫・出庫は例として入力しているだけで、お店のデータには保存されません。</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr>
+          <th>商品名</th><th>仕入単価</th><th>初期在庫</th><th>発注点</th><th>ロット</th><th>入庫数</th><th>出庫数</th><th>現在庫</th>
+        </tr></thead>
+        <tbody id="inputBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <p class="eyebrow">AUTO</p>
+  <h2><span class="mark">自動で作られるところ</span></h2>
+  <div class="card">
+    <h3><span class="num">2</span>発注の下書き</h3>
+    <p class="lead">現在庫が発注点以下の商品だけが、自動で並びます。計算のルールは次のとおりです。</p>
+    <ul class="chips">
+      <li>目標在庫 = 発注点 × 2</li>
+      <li>発注数 = 切り上げ((目標在庫 − 現在庫) ÷ ロット) × ロット</li>
+      <li>概算金額 = 発注数 × 仕入単価</li>
+    </ul>
+    <div class="tablewrap" style="margin-top:12px">
+      <table style="min-width:600px">
+        <thead><tr><th>商品名</th><th>現在庫</th><th>発注点</th><th>発注数</th><th>概算金額</th></tr></thead>
+        <tbody id="orderBody"></tbody>
+      </table>
+    </div>
+    <p class="total">合計金額 <span id="totalCost">¥0</span></p>
+    <button type="button" id="copyBtn">発注内容をテキストでコピー</button><span id="copyResult" role="status"></span>
+    <textarea id="copyArea" aria-hidden="true" tabindex="-1" style="position:fixed;left:-9999px;top:0;opacity:0"></textarea>
+  </div>
+
+  <div class="card">
+    <h3>お店の方へ</h3>
+    <p class="lead">このような在庫の確認表は、お店の管理表やホームページに組み込めます。発注点・ロット・目標在庫の決め方は、お店のやり方に合わせて変更できます。公開後の保守は行っていません。</p>
+    <a class="cta" href="index.html">Rinka 制作室で相談する →</a>
+  </div>
+</main>
+<footer>架空のお店のデータを使った体験デモです。</footer>
+
+<script>
+const SHOP_NAME = '雑貨店 つむぎ';
+const TARGET_MULTIPLIER = 2;
+const INITIAL_ITEMS = [
+  { name: '綿の布巾 3枚組', cost: 480, initialStock: 18, reorderPoint: 8, lot: 6 },
+  { name: '白いマグカップ', cost: 620, initialStock: 7, reorderPoint: 8, lot: 6 },
+  { name: 'A5 方眼ノート', cost: 190, initialStock: 30, reorderPoint: 15, lot: 10 },
+  { name: '麻のコースター', cost: 260, initialStock: 12, reorderPoint: 10, lot: 12 },
+  { name: 'ガラスの小皿', cost: 340, initialStock: 9, reorderPoint: 6, lot: 6 },
+  { name: 'ハンドタオル', cost: 410, initialStock: 5, reorderPoint: 6, lot: 6 },
+  { name: '木のスプーン', cost: 280, initialStock: 24, reorderPoint: 10, lot: 12 },
+  { name: 'ミニ巾着', cost: 350, initialStock: 16, reorderPoint: 8, lot: 8 },
+  { name: 'ポストカード 5枚組', cost: 150, initialStock: 40, reorderPoint: 20, lot: 20 },
+  { name: 'ステンレスのカトラリー', cost: 520, initialStock: 11, reorderPoint: 10, lot: 6 },
+  { name: '陶器の箸置き', cost: 220, initialStock: 3, reorderPoint: 5, lot: 10 },
+  { name: 'キャンバストート', cost: 900, initialStock: 14, reorderPoint: 5, lot: 4 }
+];
+
+function toInt(v) {
+  const n = Number(v);
+  if (!isFinite(n)) return 0;
+  return Math.max(0, Math.floor(n));
+}
+
+function computeInventory(items) {
+  const rows = [];
+  let totalOrderCost = 0;
+  (items || []).forEach(function (it) {
+    const cost = toInt(it.cost);
+    const initialStock = toInt(it.initialStock);
+    const reorderPoint = toInt(it.reorderPoint);
+    const lot = Math.max(1, toInt(it.lot));
+    const inQty = toInt(it.inQty);
+    const outQty = toInt(it.outQty);
+    const raw = initialStock + inQty - outQty;
+    const stock = Math.max(0, raw);
+    const needsOrder = stock <= reorderPoint;
+    let orderQty = 0;
+    let orderCost = 0;
+    if (needsOrder) {
+      const target = reorderPoint * TARGET_MULTIPLIER;
+      orderQty = Math.ceil(Math.max(0, target - stock) / lot) * lot;
+      orderCost = orderQty * cost;
+    }
+    totalOrderCost += orderCost;
+    rows.push({ name: it.name, stock: stock, needsOrder: needsOrder, orderQty: orderQty, orderCost: orderCost, overOut: raw < 0 });
+  });
+  return { rows: rows, totalOrderCost: totalOrderCost };
+}
+
+function formatYen(n) {
+  return '¥' + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+function buildOrderText(result) {
+  const list = result.rows.filter(function (r) { return r.needsOrder && r.orderQty > 0; });
+  if (list.length === 0) return '発注が必要な商品はありません。';
+  const lines = ['【発注の下書き】' + SHOP_NAME];
+  list.forEach(function (r) {
+    lines.push('・' + r.name + ' ' + r.orderQty + '個（現在庫 ' + r.stock + '） ' + formatYen(r.orderCost));
+  });
+  lines.push('合計 ' + formatYen(result.totalOrderCost));
+  return lines.join('\n');
+}
+
+if (typeof document !== 'undefined') {
+  const inputBody = document.getElementById('inputBody');
+  const orderBody = document.getElementById('orderBody');
+  const totalEl = document.getElementById('totalCost');
+  const copyBtn = document.getElementById('copyBtn');
+  const copyResult = document.getElementById('copyResult');
+  const copyArea = document.getElementById('copyArea');
+  const state = INITIAL_ITEMS.map(function (it) { return Object.assign({ inQty: 0, outQty: 0 }, it); });
+  const rowEls = [];
+
+  function cell(tr, text) {
+    const td = document.createElement('td');
+    td.textContent = text;
+    tr.appendChild(td);
+    return td;
+  }
+
+  state.forEach(function (it) {
+    const tr = document.createElement('tr');
+    const nameTd = cell(tr, '');
+    const nameSpan = document.createElement('span');
+    nameSpan.textContent = it.name;
+    nameTd.appendChild(nameSpan);
+    const badge = document.createElement('span');
+    badge.className = 'badge';
+    badge.textContent = '要発注';
+    nameTd.appendChild(badge);
+    const note = document.createElement('span');
+    note.className = 'note';
+    nameTd.appendChild(note);
+    cell(tr, formatYen(it.cost));
+    cell(tr, String(it.initialStock));
+    cell(tr, String(it.reorderPoint));
+    cell(tr, String(it.lot));
+    ['inQty', 'outQty'].forEach(function (key) {
+      const td = document.createElement('td');
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.min = '0';
+      input.step = '1';
+      input.value = '0';
+      input.setAttribute('aria-label', it.name + (key === 'inQty' ? ' 入庫数' : ' 出庫数'));
+      input.addEventListener('input', function () {
+        it[key] = toInt(input.value);
+        render();
+      });
+      td.appendChild(input);
+      tr.appendChild(td);
+    });
+    const stockTd = cell(tr, '');
+    stockTd.style.fontWeight = '700';
+    inputBody.appendChild(tr);
+    rowEls.push({ tr: tr, badge: badge, note: note, stockTd: stockTd });
+  });
+
+  function render() {
+    const result = computeInventory(state);
+    result.rows.forEach(function (r, i) {
+      const el = rowEls[i];
+      el.stockTd.textContent = String(r.stock);
+      el.tr.className = r.needsOrder ? 'low' : '';
+      el.badge.style.display = r.needsOrder ? '' : 'none';
+      el.note.textContent = r.overOut ? '出庫が在庫を超えたため、在庫を0にしています。' : '';
+    });
+    orderBody.textContent = '';
+    let shown = 0;
+    result.rows.forEach(function (r, i) {
+      if (!r.needsOrder || r.orderQty <= 0) return;
+      shown++;
+      const tr = document.createElement('tr');
+      cell(tr, r.name);
+      cell(tr, String(r.stock));
+      cell(tr, String(state[i].reorderPoint));
+      cell(tr, String(r.orderQty));
+      cell(tr, formatYen(r.orderCost));
+      orderBody.appendChild(tr);
+    });
+    if (shown === 0) {
+      const tr = document.createElement('tr');
+      const td = cell(tr, '発注が必要な商品はありません。');
+      td.colSpan = 5;
+      td.className = 'empty';
+      orderBody.appendChild(tr);
+    }
+    totalEl.textContent = formatYen(result.totalOrderCost);
+  }
+
+  function fallbackCopy(text) {
+    copyArea.value = text;
+    copyArea.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    return ok;
+  }
+
+  copyBtn.addEventListener('click', function () {
+    const text = buildOrderText(computeInventory(state));
+    const done = function (ok) {
+      copyResult.textContent = ok ? 'コピーしました。' : 'コピーできませんでした。下書きの表から選んでコピーしてください。';
+    };
+    if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(fallbackCopy(text)); });
+    } else {
+      done(fallbackCopy(text));
+    }
+  });
+
+  render();
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { computeInventory, buildOrderText, INITIAL_ITEMS, TARGET_MULTIPLIER };
+}
+</script>
+</body>
+</html>
