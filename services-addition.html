@@ -1,0 +1,122 @@
+<!--
+  services-addition.html
+  Rinka 制作室トップページへ差し込む断片集です（単体で開くページではありません）。
+  差し込み位置と手順は INTEGRATION.md を参照してください。
+  class 名は仮のものです。既存トップページのマークアップに合わせて置き換えてください。
+  区切り用のコメント行は、差し込み時に削除して構いません。
+-->
+
+
+<!-- ===================================================================
+     [1] SERVICES 追加ブロック（3つ）
+     差し込み位置: 「スプレッドシート・Excelの業務自動化」ブロックの直後
+     =================================================================== -->
+
+<!-- SERVICES-A: シフト表の自動作成 -->
+<div class="service-block">
+  <p class="service-label">業務自動化: シフト</p>
+  <h3>シフト表の自動作成</h3>
+  <ul>
+    <li>曜日ごとの必要人数と、スタッフの希望休から、月のシフト表の下書きを作成</li>
+    <li>定休日・出勤日数の上限など、お店のルールに合わせて設定</li>
+    <li>人数が足りない日や上限に達したスタッフを、注意リストで表示</li>
+    <li>最終的な調整はお店で行える、下書きの形でお渡しします</li>
+  </ul>
+  <p class="service-for">こんな方に：スタッフのいる小さなお店・教室の方</p>
+</div>
+
+<!-- SERVICES-B: 在庫・発注の見える化 -->
+<div class="service-block">
+  <p class="service-label">業務自動化: 在庫</p>
+  <h3>在庫・発注の見える化</h3>
+  <ul>
+    <li>入庫・出庫を入力すると、現在庫がその場で計算される在庫表</li>
+    <li>発注点を下回った商品に目印を付け、発注の下書きリストを作成</li>
+    <li>発注の数え方（ロット・目標在庫）はお店のルールに合わせて設定</li>
+    <li>発注リストはテキストでコピーでき、メールやメッセージに貼り付けられます</li>
+  </ul>
+  <p class="service-for">こんな方に：小さな小売店・カフェ・ハンドメイド販売の方</p>
+</div>
+
+<!-- SERVICES-C: 会計ソフト用CSV整形 -->
+<div class="service-block">
+  <p class="service-label">業務自動化: CSV</p>
+  <h3>会計ソフト用CSV整形</h3>
+  <ul>
+    <li>銀行明細などのCSVを、会計ソフトに取り込みやすい形式へ変換</li>
+    <li>お決まりの摘要（電気代・交通費など）を、決めたルールで勘定科目に当てはめ</li>
+    <li>ルールに当たらない行は「要確認」として分けて表示</li>
+    <li>お引き受けするのは、形式の変換と、決めたルールでの勘定科目の当てはめのみです。税務の判断は行わず、税務相談・申告の代行もお受けしていません</li>
+  </ul>
+  <p class="service-for">こんな方に：経理の入力作業を減らしたい個人事業主の方（科目の確認は、税理士などの専門家にご相談ください）</p>
+</div>
+
+
+<!-- ===================================================================
+     [2] WORKS カード（3つ）
+     差し込み位置: 「お見積りシミュレーター」カードの直後
+     リンク先: 各デモを sample-*.html の名前で置いた前提です
+     =================================================================== -->
+
+<!-- WORKS-A: シフト表の自動作成デモ -->
+<article class="work-card">
+  <div class="work-image">シフト表の自動作成</div>
+  <div class="work-body">
+    <p class="work-meta"><span class="badge">公開中</span> 業務自動化</p>
+    <h3>シフト表の自動作成デモ</h3>
+    <p>必要人数と希望休を入れると、1か月分のシフトの下書きができる仕組みの体験版です。架空の美容室のデータで作っています。</p>
+    <p class="work-tags"><span class="chip">希望休</span> <span class="chip">必要人数</span> <span class="chip">下書き作成</span></p>
+    <a class="work-link" href="sample-shift.html">デモを触ってみる →</a>
+  </div>
+</article>
+
+<!-- WORKS-B: 在庫・発注の見える化デモ -->
+<article class="work-card">
+  <div class="work-image">在庫・発注の見える化</div>
+  <div class="work-body">
+    <p class="work-meta"><span class="badge">公開中</span> 業務自動化</p>
+    <h3>在庫・発注の見える化デモ</h3>
+    <p>入庫・出庫を入力すると現在庫が変わり、発注が必要な商品と発注の下書きが表示される仕組みの体験版です。架空の雑貨店のデータで作っています。</p>
+    <p class="work-tags"><span class="chip">在庫管理</span> <span class="chip">発注点</span> <span class="chip">発注リスト</span></p>
+    <a class="work-link" href="sample-inventory.html">デモを触ってみる →</a>
+  </div>
+</article>
+
+<!-- WORKS-C: 会計ソフト用CSV整形デモ -->
+<article class="work-card">
+  <div class="work-image">会計ソフト用CSV整形</div>
+  <div class="work-body">
+    <p class="work-meta"><span class="badge">公開中</span> 業務自動化</p>
+    <h3>会計ソフト用CSV整形デモ</h3>
+    <p>銀行明細のCSVを、決めたルールで勘定科目に当てはめ、会計ソフトに取り込む形式へ変換する体験版です。形式の変換のみで、税務の判断は行いません。架空のデータで作っています。</p>
+    <p class="work-tags"><span class="chip">CSV変換</span> <span class="chip">勘定科目</span> <span class="chip">取り込み形式</span></p>
+    <a class="work-link" href="sample-csv.html">デモを触ってみる →</a>
+  </div>
+</article>
+
+
+<!-- ===================================================================
+     [3] PRICE ブロック（3つ）
+     差し込み位置: 「料金シミュレーターの組み込み」ブロックの直後
+     =================================================================== -->
+
+<!-- PRICE-A -->
+<div class="price-block">
+  <h3>シフト表の自動作成</h3>
+  <p>必要人数と希望休から作る、月のシフト表の下書き</p>
+  <p class="price">30,000 円〜</p>
+</div>
+
+<!-- PRICE-B -->
+<div class="price-block">
+  <h3>在庫・発注の見える化</h3>
+  <p>入出庫の入力と、発注の下書きリスト</p>
+  <p class="price">30,000 円〜</p>
+</div>
+
+<!-- PRICE-C -->
+<div class="price-block">
+  <h3>会計ソフト用CSV整形</h3>
+  <p>CSVの形式変換と、ルールによる勘定科目の当てはめ（税務の判断は行いません）</p>
+  <p class="price">15,000 円〜</p>
+</div>
