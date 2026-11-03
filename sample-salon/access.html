@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="架空の美容室のアクセス・予約ページ見本（Rinka 制作室の制作サンプル）。">
+<title>アクセス・ご予約｜ヘアアトリエ つむぎ（制作サンプル）</title>
+<style>
+/* Layout: サンプル表示帯 → 左固定サイドバー（ブランド＋縦ナビ＋予約CTA）＋メイン列
+   モバイルではサイドバーが上部バーに変形する。配色はオフホワイト×ウォームグレージュ×深い茶。 */
+:root{
+  color-scheme:light;
+  --bg:#F6F3ED; --bg2:#EDE8DE; --surface:#FDFBF7;
+  --ink:#37322B; --ink2:#7C7466;
+  --line:#DED5C5; --line-strong:#C4B699;
+  --taupe:#8C7A63; --taupe-deep:#6E5B40;
+  --deep:#3B3128; --deep2:#2E2620;
+  --cream:#F5EFE3;
+  --f-serif:"Hiragino Mincho ProN","Hiragino Mincho Pro","YuMincho","Yu Mincho","Noto Serif JP",serif;
+  --f-sans:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Yu Gothic UI",sans-serif;
+  --f-en:"Hiragino Mincho ProN",Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-sans);font-size:15.5px;line-height:1.9;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:var(--taupe-deep)}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--taupe);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-serif);font-weight:600;margin:0;line-height:1.5}
+p{margin:0}
+.en{font-family:var(--f-en);font-size:.7rem;letter-spacing:.38em;text-transform:uppercase;color:var(--taupe)}
+
+/* サンプル表示帯 */
+.sampleband{background:var(--deep2);color:var(--cream);font-size:.76rem;line-height:1.6}
+.sampleband .band-in{max-width:1460px;margin:0 auto;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:7px 24px}
+.sampleband a{color:#DEC9A3;text-decoration:none}
+.sampleband a:hover{text-decoration:underline}
+
+/* 全体レイアウト：左サイドバー＋メイン */
+.layout{display:grid;grid-template-columns:284px minmax(0,1fr);max-width:1460px;margin:0 auto;align-items:start}
+
+/* サイドバー */
+.side{position:sticky;top:0;height:100vh;height:100dvh;display:flex;flex-direction:column;background:var(--surface);border-right:1px solid var(--line);padding:46px 34px 30px;overflow-y:auto}
+.brand{text-decoration:none;color:var(--ink);text-align:center;display:block}
+.brand .ben{font-family:var(--f-en);font-size:.66rem;letter-spacing:.44em;text-transform:uppercase;color:var(--taupe);display:block}
+.brand .bname{font-family:var(--f-serif);font-size:1.16rem;letter-spacing:.09em;display:block;margin-top:10px;line-height:1.5;white-space:nowrap}
+.brand .btag{display:block;margin-top:8px;font-size:.72rem;letter-spacing:.3em;color:var(--ink2)}
+.brand .brule{width:34px;height:1px;background:var(--line-strong);margin:20px auto 0}
+.side nav{margin-top:38px}
+.side nav ul{list-style:none;margin:0;padding:0}
+.side nav li{border-bottom:1px solid var(--line)}
+.side nav li:first-child{border-top:1px solid var(--line)}
+.side nav a{display:flex;align-items:baseline;gap:14px;text-decoration:none;color:var(--ink);padding:13px 8px;transition:background .2s}
+.side nav a:hover{background:var(--bg)}
+.side nav .nen{font-family:var(--f-en);font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:var(--ink2);min-width:58px}
+.side nav .njp{font-size:.92rem;letter-spacing:.08em}
+.side nav li.cur a{background:var(--bg2)}
+.side nav li.cur .njp{font-weight:700;color:var(--deep)}
+.side nav li.cur .nen{color:var(--taupe-deep)}
+.side nav li.cur{box-shadow:inset 3px 0 0 var(--taupe)}
+.side-foot{margin-top:auto;padding-top:34px;text-align:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font:inherit;font-size:.92rem;font-weight:600;letter-spacing:.1em;text-decoration:none;border:0;border-radius:2px;padding:13px 30px;cursor:pointer;transition:opacity .2s}
+.btn:hover{opacity:.86}
+.btn.solid{background:var(--deep);color:var(--cream)}
+.btn.ghost{background:transparent;border:1px solid var(--ink);color:var(--ink)}
+.btn.ghost-w{background:transparent;border:1px solid rgba(245,239,227,.85);color:var(--cream)}
+.side-foot .btn{width:100%}
+.side-hours{margin-top:16px;font-size:.76rem;line-height:1.8;color:var(--ink2);letter-spacing:.06em}
+.side-tel{margin-top:6px;font-family:var(--f-serif);font-size:.95rem;letter-spacing:.1em;color:var(--ink)}
+
+/* メイン列 */
+.main{min-width:0}
+.wrap{padding-inline:clamp(24px,4.5vw,64px)}
+section.blk{padding-block:84px}
+section.blk.tint{background:var(--bg2)}
+.head{margin-bottom:40px}
+.head .rule{width:52px;height:1px;background:var(--taupe);margin-bottom:18px}
+.head h2{font-size:clamp(1.5rem,3vw,2rem);letter-spacing:.06em;margin-top:10px}
+.head p{color:var(--ink2);max-width:40em;margin-top:12px;font-size:.94rem}
+
+/* ページヘッド（下層ページ） */
+.pagehead{padding:72px 0 8px}
+.pagehead h1{font-size:clamp(1.9rem,4.4vw,2.7rem);letter-spacing:.08em;margin-top:14px}
+.pagehead .lead{color:var(--ink2);max-width:42em;margin-top:16px;font-size:.95rem}
+.pagehead .rule{width:100%;height:1px;background:var(--line);margin-top:36px}
+
+/* トップ：ヒーロー */
+.hero{position:relative;min-height:min(88vh,760px);display:flex;align-items:flex-end;overflow:hidden;background:#4A4036}
+.hero .photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+.hero .scrim{position:absolute;inset:0;background:linear-gradient(to top,rgba(38,31,24,.42) 0%,rgba(38,31,24,0) 46%),linear-gradient(84deg,rgba(38,31,24,.34) 0%,rgba(38,31,24,0) 52%)}
+.hero .vtext{position:absolute;top:40px;right:38px;z-index:2;writing-mode:vertical-rl;font-family:var(--f-serif);font-size:1.02rem;letter-spacing:.44em;color:#FFFDF6;text-shadow:0 1px 14px rgba(38,31,24,.45);border-left:1px solid rgba(255,253,246,.55);padding-left:16px;line-height:1}
+.hero-panel{position:relative;z-index:2;background:rgba(253,251,247,.95);max-width:620px;padding:40px 44px 36px;margin:120px auto 0 0}
+.hero-panel .en{color:var(--taupe-deep)}
+.hero-panel h1{font-size:clamp(1.85rem,4.2vw,2.75rem);line-height:1.5;letter-spacing:.05em;margin-top:14px}
+.hero-panel .lead{margin-top:16px;font-size:.95rem;line-height:2;color:var(--ink2)}
+.hero-panel .btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.facts{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--surface)}
+.facts span{display:flex;align-items:baseline;gap:8px;padding:16px 26px;border-right:1px solid var(--line);font-size:.82rem;letter-spacing:.06em;color:var(--ink2)}
+.facts span:last-child{border-right:0}
+.facts b{font-family:var(--f-serif);font-size:1.3rem;font-weight:600;color:var(--deep)}
+
+/* 非対称スプリット */
+.split{display:grid;grid-template-columns:6fr 6fr;gap:clamp(28px,4vw,56px);align-items:start}
+.split.wide-photo{grid-template-columns:7fr 5fr}
+.split .photo-card{margin-top:56px}
+.photo-card img{width:100%;height:100%;object-fit:cover}
+.photo-card figcaption{margin-top:10px;font-size:.76rem;color:var(--ink2);letter-spacing:.06em}
+.about-lead{font-family:var(--f-serif);font-size:clamp(1.1rem,2vw,1.3rem);line-height:2.15;letter-spacing:.03em}
+.about-body{margin-top:18px;color:var(--ink2);font-size:.94rem}
+.feats{list-style:none;margin:26px 0 0;padding:0}
+.feats li{display:flex;gap:14px;padding:13px 0;border-bottom:1px solid var(--line);font-size:.93rem}
+.feats li:first-child{border-top:1px solid var(--line)}
+.feats .fno{font-family:var(--f-en);font-size:.68rem;letter-spacing:.24em;color:var(--taupe);padding-top:6px;min-width:30px}
+
+/* お知らせ */
+.news{list-style:none;margin:0;padding:0}
+.news li{display:flex;gap:20px;align-items:baseline;padding:17px 4px;border-bottom:1px solid var(--line)}
+.news li:first-child{border-top:1px solid var(--line)}
+.news time{font-family:var(--f-en);font-size:.8rem;letter-spacing:.14em;color:var(--ink2);white-space:nowrap}
+.news .tag{font-size:.68rem;letter-spacing:.14em;border:1px solid var(--line-strong);color:var(--taupe-deep);padding:2px 10px;border-radius:999px;white-space:nowrap}
+.news p{font-size:.93rem}
+
+/* カード類 */
+.cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.mini-card{background:var(--surface);border:1px solid var(--line);padding:28px 26px}
+.mini-card h3{font-size:1.05rem;letter-spacing:.06em}
+.mini-card .price{font-family:var(--f-serif);font-size:1.65rem;color:var(--deep);margin-top:10px}
+.mini-card .price small{font-size:.8rem;color:var(--ink2)}
+.mini-card p{font-size:.86rem;color:var(--ink2);margin-top:8px}
+.more-link{display:inline-block;margin-top:30px;font-size:.9rem;letter-spacing:.08em;text-decoration:none;border-bottom:1px solid var(--taupe);padding-bottom:3px;color:var(--taupe-deep)}
+
+/* スタイリスト抜粋 */
+.staff-rows{display:grid;gap:16px}
+.staff-mini{display:flex;gap:18px;align-items:center;background:var(--surface);border:1px solid var(--line);padding:20px 24px}
+.avatar{width:56px;height:56px;border-radius:50%;background:var(--bg2);border:1px solid var(--line-strong);display:flex;align-items:center;justify-content:center;font-family:var(--f-serif);font-size:1.25rem;color:var(--taupe-deep);flex:none}
+.staff-mini h3{font-size:1rem;letter-spacing:.06em}
+.staff-mini h3 small{font-family:var(--f-sans);font-size:.74rem;color:var(--ink2);letter-spacing:.1em;margin-left:8px}
+.staff-mini p{font-size:.84rem;color:var(--ink2)}
+
+/* 料金表カード */
+.price-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+.price-card{background:var(--surface);border:1px solid var(--line);padding:32px 32px 26px}
+.price-card.set{background:var(--deep);color:var(--cream);border-color:var(--deep)}
+.price-card .cat-en{font-family:var(--f-en);font-size:.66rem;letter-spacing:.34em;text-transform:uppercase;color:var(--taupe)}
+.price-card.set .cat-en{color:#C9B48C}
+.price-card h2{font-size:1.3rem;letter-spacing:.08em;margin-top:8px}
+.price-card ul{list-style:none;margin:20px 0 0;padding:0}
+.price-card li{padding:13px 0;border-bottom:1px dotted var(--line-strong)}
+.price-card li:last-child{border-bottom:0}
+.price-card .row1{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+.price-card .mname{font-size:.96rem;letter-spacing:.04em}
+.price-card .mprice{font-family:var(--f-serif);font-size:1.18rem;color:var(--deep);white-space:nowrap}
+.price-card.set .mprice{color:var(--cream)}
+.price-card .mdesc{font-size:.8rem;color:var(--ink2);margin-top:2px}
+.price-card.set .mdesc{color:rgba(245,239,227,.72)}
+.price-card .was{font-size:.78rem;color:var(--ink2);text-decoration:line-through;margin-right:8px;font-family:var(--f-sans)}
+.notes{margin-top:34px;background:var(--bg2);padding:26px 30px}
+.notes h3{font-size:.95rem;letter-spacing:.1em}
+.notes ul{margin:12px 0 0;padding-left:1.2em;font-size:.86rem;color:var(--ink2)}
+.notes li{margin-top:5px}
+
+/* スタイリスト詳細 */
+.profile{display:grid;grid-template-columns:64px 1fr;gap:22px;background:var(--surface);border:1px solid var(--line);padding:30px 32px}
+.profile .avatar{width:64px;height:64px;font-size:1.45rem}
+.profile h3{font-size:1.15rem;letter-spacing:.06em}
+.profile h3 small{font-family:var(--f-sans);font-size:.76rem;color:var(--ink2);letter-spacing:.1em;margin-left:10px}
+.profile .bio{font-size:.9rem;color:var(--ink2);margin-top:10px}
+.profile .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.chip{font-size:.74rem;letter-spacing:.08em;border:1px solid var(--line-strong);border-radius:999px;padding:3px 12px;color:var(--taupe-deep);background:var(--bg)}
+.profile .fee{margin-top:12px;font-size:.82rem;color:var(--ink2)}
+.profile .fee b{font-family:var(--f-serif);color:var(--deep);font-size:.95rem}
+.profiles{display:grid;gap:20px}
+.values{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.value-card{border:1px solid var(--line);background:var(--surface);padding:26px 28px}
+.value-card .vno{font-family:var(--f-en);font-size:.66rem;letter-spacing:.3em;color:var(--taupe)}
+.value-card h3{font-size:1rem;letter-spacing:.06em;margin-top:8px}
+.value-card p{font-size:.86rem;color:var(--ink2);margin-top:6px}
+.stats{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);background:var(--surface)}
+.stats div{text-align:center;padding:18px 8px;border-right:1px solid var(--line);border-top:1px solid var(--line)}
+.stats div:nth-child(-n+2){border-top:0}
+.stats div:nth-child(2n){border-right:0}
+.stats b{font-family:var(--f-serif);font-size:1.5rem;font-weight:600;color:var(--deep);display:block}
+.stats span{font-size:.74rem;color:var(--ink2);letter-spacing:.1em}
+
+/* アクセス */
+.info-table{width:100%;border-collapse:collapse;font-size:.92rem}
+.info-table th,.info-table td{text-align:left;padding:14px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+.info-table th{font-family:var(--f-serif);font-weight:600;letter-spacing:.08em;white-space:nowrap;padding-right:22px;color:var(--deep)}
+.info-table tr:first-child th,.info-table tr:first-child td{border-top:1px solid var(--line)}
+.mapbox{border:1px solid var(--line);background:#EFEAE0}
+.mapbox svg{display:block;width:100%;height:auto}
+.map-note{font-size:.78rem;color:var(--ink2);margin-top:10px}
+.flow{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:18px;counter-reset:step}
+.flow li{background:var(--surface);border:1px solid var(--line);padding:24px 22px}
+.flow .fstep{font-family:var(--f-en);font-size:.64rem;letter-spacing:.3em;text-transform:uppercase;color:var(--taupe)}
+.flow h3{font-size:.98rem;letter-spacing:.06em;margin-top:8px}
+.flow p{font-size:.83rem;color:var(--ink2);margin-top:6px}
+.small-note{font-size:.8rem;color:var(--ink2);margin-top:16px}
+.faq details{border-bottom:1px solid var(--line)}
+.faq details:first-child{border-top:1px solid var(--line)}
+.faq summary{cursor:pointer;font-family:var(--f-serif);font-size:1rem;letter-spacing:.04em;padding:18px 4px;list-style:none}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::before{content:"Q";font-family:var(--f-en);color:var(--taupe);margin-right:12px;font-size:.85rem}
+.faq details p{padding:0 4px 20px 30px;font-size:.9rem;color:var(--ink2);max-width:44em}
+
+/* CTA帯 */
+.cta{background:var(--deep);color:var(--cream);padding:64px 0}
+.cta .wrap{display:flex;align-items:center;gap:28px;flex-wrap:wrap}
+.cta h2{font-size:clamp(1.3rem,2.6vw,1.7rem);letter-spacing:.06em}
+.cta p{color:rgba(245,239,227,.78);font-size:.9rem;margin-top:8px}
+.cta .tel-big{font-family:var(--f-serif);font-size:clamp(1.5rem,3.4vw,2.1rem);letter-spacing:.12em;color:var(--cream)}
+.cta .spacer{flex:1}
+
+/* フッター */
+.foot{border-top:1px solid var(--line);background:var(--surface);padding:52px 0 40px;margin-top:0}
+.foot-in{display:flex;gap:36px;flex-wrap:wrap;justify-content:space-between}
+.foot .ben{font-family:var(--f-en);font-size:.62rem;letter-spacing:.4em;text-transform:uppercase;color:var(--taupe);display:block}
+.foot .bname{font-family:var(--f-serif);font-size:1.15rem;letter-spacing:.12em;display:block;margin-top:8px}
+.foot-brand p{font-size:.8rem;color:var(--ink2);margin-top:12px;line-height:1.9}
+.foot-nav{display:flex;flex-direction:column;gap:8px}
+.foot-nav a{text-decoration:none;color:var(--ink);font-size:.86rem;letter-spacing:.06em}
+.foot-nav a:hover{color:var(--taupe-deep)}
+.foot-credit{margin-top:38px;padding-top:20px;border-top:1px solid var(--line);font-size:.76rem;color:var(--ink2);line-height:1.9}
+
+/* レスポンシブ：サイドバー→上部バー */
+@media (max-width:1023px){
+  .layout{grid-template-columns:1fr}
+  .side{position:static;height:auto;padding:20px 22px 16px;border-right:0;border-bottom:1px solid var(--line)}
+  .brand{text-align:left;display:flex;flex-direction:column}
+  .brand .brule{display:none}
+  .brand .bname{font-size:1.15rem;margin-top:6px}
+  .side nav{margin-top:16px}
+  .side nav ul{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+  .side nav ul::-webkit-scrollbar{display:none}
+  .side nav li{border-bottom:0;flex:none}
+  .side nav li:first-child{border-top:0}
+  .side nav a{padding:9px 10px;flex-direction:column;gap:2px;align-items:flex-start}
+  .side nav .nen{min-width:0}
+  .side nav li.cur{box-shadow:inset 0 -3px 0 var(--taupe)}
+  .side-foot{margin-top:14px;padding-top:0;text-align:left;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .side-foot .btn{width:auto;padding:10px 22px}
+  .side-hours{margin-top:0}
+  .hero{min-height:0;height:auto;display:block}
+  .hero .photo{position:relative;height:52vh;min-height:340px}
+  .hero .scrim{display:none}
+  .hero .vtext{top:22px;right:20px;font-size:.9rem}
+  .hero-panel{margin:0;max-width:none;padding:30px 24px 28px;background:var(--surface);border-bottom:1px solid var(--line)}
+  .split,.split.wide-photo{grid-template-columns:1fr}
+  .split .photo-card{margin-top:0}
+  .cards3{grid-template-columns:1fr}
+  .price-grid{grid-template-columns:1fr}
+  .values{grid-template-columns:1fr}
+  .flow{grid-template-columns:1fr 1fr}
+  section.blk{padding-block:60px}
+  .pagehead{padding-top:48px}
+}
+@media (max-width:560px){
+  .flow{grid-template-columns:1fr}
+  .news li{flex-wrap:wrap;gap:6px 14px}
+  .facts span{padding:13px 16px}
+}
+</style>
+</head>
+<body>
+<div class="sampleband"><div class="band-in"><span>これは制作サンプルです。お店・スタッフ・料金・住所はすべて架空のものです。</span><a href="../">Rinka 制作室に戻る →</a></div></div>
+<div class="layout">
+  <aside class="side">
+    <a class="brand" href="index.html">
+      <span class="ben">Hair Atelier</span>
+      <span class="bname">ヘアアトリエ つむぎ</span>
+      <span class="btag">— 小さな美容室 —</span>
+      <span class="brule"></span>
+    </a>
+    <nav aria-label="サイト内メニュー"><ul>
+          <li><a href="index.html"><span class="nen">Top</span><span class="njp">トップ</span></a></li>
+          <li><a href="menu.html"><span class="nen">Menu</span><span class="njp">メニュー・料金</span></a></li>
+          <li><a href="stylist.html"><span class="nen">Stylist</span><span class="njp">スタイリスト・店内</span></a></li>
+          <li class="cur"><a href="access.html"><span class="nen">Access</span><span class="njp">アクセス・ご予約</span></a></li>
+    </ul></nav>
+    <div class="side-foot">
+      <a class="btn solid" href="access.html">ご予約・アクセス</a>
+      <p class="side-hours">営業時間 9:30–19:00<br>定休日 火曜・第3月曜</p>
+      <p class="side-tel">TEL 000-0000-0000</p>
+    </div>
+  </aside>
+  <div class="main">
+    <main>
+      <div class="wrap">
+        <div class="pagehead">
+          <p class="en">Access &amp; Reserve</p>
+          <h1>アクセス・ご予約</h1>
+          <p class="lead">つむぎ駅から徒歩8分、さくら通り沿いの小さな美容室です。ご予約はお電話で承っています。</p>
+          <div class="rule"></div>
+        </div>
+
+        <section class="blk" style="padding-top:48px">
+          <div class="split">
+            <div>
+              <table class="info-table">
+                <tr><th>住所</th><td>つむぎ市はなぞの町3-12（架空の住所です）</td></tr>
+                <tr><th>電話</th><td>000-0000-0000（架空の番号です）</td></tr>
+                <tr><th>営業時間</th><td>9:30–19:00<br>最終受付：カット 18:00／カラー・パーマ 17:00</td></tr>
+                <tr><th>定休日</th><td>火曜・第3月曜</td></tr>
+                <tr><th>アクセス</th><td>つむぎ駅 南口から徒歩8分／さくら通り沿い</td></tr>
+                <tr><th>駐車場</th><td>店前に2台分（無料）</td></tr>
+                <tr><th>お支払い</th><td>現金・クレジットカード・各種QR決済</td></tr>
+              </table>
+            </div>
+            <div>
+              <div class="mapbox"><svg viewBox="0 0 480 360" role="img" aria-label="ヘアアトリエ つむぎ周辺の案内図（架空の地図）">
+  <rect x="0" y="0" width="480" height="360" fill="#EFEAE0"/>
+  <rect x="330" y="20" width="120" height="86" fill="#DCE3D2"/>
+  <text x="390" y="68" text-anchor="middle" font-size="12" fill="#6E7A5E" font-family="sans-serif">はなぞの公園</text>
+  <g stroke="#FFFFFF" stroke-width="20">
+    <line x1="0" y1="120" x2="480" y2="120"/>
+    <line x1="0" y1="248" x2="480" y2="248"/>
+    <line x1="110" y1="0" x2="110" y2="360"/>
+    <line x1="268" y1="0" x2="268" y2="360"/>
+    <line x1="392" y1="106" x2="392" y2="360"/>
+  </g>
+  <g stroke="#D8D0BE" stroke-width="1.5">
+    <line x1="0" y1="120" x2="480" y2="120"/>
+    <line x1="0" y1="248" x2="480" y2="248"/>
+  </g>
+  <text x="180" y="112" font-size="11" fill="#9A8F7A" font-family="sans-serif">さくら通り</text>
+  <text x="278" y="240" font-size="11" fill="#9A8F7A" font-family="sans-serif">はなぞの町</text>
+  <rect x="28" y="66" width="118" height="40" fill="#3B3128"/>
+  <text x="87" y="91" text-anchor="middle" font-size="13" fill="#F5EFE3" font-family="sans-serif">つむぎ駅</text>
+  <polyline points="146,106 146,184 268,184" fill="none" stroke="#8C7A63" stroke-width="2.5" stroke-dasharray="7 6"/>
+  <text x="176" y="172" font-size="11.5" fill="#6E5B40" font-family="sans-serif">徒歩8分</text>
+  <circle cx="268" cy="196" r="11" fill="#8C7A63"/>
+  <circle cx="268" cy="196" r="4.5" fill="#FDFBF7"/>
+  <rect x="196" y="212" width="146" height="26" fill="#FDFBF7" stroke="#C4B699"/>
+  <text x="269" y="230" text-anchor="middle" font-size="12" fill="#3B3128" font-family="sans-serif">ヘアアトリエ つむぎ</text>
+  <rect x="286" y="262" width="44" height="22" fill="#E3DCCB" stroke="#C4B699"/>
+  <text x="308" y="277" text-anchor="middle" font-size="11" fill="#6E5B40" font-family="sans-serif">P 2台</text>
+  <g font-size="11" fill="#9A8F7A" font-family="sans-serif">
+    <text x="24" y="300">つむぎ市役所</text>
+    <text x="404" y="300">郵便局</text>
+    <text x="24" y="150">スーパー</text>
+  </g>
+</svg></div>
+              <p class="map-note">※ 案内図はイメージです（架空の地図）。駅からは、さくら通りを直進し、2つ目の信号を右折すると左手に見えます。</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="blk tint">
+          <div class="head">
+            <div class="rule"></div>
+            <p class="en">Flow</p>
+            <h2>ご予約の流れ</h2>
+          </div>
+          <ol class="flow">
+            <li><p class="fstep">Step 01</p><h3>お電話でご予約</h3><p>希望の日時とメニュー（決まっていなければ「おまかせ」）をお伝えください。</p></li>
+            <li><p class="fstep">Step 02</p><h3>ご来店・カウンセリング</h3><p>髪の状態と悩みを確認し、その日の施術内容と料金を決めます。</p></li>
+            <li><p class="fstep">Step 03</p><h3>施術</h3><p>シャンプーから仕上げまで、基本的に同じスタッフが担当します。</p></li>
+            <li><p class="fstep">Step 04</p><h3>お会計・次回のご案内</h3><p>家での整え方をお渡しし、次回の目安時期をご案内します（予約は任意です）。</p></li>
+          </ol>
+          <p class="small-note">※ このページは制作サンプルのため、実際のご予約はできません。本番のサイトでは、電話番号や予約フォームへのリンクを設置できます。</p>
+        </section>
+
+        <section class="blk">
+          <div class="head">
+            <div class="rule"></div>
+            <p class="en">Faq</p>
+            <h2>よくある質問</h2>
+          </div>
+          <div class="faq">
+            <details>
+              <summary>予約なしでも大丈夫ですか？</summary>
+              <p>完全予約制のため、事前のご予約をお願いしています。当日の空き状況はお電話でご確認ください。</p>
+            </details>
+            <details>
+              <summary>子どもと一緒に行けますか？</summary>
+              <p>はい。キッズカットにも対応しており、ベビーカーのまま入店できます。付き添いの方のお席もご用意します。</p>
+            </details>
+            <details>
+              <summary>駐車場はありますか？</summary>
+              <p>店前に2台分あります。満車の場合は、近隣のコインパーキングをご案内します。</p>
+            </details>
+            <details>
+              <summary>初めてで、どのメニューを選べばいいか分かりません</summary>
+              <p>ご予約のときに「おまかせ」とお伝えください。カウンセリングで髪の状態を見ながら、必要なメニューだけを一緒に決めます。不要なメニューをおすすめすることはありません。</p>
+            </details>
+            <details>
+              <summary>静かに過ごしたいのですが大丈夫ですか？</summary>
+              <p>大丈夫です。カウンセリングのときに「静かに過ごしたい」とお伝えいただければ、必要最低限の声かけで施術します。</p>
+            </details>
+          </div>
+        </section>
+
+        <section class="cta">
+          <div class="wrap" style="padding-inline:0">
+            <div>
+              <h2>ご予約・お問い合わせ</h2>
+              <p>営業時間内にお電話ください（火曜・第3月曜は定休日です）。</p>
+            </div>
+            <div class="spacer"></div>
+            <p class="tel-big">TEL 000-0000-0000</p>
+          </div>
+        </section>
+      </div>
+    </main>
+    <footer class="foot">
+      <div class="wrap">
+        <div class="foot-in">
+          <div class="foot-brand">
+            <span class="ben">Hair Atelier</span>
+            <span class="bname">ヘアアトリエ つむぎ</span>
+            <p>つむぎ市はなぞの町3-12（架空の住所です）<br>営業時間 9:30–19:00／定休日 火曜・第3月曜<br>TEL 000-0000-0000（架空の番号です）</p>
+          </div>
+          <nav class="foot-nav" aria-label="フッターメニュー">
+            <a href="index.html">トップ</a>
+            <a href="menu.html">メニュー・料金</a>
+            <a href="stylist.html">スタイリスト・店内</a>
+            <a href="access.html">アクセス・ご予約</a>
+          </nav>
+        </div>
+        <p class="foot-credit">© ヘアアトリエ つむぎ（架空のお店）<br>このサイトは <a href="../">Rinka 制作室</a> の制作サンプルです。お店・スタッフ・料金・住所はすべて架空のものです。</p>
+      </div>
+    </footer>
+  </div>
+</div>
+</body>
+</html>
