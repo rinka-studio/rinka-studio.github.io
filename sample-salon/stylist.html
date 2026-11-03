@@ -288,6 +288,21 @@ section.blk.tint{background:var(--bg2)}
 .tab-panel:focus{outline:none}
 
 /* 店内スライダー */
+
+/* Before/After 比較 */
+.ba{position:relative;overflow:hidden;background:#4A4036;aspect-ratio:2/1;touch-action:none;user-select:none}
+.ba img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
+.ba .ba-after{position:absolute;inset:0}
+.ba .ba-before{position:absolute;inset:0;filter:saturate(.28) brightness(.93) contrast(.92);clip-path:inset(0 50% 0 0)}
+.ba .ba-tag{position:absolute;top:14px;font-size:.72rem;font-weight:700;letter-spacing:.16em;padding:4px 12px;background:rgba(38,31,24,.72);color:#FFFDF6;border-radius:999px;pointer-events:none}
+.ba .ba-tag.before{left:14px}
+.ba .ba-tag.after{right:14px}
+.ba .ba-handle{position:absolute;top:0;bottom:0;left:50%;width:2px;background:#FFFDF6;box-shadow:0 0 0 1px rgba(38,31,24,.25);transform:translateX(-1px);pointer-events:none}
+.ba .ba-grip{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;background:#FFFDF6;color:var(--deep);display:grid;place-items:center;font-size:1rem;font-weight:700;box-shadow:0 4px 14px rgba(38,31,24,.35)}
+.ba-range{width:100%;margin-top:14px;accent-color:var(--taupe-deep);cursor:pointer}
+.ba-cap{margin-top:10px;font-size:.8rem;color:var(--ink2);letter-spacing:.04em}
+@media (max-width:620px){.ba{aspect-ratio:4/3}}
+
 .slider{position:relative;overflow:hidden;background:#4A4036;aspect-ratio:2/1}
 .slider .slide{position:absolute;inset:0;margin:0;opacity:0;transition:opacity .7s ease;pointer-events:none}
 .slider .slide.is-active{opacity:1;pointer-events:auto}
@@ -408,6 +423,23 @@ section.blk.tint{background:var(--bg2)}
               <button class="s-dot" type="button" aria-label="写真3を表示"></button>
             </div>
           </div>
+        </section>
+
+
+        <section class="blk" style="padding-top:0">
+          <div class="head">
+            <div class="rule"></div>
+            <p class="en">Before / After</p>
+            <h2>仕上がりのイメージ</h2>
+          </div>
+          <div class="ba rv" id="ba">
+            <img class="ba-after" src="salon-style.jpg" alt="カラーとスタイリングで整えた仕上がりのイメージ">
+            <img class="ba-before" id="ba-before" src="salon-style.jpg" alt="" aria-hidden="true">
+            <span class="ba-tag before">Before</span><span class="ba-tag after">After</span>
+            <div class="ba-handle" id="ba-handle"><span class="ba-grip">↔</span></div>
+          </div>
+          <input class="ba-range" id="ba-range" type="range" min="0" max="100" value="50" step="1" aria-label="BeforeとAfterの比較位置">
+          <p class="ba-cap">仕上がりのイメージです。ハンドル（または下のスライダー）を左右に動かすと、Before／Afterを比べられます。※同じ写真を使い、Before側は色味を落として表現したイメージ比較です。実際の仕上がりは髪の状態により異なります。</p>
         </section>
 
         <section class="blk tint">
@@ -583,5 +615,30 @@ section.blk.tint{background:var(--bg2)}
   });
 })();
 </script>
+
+<script>
+(function(){
+  var ba=document.getElementById("ba"); if(!ba)return;
+  var before=document.getElementById("ba-before"), handle=document.getElementById("ba-handle"), range=document.getElementById("ba-range");
+  function setPos(p){
+    p=Math.max(0,Math.min(100,p));
+    before.style.clipPath="inset(0 "+(100-p)+"% 0 0)";
+    handle.style.left=p+"%";
+    if(parseFloat(range.value)!==p)range.value=p;
+  }
+  range.addEventListener("input",function(){setPos(parseFloat(range.value))});
+  var dragging=false;
+  function fromEvent(e){
+    var r=ba.getBoundingClientRect();
+    setPos((e.clientX-r.left)/r.width*100);
+  }
+  ba.addEventListener("pointerdown",function(e){dragging=true;ba.setPointerCapture(e.pointerId);fromEvent(e)});
+  ba.addEventListener("pointermove",function(e){if(dragging)fromEvent(e)});
+  ba.addEventListener("pointerup",function(){dragging=false});
+  ba.addEventListener("pointercancel",function(){dragging=false});
+  setPos(50);
+})();
+</script>
+
 </body>
 </html>

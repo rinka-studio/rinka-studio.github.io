@@ -279,6 +279,35 @@ section.blk.tint{background:var(--bg2)}
 .profile:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(59,49,40,.10)}
 
 /* 料金タブ */
+
+/* 料金シミュレーター */
+.sim-block{margin-top:52px;border-top:1px solid var(--line);padding-top:42px}
+.sim-title{font-family:var(--f-serif);font-size:1.45rem;letter-spacing:.06em;margin-top:8px}
+.sim-lead{color:var(--ink2);font-size:.92rem;margin-top:10px;max-width:42em}
+.sim{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:26px;align-items:start;margin-top:30px}
+.sim-groups{display:flex;flex-direction:column;gap:20px;min-width:0}
+.sim-group{border:1px solid var(--line);background:var(--surface);padding:20px 24px 14px;margin:0}
+.sim-group legend{font-family:var(--f-serif);font-size:1rem;letter-spacing:.08em;color:var(--deep);padding:0 8px}
+.sim-sub{font-size:.8rem;font-weight:700;letter-spacing:.1em;color:var(--taupe-deep);margin:6px 0 2px}
+.sim-item{display:flex;align-items:baseline;gap:12px;padding:10px 8px;border-bottom:1px dotted var(--line-strong);cursor:pointer;border-radius:2px}
+.sim-item:last-child{border-bottom:0}
+.sim-item:hover{background:var(--bg2)}
+.sim-item.on{background:var(--bg2)}
+.sim-item input{accent-color:var(--taupe-deep);width:17px;height:17px;flex:none;transform:translateY(3px);cursor:pointer}
+.sim-item .si-name{flex:1;font-size:.93rem}
+.sim-item .si-time{font-size:.76rem;color:var(--ink2);white-space:nowrap}
+.sim-item .si-price{font-family:var(--f-serif);font-size:1rem;color:var(--deep);white-space:nowrap}
+.sim-result{position:sticky;top:24px;background:var(--deep);color:var(--cream);padding:28px 28px 24px}
+.sim-result .sr-label{font-size:.76rem;letter-spacing:.18em;color:#C9B48C}
+.sim-result .sr-price{font-family:var(--f-serif);font-size:2.15rem;line-height:1.3;margin-top:6px}
+.sim-result .sr-time{font-size:.9rem;margin-top:8px}
+.sim-result .sr-time b{font-family:var(--f-serif);font-size:1.05rem}
+.sim-result .sr-list{list-style:none;margin:16px 0 0;padding:14px 0 0;border-top:1px solid rgba(245,239,227,.25);display:flex;flex-direction:column;gap:6px;font-size:.86rem}
+.sim-result .sr-list li{display:flex;justify-content:space-between;gap:14px}
+.sim-result .sr-list .p{font-family:var(--f-serif);white-space:nowrap}
+.sim-result .sr-note{font-size:.78rem;color:rgba(245,239,227,.75);margin-top:14px;line-height:1.8}
+@media (max-width:900px){.sim{grid-template-columns:1fr}.sim-result{position:static}}
+
 .tabs{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);margin-bottom:28px}
 .tab-btn{font:inherit;font-family:var(--f-serif);font-size:1rem;letter-spacing:.08em;background:none;border:0;border-bottom:3px solid transparent;margin-bottom:-1px;padding:12px 22px;cursor:pointer;color:var(--ink2);transition:color .2s,border-color .2s}
 .tab-btn:hover{color:var(--deep)}
@@ -435,6 +464,64 @@ section.blk.tint{background:var(--bg2)}
               </ul>
           </article>
 
+
+          <div class="sim-block rv">
+            <p class="en">Simulator</p>
+            <h2 class="sim-title">料金シミュレーター</h2>
+            <p class="sim-lead">気になるメニューを選ぶと、合計金額と目安の所要時間がその場で計算できます。組み合わせに迷ったときの検討にどうぞ。</p>
+            <div class="sim">
+              <div class="sim-groups">
+            <fieldset class="sim-group"><legend>カット</legend>
+              <label class="sim-item"><input type="checkbox" class="sim-check" data-name="カット" data-price="5500" data-min="60" data-approx="0"><span class="si-name">カット</span><span class="si-time">約60分</span><span class="si-price">¥5,500</span></label>
+              <label class="sim-item"><input type="checkbox" class="sim-check" data-name="中高生カット" data-price="4400" data-min="45" data-approx="0"><span class="si-name">中高生カット</span><span class="si-time">約45分</span><span class="si-price">¥4,400</span></label>
+              <label class="sim-item"><input type="checkbox" class="sim-check" data-name="キッズカット（小学生以下）" data-price="3300" data-min="30" data-approx="0"><span class="si-name">キッズカット（小学生以下）</span><span class="si-time">約30分</span><span class="si-price">¥3,300</span></label>
+              <label class="sim-item"><input type="checkbox" class="sim-check" data-name="前髪カット" data-price="1100" data-min="15" data-approx="0"><span class="si-name">前髪カット</span><span class="si-time">約15分</span><span class="si-price">¥1,100</span></label>
+            </fieldset>
+            <fieldset class="sim-group"><legend>カラー</legend>
+              <label class="sim-item"><input type="checkbox" class="sim-check" data-name="リタッチカラー" data-price="6600" data-min="90" data-approx="0"><span class="si-name">リタッチカラー</span><span class="si-time">約90分</span><span class="si-price">¥6,600</span></label>
+              <label class="sim-item"><input type="checkbox" class="sim-check" data-name="フルカラー" data-price="8800" data-min="120" data-approx="0"><span class="si-name">フルカラー</span><span class="si-time">約120分</span><span class="si-price">¥8,800</span></label>
+              <label class="sim-item"><input type="checkbox" class="sim-check" data-name="白髪染め" data-price="7700" data-min="90" data-approx="0"><span class="si-name">白髪染め</span><span class="si-time">約90分</span><span class="si-price">¥7,700</span></label>
+              <label class="sim-item"><input type="checkbox" class="sim-check" data-name="ハイライト・ローライト" data-price="3300" data-min="30" data-approx="1"><span class="si-name">ハイライト・ローライト</span><span class="si-time">約30分</span><span class="si-price">¥3,300〜</span></label>
+              <label class="sim-item"><input type="checkbox" class="sim-check" data-name="ダブルカラー" data-price="15400" data-min="150" data-approx="1"><span class="si-name">ダブルカラー</span><span class="si-time">約150分</span><span class="si-price">¥15,400〜</span></label>
+            </fieldset>
+            <fieldset class="sim-group"><legend>パーマ・ストレート</legend>
+              <label class="sim-item"><input type="checkbox" class="sim-check" data-name="パーマ" data-price="9900" data-min="120" data-approx="1"><span class="si-name">パーマ</span><span class="si-time">約120分</span><span class="si-price">¥9,900〜</span></label>
+              <label class="sim-item"><input type="checkbox" class="sim-check" data-name="デジタルパーマ" data-price="13200" data-min="150" data-approx="1"><span class="si-name">デジタルパーマ</span><span class="si-time">約150分</span><span class="si-price">¥13,200〜</span></label>
+              <label class="sim-item"><input type="checkbox" class="sim-check" data-name="縮毛矯正" data-price="14300" data-min="180" data-approx="1"><span class="si-name">縮毛矯正</span><span class="si-time">約180分</span><span class="si-price">¥14,300〜</span></label>
+              <label class="sim-item"><input type="checkbox" class="sim-check" data-name="ポイントパーマ" data-price="4400" data-min="60" data-approx="1"><span class="si-name">ポイントパーマ</span><span class="si-time">約60分</span><span class="si-price">¥4,400〜</span></label>
+            </fieldset>
+            <fieldset class="sim-group"><legend>トリートメント・ヘッドスパ</legend>
+              <label class="sim-item"><input type="checkbox" class="sim-check" data-name="クイックトリートメント" data-price="2200" data-min="15" data-approx="0"><span class="si-name">クイックトリートメント</span><span class="si-time">約15分</span><span class="si-price">¥2,200</span></label>
+              <label class="sim-item"><input type="checkbox" class="sim-check" data-name="集中トリートメント" data-price="4400" data-min="30" data-approx="0"><span class="si-name">集中トリートメント</span><span class="si-time">約30分</span><span class="si-price">¥4,400</span></label>
+              <label class="sim-item"><input type="checkbox" class="sim-check" data-name="ヘッドスパ（30分）" data-price="4400" data-min="30" data-approx="0"><span class="si-name">ヘッドスパ（30分）</span><span class="si-time">約30分</span><span class="si-price">¥4,400</span></label>
+              <label class="sim-item"><input type="checkbox" class="sim-check" data-name="ヘッドスパ（60分）" data-price="6600" data-min="60" data-approx="0"><span class="si-name">ヘッドスパ（60分）</span><span class="si-time">約60分</span><span class="si-price">¥6,600</span></label>
+            </fieldset>
+            <fieldset class="sim-group"><legend>セットメニュー</legend>
+              <label class="sim-item"><input type="checkbox" class="sim-check" data-name="カット ＋ カラー" data-price="13200" data-min="150" data-approx="0"><span class="si-name">カット ＋ カラー</span><span class="si-time">約150分</span><span class="si-price">¥13,200</span></label>
+              <label class="sim-item"><input type="checkbox" class="sim-check" data-name="カット ＋ パーマ" data-price="14300" data-min="180" data-approx="1"><span class="si-name">カット ＋ パーマ</span><span class="si-time">約180分</span><span class="si-price">¥14,300〜</span></label>
+              <label class="sim-item"><input type="checkbox" class="sim-check" data-name="カラー ＋ 集中トリートメント" data-price="12100" data-min="150" data-approx="0"><span class="si-name">カラー ＋ 集中トリートメント</span><span class="si-time">約150分</span><span class="si-price">¥12,100</span></label>
+            </fieldset>
+            <fieldset class="sim-group"><legend>オプション</legend>
+              <p class="sim-sub">指名</p>
+              <label class="sim-item"><input type="radio" name="sim-nom" class="sim-opt" data-name="指名なし" data-price="0" data-min="0" checked><span class="si-name">指名なし</span><span class="si-price">¥0</span></label>
+              <label class="sim-item"><input type="radio" name="sim-nom" class="sim-opt" data-name="指名：岡田 みのり" data-price="550" data-min="0"><span class="si-name">岡田 みのり を指名</span><span class="si-price">+¥550</span></label>
+              <label class="sim-item"><input type="radio" name="sim-nom" class="sim-opt" data-name="指名：佐伯 涼" data-price="0" data-min="0"><span class="si-name">佐伯 涼 を指名</span><span class="si-price">無料</span></label>
+              <p class="sim-sub" style="margin-top:18px">ロング料金（カラー・パーマ・ストレートのみ）</p>
+              <label class="sim-item"><input type="radio" name="sim-long" class="sim-opt" data-name="ロング料金なし" data-price="0" data-min="0" checked><span class="si-name">なし（肩上）</span><span class="si-price">¥0</span></label>
+              <label class="sim-item"><input type="radio" name="sim-long" class="sim-opt" data-name="ロング料金（肩下）" data-price="550" data-min="0"><span class="si-name">肩下</span><span class="si-price">+¥550</span></label>
+              <label class="sim-item"><input type="radio" name="sim-long" class="sim-opt" data-name="ロング料金（胸下）" data-price="1100" data-min="0"><span class="si-name">胸下</span><span class="si-price">+¥1,100</span></label>
+            </fieldset>
+              </div>
+              <aside class="sim-result" aria-live="polite">
+                <p class="sr-label">合計金額（税込）</p>
+                <p class="sr-price" id="sim-price">¥0</p>
+                <p class="sr-time">目安所要時間 <b id="sim-time">—</b></p>
+                <ul class="sr-list" id="sim-list"></ul>
+                <p class="sr-note" id="sim-note">メニューを選ぶと、内訳と合計がここに表示されます。</p>
+              </aside>
+            </div>
+          </div>
+
           <div class="notes rv">
             <h3>ご注意・お願い</h3>
             <ul>
@@ -552,5 +639,54 @@ section.blk.tint{background:var(--bg2)}
   });
 })();
 </script>
+
+<script>
+(function(){
+  var priceEl=document.getElementById("sim-price"), timeEl=document.getElementById("sim-time"),
+      listEl=document.getElementById("sim-list"), noteEl=document.getElementById("sim-note");
+  if(!priceEl)return;
+  function yen(n){return "¥"+n.toLocaleString("ja-JP")}
+  function fmtMin(m){
+    if(m<=0)return "—";
+    var h=Math.floor(m/60), r=m%60;
+    if(h&&r)return "約"+h+"時間"+r+"分";
+    if(h)return "約"+h+"時間";
+    return "約"+r+"分";
+  }
+  function recompute(){
+    var total=0, mins=0, approx=false, rows=[];
+    document.querySelectorAll(".sim-check").forEach(function(cb){
+      var lab=cb.closest(".sim-item"); lab.classList.toggle("on",cb.checked);
+      if(!cb.checked)return;
+      var p=parseInt(cb.getAttribute("data-price"),10), m=parseInt(cb.getAttribute("data-min"),10), a=cb.getAttribute("data-approx")==="1";
+      total+=p; mins+=m; approx=approx||a;
+      rows.push([cb.getAttribute("data-name"), yen(p)+(a?"〜":"")]);
+    });
+    document.querySelectorAll(".sim-opt").forEach(function(rb){
+      var lab=rb.closest(".sim-item"); lab.classList.toggle("on",rb.checked);
+      if(!rb.checked)return;
+      var p=parseInt(rb.getAttribute("data-price"),10);
+      if(p>0){ total+=p; rows.push([rb.getAttribute("data-name"), "+"+yen(p)]); }
+    });
+    priceEl.textContent=yen(total)+(approx?"〜":"");
+    timeEl.textContent=fmtMin(mins);
+    listEl.textContent="";
+    rows.forEach(function(r){
+      var li=document.createElement("li");
+      var s1=document.createElement("span"); s1.textContent=r[0];
+      var s2=document.createElement("span"); s2.className="p"; s2.textContent=r[1];
+      li.appendChild(s1); li.appendChild(s2); listEl.appendChild(li);
+    });
+    noteEl.textContent = rows.length===0
+      ? "メニューを選ぶと、内訳と合計がここに表示されます。"
+      : (approx
+        ? "「〜」のメニューが含まれているため、金額と時間は目安です。髪の状態を見て、カウンセリングで確定します。価格はすべて税込です。"
+        : "価格はすべて税込です。所要時間は目安で、髪の長さや状態により前後します。");
+  }
+  document.querySelectorAll(".sim-check,.sim-opt").forEach(function(el){el.addEventListener("change",recompute)});
+  recompute();
+})();
+</script>
+
 </body>
 </html>

@@ -127,6 +127,21 @@ table.tt{border-collapse:collapse;width:100%;min-width:660px;font-size:.86rem}
 .closed{color:var(--full)}
 .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;font-size:.8rem;color:var(--ink2);align-items:center}
 
+
+/* スケジュールからの予約選択 */
+.slot.pickable{cursor:pointer;border-radius:6px;padding:6px 10px;margin:-6px -10px;transition:background .2s,box-shadow .2s}
+.slot.pickable:hover{background:var(--bg2)}
+.slot.pickable:focus-visible{outline:2px solid var(--bronze);outline-offset:2px}
+.slot.selected{background:var(--ok-bg);box-shadow:0 0 0 2px var(--bronze-deep)}
+.slot-hint{margin-top:12px;font-size:.82rem;color:var(--bronze-deep)}
+.slot-pick{margin-top:16px;border:1px solid var(--bronze);background:var(--ok-bg);padding:18px 22px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.slot-pick .sp-label{font-size:.74rem;font-weight:700;letter-spacing:.14em;color:var(--bronze-deep);display:block}
+.slot-pick b{font-family:var(--f-serif);font-size:1.08rem;letter-spacing:.03em}
+.slot-pick .sp-btns{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap}
+.slot-pick .btn{padding:10px 22px;font-size:.86rem}
+.done-no{font-family:var(--f-serif);font-size:1.02rem;letter-spacing:.14em;border:1px solid var(--bronze);padding:8px 24px;border-radius:2px;color:var(--bronze-deep);background:var(--ok-bg)}
+@media (max-width:620px){.slot-pick .sp-btns{margin-left:0}}
+
 /* Price */
 .courses{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
 .course{border:1px solid var(--line);background:var(--bg);padding:32px 28px;display:flex;flex-direction:column;gap:12px;min-width:0}
@@ -332,6 +347,11 @@ footer .fname{font-family:var(--f-serif);font-size:1rem;color:var(--ink);letter-
       </tbody>
     </table></div>
     <div class="legend"><span class="st ok">空きあり</span><span class="st few">残りわずか</span><span class="st full">満席</span><span>満席のクラスはキャンセル待ちも受け付けています</span></div>
+    <p class="slot-hint">「空きあり」「残りわずか」の枠はクリック（タップ）で選べます。選ぶと、そのまま下のお申込みフォームに日時が入ります。</p>
+    <div class="slot-pick" id="slot-pick" hidden>
+      <p><span class="sp-label">選択中の日時</span><b id="slot-pick-txt"></b></p>
+      <div class="sp-btns"><a class="btn bronze" href="#apply">この日時で申し込む</a><button class="btn ghost" type="button" id="slot-pick-clear">選び直す</button></div>
+    </div>
   </div>
 </section>
 
@@ -443,6 +463,7 @@ footer .fname{font-family:var(--f-serif);font-size:1rem;color:var(--ink);letter-
       <div class="done" id="done" hidden>
         <div class="ring" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M14 34l12 12 24-26" fill="none" stroke="#4F6B52" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <h3>お申込みありがとうございます</h3>
+        <p class="done-no" id="done-no" hidden></p>
         <p id="done-msg">2日以内に、ご入力のメールアドレスへ体験レッスンの日時をご連絡します。</p>
         <p class="small">これは制作サンプルのため、実際には送信されていません。本番では、お申込みが教室のメールに届き、お客様にも受付メールが自動で送られる形にできます。</p>
         <button class="btn ghost" type="button" id="again">もう一度試す</button>
@@ -495,6 +516,57 @@ footer .fname{font-family:var(--f-serif);font-size:1rem;color:var(--ink);letter-
   $("back").addEventListener("click",function(){step(1)});
   $("send").addEventListener("click",function(){$("done-msg").textContent=$("a-name").value.trim()+" 様、2日以内に "+$("a-mail").value.trim()+" へ体験レッスンの日時をご連絡します。";step(3)});
   $("again").addEventListener("click",function(){$("ap").reset();fields.forEach(function(f){$(f[1]).textContent="";$(f[0]).removeAttribute("aria-invalid")});step(1)});
+})();
+</script>
+
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var days=["月","火","水","木","金","土","日"];
+  var selected=null; // {el,label}
+  function clearSelection(resetForm){
+    if(selected){
+      selected.el.classList.remove("selected");
+      if(resetForm && $("a-day1").value===selected.label)$("a-day1").value="";
+      selected=null;
+    }
+    $("slot-pick").hidden=true;
+  }
+  document.querySelectorAll("table.tt tbody tr").forEach(function(tr){
+    var time=tr.querySelector("th").textContent.trim();
+    var start=time.split("〜")[0];
+    tr.querySelectorAll("td").forEach(function(td,ci){
+      var slot=td.querySelector(".slot"); if(!slot)return;
+      var st=slot.querySelector(".st");
+      if(st.classList.contains("full"))return; // 満席は選べない
+      var cls=slot.querySelector("b").textContent.trim();
+      var status=st.textContent.trim();
+      var label=days[ci]+" "+start+" "+cls; // フォームの選択肢と同じ表記
+      slot.classList.add("pickable");
+      slot.setAttribute("role","button"); slot.setAttribute("tabindex","0");
+      slot.setAttribute("aria-label",days[ci]+"曜 "+time+" "+cls+"（"+status+"）を選ぶ");
+      function choose(){
+        clearSelection(false);
+        selected={el:slot,label:label};
+        slot.classList.add("selected");
+        $("a-course").value=cls;
+        $("a-day1").value=label;
+        $("slot-pick-txt").textContent=days[ci]+"曜 "+time+" ・ "+cls+"（"+status+"）";
+        $("slot-pick").hidden=false;
+      }
+      slot.addEventListener("click",choose);
+      slot.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();choose()}});
+    });
+  });
+  $("slot-pick-clear").addEventListener("click",function(){clearSelection(true)});
+  $("send").addEventListener("click",function(){
+    var no="SZ-"+Math.floor(1000+Math.random()*9000);
+    var el=$("done-no"); el.textContent="予約番号："+no; el.hidden=false;
+  });
+  $("again").addEventListener("click",function(){
+    clearSelection(false); $("done-no").hidden=true;
+  });
 })();
 </script>
 

@@ -114,13 +114,43 @@ section.blk.surface{background:var(--surface)}
 .course .age{align-self:flex-start;font-size:.74rem;font-weight:700;letter-spacing:.14em;border:1px solid var(--bronze);color:var(--bronze-deep);padding:2px 12px;border-radius:999px}
 .course h3{font-size:1.22rem;letter-spacing:.04em;line-height:1.6}
 .course p{font-size:.89rem;color:var(--ink2);line-height:1.95}
-.course dl{margin:auto 0 0;display:grid;grid-template-columns:1fr auto;gap:9px 14px;font-size:.9rem;border-top:1px solid var(--line);padding-top:16px}
+.course dl{margin:auto 0 0;display:flex;flex-direction:column;gap:15px;font-size:.9rem;border-top:1px solid var(--line);padding-top:16px}
 .course dt{color:var(--ink)}
 .course dt small{display:block;color:var(--ink2);font-size:.76rem}
 .course dd{margin:0;text-align:right;font-family:var(--f-serif);font-size:1.02rem;white-space:nowrap}
 .feenote{margin-top:26px;border:1px solid var(--line);background:var(--surface);padding:20px 26px;display:flex;flex-direction:column;gap:6px;font-size:.89rem}
 .feenote span{display:flex;gap:12px;align-items:baseline}
 .feenote span::before{content:"";width:6px;height:6px;background:var(--bronze);border-radius:50%;flex:none;transform:translateY(-2px)}
+
+
+/* お取り置きカート */
+.mi{display:grid;grid-template-columns:1fr auto;gap:3px 14px;align-items:start}
+.mi .buy{grid-column:1/-1;display:flex;align-items:center;gap:10px;margin-top:1px}
+.stepper{display:inline-flex;align-items:center;border:1px solid var(--line-strong);border-radius:999px;background:var(--surface);overflow:hidden}
+.stepper button{font:inherit;font-size:1rem;line-height:1;width:32px;height:30px;border:0;background:transparent;color:var(--bronze-deep);cursor:pointer}
+.stepper button:hover{background:var(--bg2)}
+.stepper .qval{min-width:2.1em;text-align:center;font-weight:700;font-size:.92rem}
+.add-btn{font:inherit;font-size:.8rem;font-weight:700;letter-spacing:.05em;border:1px solid var(--bronze);color:var(--bronze-deep);background:transparent;border-radius:999px;padding:6px 16px;cursor:pointer;transition:background .2s,color .2s}
+.add-btn:hover{background:var(--bronze);color:#FFFDF7}
+.add-btn.added{background:var(--ok);border-color:var(--ok);color:#FFFDF7}
+.cart-box{border:1px solid var(--line);background:var(--surface);padding:38px 42px}
+.cart-empty{color:var(--ink2);font-size:.93rem}
+.c-row{display:grid;grid-template-columns:1fr auto auto auto;gap:8px 20px;align-items:center;padding-block:13px;border-bottom:1px solid var(--line)}
+.c-row:first-child{border-top:1px solid var(--line)}
+.c-name{font-weight:600;font-size:.95rem}
+.c-name small{display:block;font-weight:400;color:var(--ink2);font-size:.78rem}
+.c-line{font-family:var(--f-serif);font-size:1.05rem;white-space:nowrap}
+.c-del{font:inherit;font-size:.78rem;border:0;background:none;color:#B3402A;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.cart-total{display:flex;justify-content:space-between;align-items:baseline;margin-top:18px;font-size:1rem}
+.cart-total b{font-family:var(--f-serif);font-size:1.5rem;color:var(--bronze-deep)}
+#cart-pill{position:fixed;right:18px;bottom:18px;z-index:40;background:var(--dark);color:var(--cream);text-decoration:none;border-radius:999px;padding:12px 22px;font-size:.88rem;letter-spacing:.05em;box-shadow:0 8px 24px rgba(46,32,19,.35)}
+#cart-pill b{color:#F0D29A}
+.done-no{font-family:var(--f-serif);font-size:1.02rem;letter-spacing:.14em;border:1px solid var(--bronze);padding:8px 24px;border-radius:2px;color:var(--bronze-deep);background:var(--amber-bg)}
+@media (max-width:620px){
+  .cart-box{padding:26px 20px}
+  .c-row{grid-template-columns:1fr auto;gap:6px 14px}
+  #cart-pill{bottom:86px;right:12px;padding:10px 18px}
+}
 
 /* Flow */
 .year{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0}
@@ -299,14 +329,27 @@ footer .fname{font-family:var(--f-serif);font-size:1rem;color:var(--ink);letter-
       </div>
     </div>
     <div class="courses">
-      <article class="course"><span class="age">定番</span><h3>食パンと食事パン</h3><p>毎日の食卓に。トーストすると香ばしい、ふだん使いのパンです。</p><dl><dt>ひだまり食パン<small>1斤 ・ もっちり、ほんのり甘い</small></dt><dd>¥480</dd><dt>全粒粉のカンパーニュ<small>自家製酵母 ・ ずっしり大きめ</small></dt><dd>¥680</dd><dt>バゲット<small>皮はパリッと、中はもちもち</small></dt><dd>¥320</dd><dt>くるみパン<small>香ばしくローストしたくるみ入り</small></dt><dd>¥300</dd></dl></article>
-      <article class="course"><span class="age">季節とおやつ</span><h3>季節のパンとお菓子パン</h3><p>旬の果物や、その季節だけの味を。午後3時の焼きたてが中心です。</p><dl><dt>クロワッサン<small>発酵バターの香り ・ 朝の焼きたて</small></dt><dd>¥280</dd><dt>栗とくるみのデニッシュ<small>秋の限定 ・ 渋皮栗のクリーム</small></dt><dd>¥420</dd><dt>あんバターサンド<small>自家製あんこと有塩バター</small></dt><dd>¥350</dd><dt>メロンパン<small>クッキー生地はザクザク</small></dt><dd>¥240</dd></dl></article>
-      <article class="course"><span class="age">カフェ</span><h3>ドリンクと朝のセット</h3><p>カフェスペースでは、焼きたてのパンと一緒にどうぞ。テイクアウトもできます。</p><dl><dt>ブレンドコーヒー<small>深煎り ・ パンに合わせてブレンド</small></dt><dd>¥450</dd><dt>カフェラテ<small>ミルクたっぷり、やさしい味</small></dt><dd>¥520</dd><dt>自家製レモネード<small>はちみつ漬けレモンの爽やかさ</small></dt><dd>¥500</dd><dt>モーニングセット<small>7:00〜10:30 ・ トースト＋卵＋ドリンク</small></dt><dd>¥650</dd></dl></article>
+      <article class="course"><span class="age">定番</span><h3>食パンと食事パン</h3><p>毎日の食卓に。トーストすると香ばしい、ふだん使いのパンです。</p><dl><div class="mi" data-name="ひだまり食パン" data-price="480"><dt>ひだまり食パン<small>1斤 ・ もっちり、ほんのり甘い</small></dt><dd>¥480</dd><div class="buy"><span class="stepper"><button type="button" class="qminus" aria-label="ひだまり食パンの数量を減らす">−</button><span class="qval">1</span><button type="button" class="qplus" aria-label="ひだまり食パンの数量を増やす">＋</button></span><button type="button" class="add-btn">カートに入れる</button></div></div><div class="mi" data-name="全粒粉のカンパーニュ" data-price="680"><dt>全粒粉のカンパーニュ<small>自家製酵母 ・ ずっしり大きめ</small></dt><dd>¥680</dd><div class="buy"><span class="stepper"><button type="button" class="qminus" aria-label="全粒粉のカンパーニュの数量を減らす">−</button><span class="qval">1</span><button type="button" class="qplus" aria-label="全粒粉のカンパーニュの数量を増やす">＋</button></span><button type="button" class="add-btn">カートに入れる</button></div></div><div class="mi" data-name="バゲット" data-price="320"><dt>バゲット<small>皮はパリッと、中はもちもち</small></dt><dd>¥320</dd><div class="buy"><span class="stepper"><button type="button" class="qminus" aria-label="バゲットの数量を減らす">−</button><span class="qval">1</span><button type="button" class="qplus" aria-label="バゲットの数量を増やす">＋</button></span><button type="button" class="add-btn">カートに入れる</button></div></div><div class="mi" data-name="くるみパン" data-price="300"><dt>くるみパン<small>香ばしくローストしたくるみ入り</small></dt><dd>¥300</dd><div class="buy"><span class="stepper"><button type="button" class="qminus" aria-label="くるみパンの数量を減らす">−</button><span class="qval">1</span><button type="button" class="qplus" aria-label="くるみパンの数量を増やす">＋</button></span><button type="button" class="add-btn">カートに入れる</button></div></div></dl></article>
+      <article class="course"><span class="age">季節とおやつ</span><h3>季節のパンとお菓子パン</h3><p>旬の果物や、その季節だけの味を。午後3時の焼きたてが中心です。</p><dl><div class="mi" data-name="クロワッサン" data-price="280"><dt>クロワッサン<small>発酵バターの香り ・ 朝の焼きたて</small></dt><dd>¥280</dd><div class="buy"><span class="stepper"><button type="button" class="qminus" aria-label="クロワッサンの数量を減らす">−</button><span class="qval">1</span><button type="button" class="qplus" aria-label="クロワッサンの数量を増やす">＋</button></span><button type="button" class="add-btn">カートに入れる</button></div></div><div class="mi" data-name="栗とくるみのデニッシュ" data-price="420"><dt>栗とくるみのデニッシュ<small>秋の限定 ・ 渋皮栗のクリーム</small></dt><dd>¥420</dd><div class="buy"><span class="stepper"><button type="button" class="qminus" aria-label="栗とくるみのデニッシュの数量を減らす">−</button><span class="qval">1</span><button type="button" class="qplus" aria-label="栗とくるみのデニッシュの数量を増やす">＋</button></span><button type="button" class="add-btn">カートに入れる</button></div></div><div class="mi" data-name="あんバターサンド" data-price="350"><dt>あんバターサンド<small>自家製あんこと有塩バター</small></dt><dd>¥350</dd><div class="buy"><span class="stepper"><button type="button" class="qminus" aria-label="あんバターサンドの数量を減らす">−</button><span class="qval">1</span><button type="button" class="qplus" aria-label="あんバターサンドの数量を増やす">＋</button></span><button type="button" class="add-btn">カートに入れる</button></div></div><div class="mi" data-name="メロンパン" data-price="240"><dt>メロンパン<small>クッキー生地はザクザク</small></dt><dd>¥240</dd><div class="buy"><span class="stepper"><button type="button" class="qminus" aria-label="メロンパンの数量を減らす">−</button><span class="qval">1</span><button type="button" class="qplus" aria-label="メロンパンの数量を増やす">＋</button></span><button type="button" class="add-btn">カートに入れる</button></div></div></dl></article>
+      <article class="course"><span class="age">カフェ</span><h3>ドリンクと朝のセット</h3><p>カフェスペースでは、焼きたてのパンと一緒にどうぞ。テイクアウトもできます。</p><dl><div class="mi" data-name="ブレンドコーヒー" data-price="450"><dt>ブレンドコーヒー<small>深煎り ・ パンに合わせてブレンド</small></dt><dd>¥450</dd><div class="buy"><span class="stepper"><button type="button" class="qminus" aria-label="ブレンドコーヒーの数量を減らす">−</button><span class="qval">1</span><button type="button" class="qplus" aria-label="ブレンドコーヒーの数量を増やす">＋</button></span><button type="button" class="add-btn">カートに入れる</button></div></div><div class="mi" data-name="カフェラテ" data-price="520"><dt>カフェラテ<small>ミルクたっぷり、やさしい味</small></dt><dd>¥520</dd><div class="buy"><span class="stepper"><button type="button" class="qminus" aria-label="カフェラテの数量を減らす">−</button><span class="qval">1</span><button type="button" class="qplus" aria-label="カフェラテの数量を増やす">＋</button></span><button type="button" class="add-btn">カートに入れる</button></div></div><div class="mi" data-name="自家製レモネード" data-price="500"><dt>自家製レモネード<small>はちみつ漬けレモンの爽やかさ</small></dt><dd>¥500</dd><div class="buy"><span class="stepper"><button type="button" class="qminus" aria-label="自家製レモネードの数量を減らす">−</button><span class="qval">1</span><button type="button" class="qplus" aria-label="自家製レモネードの数量を増やす">＋</button></span><button type="button" class="add-btn">カートに入れる</button></div></div><div class="mi" data-name="モーニングセット" data-price="650"><dt>モーニングセット<small>7:00〜10:30 ・ トースト＋卵＋ドリンク</small></dt><dd>¥650</dd><div class="buy"><span class="stepper"><button type="button" class="qminus" aria-label="モーニングセットの数量を減らす">−</button><span class="qval">1</span><button type="button" class="qplus" aria-label="モーニングセットの数量を増やす">＋</button></span><button type="button" class="add-btn">カートに入れる</button></div></div></dl></article>
     </div>
     <div class="feenote">
       <span>朝のセット（モーニングセット）は10:30までのご注文です</span>
       <span>パンとドリンクを一緒に買うと、ドリンクが50円引きになります</span>
       <span>売り切れの際はご容赦ください。お取り置きで確実にご用意できます</span>
+    </div>
+  </div>
+</section>
+
+
+<section class="blk" id="cart">
+  <div class="inner">
+    <div class="head"><div class="rule"></div><span class="en">Cart</span><h2>お取り置きカート</h2><p>メニューで選んだパンがここに入ります。個数の変更や取り消しもできます。内容が決まったら、そのままお取り置き予約へ進めます。</p></div>
+    <div class="cart-box">
+      <p class="cart-empty" id="cart-empty">カートは空です。上のメニューの各商品で個数を選び、「カートに入れる」を押してください。</p>
+      <div id="cart-list"></div>
+      <div class="cart-total" id="cart-total" hidden><span>合計（税込）</span><b id="cart-sum">¥0</b></div>
+      <div class="actions" style="margin-top:22px"><button class="btn bronze" type="button" id="cart-go" disabled>この内容でお取り置き予約へ</button><span class="small">次のフォームで、受け取り希望日・時間帯とお名前を入力します。</span></div>
     </div>
   </div>
 </section>
@@ -398,6 +441,7 @@ footer .fname{font-family:var(--f-serif);font-size:1rem;color:var(--ink);letter-
       <div class="done" id="done" hidden>
         <div class="ring" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M14 34l12 12 24-26" fill="none" stroke="#7C4F22" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <h3>ご予約ありがとうございます</h3>
+        <p class="done-no" id="done-no" hidden></p>
         <p id="done-msg">当日朝に、お電話で確認のご連絡をします。</p>
         <p class="small">これは制作サンプルのため、実際には送信されていません。本番では、ご予約がお店のメールに届き、お客様にも受付メールが自動で送られる形にできます。</p>
         <button class="btn ghost" type="button" id="again">もう一度試す</button>
@@ -414,6 +458,8 @@ footer .fname{font-family:var(--f-serif);font-size:1rem;color:var(--ink);letter-
     <span>このサイトは <a href="./">Rinka 制作室</a> の制作サンプルです。</span>
   </div>
 </footer>
+
+<a id="cart-pill" href="#cart" hidden>カート <b id="pill-count">0点</b> ・ <b id="pill-sum">¥0</b></a>
 
 <div class="mobile-cta"><a class="btn bronze" href="#reserve">パンをお取り置きする</a></div>
 
@@ -448,6 +494,87 @@ footer .fname{font-family:var(--f-serif);font-size:1rem;color:var(--ink);letter-
   $("back").addEventListener("click",function(){step(1)});
   $("send").addEventListener("click",function(){$("done-msg").textContent=$("a-name").value.trim()+" 様、ご予約を受け付けました。当日朝に "+$("a-tel").value.trim()+" へ確認のご連絡をします。";step(3)});
   $("again").addEventListener("click",function(){$("ap").reset();fields.forEach(function(f){$(f[1]).textContent="";$(f[0]).removeAttribute("aria-invalid")});step(1)});
+})();
+</script>
+
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var cart={}; // name -> {price, qty}
+  function yen(n){return "¥"+n.toLocaleString("ja-JP")}
+  function totals(){var c=0,s=0;for(var k in cart){c+=cart[k].qty;s+=cart[k].price*cart[k].qty}return{count:c,sum:s}}
+  function summaryText(){var lines=[];for(var k in cart){lines.push(k+" ×"+cart[k].qty)}return lines.join("\n")}
+
+  // メニュー側ステッパーと「カートに入れる」
+  document.querySelectorAll(".mi").forEach(function(mi){
+    var name=mi.getAttribute("data-name"), price=parseInt(mi.getAttribute("data-price"),10);
+    var qv=mi.querySelector(".qval"), pending=1;
+    mi.querySelector(".qminus").addEventListener("click",function(){pending=Math.max(1,pending-1);qv.textContent=pending});
+    mi.querySelector(".qplus").addEventListener("click",function(){pending=Math.min(20,pending+1);qv.textContent=pending});
+    var btn=mi.querySelector(".add-btn");
+    btn.addEventListener("click",function(){
+      if(!cart[name])cart[name]={price:price,qty:0};
+      cart[name].qty+=pending;
+      pending=1;qv.textContent="1";
+      btn.textContent="入れました ✓";btn.classList.add("added");
+      setTimeout(function(){btn.textContent="カートに入れる";btn.classList.remove("added")},1400);
+      render();
+    });
+  });
+
+  function render(){
+    var list=$("cart-list"); list.textContent="";
+    var t=totals(), has=t.count>0;
+    $("cart-empty").hidden=has;
+    $("cart-total").hidden=!has;
+    $("cart-go").disabled=!has;
+    $("cart-sum").textContent=yen(t.sum);
+    var pill=$("cart-pill"); pill.hidden=!has;
+    $("pill-count").textContent=t.count+"点"; $("pill-sum").textContent=yen(t.sum);
+    Object.keys(cart).forEach(function(name){
+      var it=cart[name];
+      var row=document.createElement("div"); row.className="c-row";
+      var nm=document.createElement("span"); nm.className="c-name"; nm.textContent=name;
+      var sm=document.createElement("small"); sm.textContent="単価 "+yen(it.price); nm.appendChild(sm);
+      var st=document.createElement("span"); st.className="stepper";
+      var minus=document.createElement("button"); minus.type="button"; minus.textContent="−"; minus.setAttribute("aria-label",name+"の数量を減らす");
+      var qv=document.createElement("span"); qv.className="qval"; qv.textContent=it.qty;
+      var plus=document.createElement("button"); plus.type="button"; plus.textContent="＋"; plus.setAttribute("aria-label",name+"の数量を増やす");
+      minus.addEventListener("click",function(){it.qty-=1;if(it.qty<=0)delete cart[name];render()});
+      plus.addEventListener("click",function(){it.qty=Math.min(20,it.qty+1);render()});
+      st.appendChild(minus);st.appendChild(qv);st.appendChild(plus);
+      var ln=document.createElement("span"); ln.className="c-line"; ln.textContent=yen(it.price*it.qty);
+      var del=document.createElement("button"); del.type="button"; del.className="c-del"; del.textContent="削除";
+      del.addEventListener("click",function(){delete cart[name];render()});
+      row.appendChild(nm);row.appendChild(st);row.appendChild(ln);row.appendChild(del);
+      list.appendChild(row);
+    });
+  }
+
+  $("cart-go").addEventListener("click",function(){
+    if(totals().count===0)return;
+    $("a-order").value=summaryText();
+    $("reserve").scrollIntoView({block:"start"});
+    setTimeout(function(){$("a-name").focus({preventScroll:true})},450);
+  });
+
+  // フォーム側フローへの連携（確認に合計、完了に受付番号）
+  $("ap").addEventListener("submit",function(){
+    var t=totals(); if(t.count===0)return;
+    var dl=$("confirm-list"); if(!dl)return;
+    var dt=document.createElement("dt"),dd=document.createElement("dd");
+    dt.textContent="合計（税込）"; dd.textContent=yen(t.sum); dl.appendChild(dt); dl.appendChild(dd);
+  });
+  $("send").addEventListener("click",function(){
+    var no="HD-"+Math.floor(1000+Math.random()*9000);
+    var el=$("done-no"); el.textContent="受付番号："+no; el.hidden=false;
+  });
+  $("again").addEventListener("click",function(){
+    cart={}; render(); $("done-no").hidden=true;
+  });
+
+  render();
 })();
 </script>
 

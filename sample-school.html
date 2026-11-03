@@ -125,6 +125,13 @@ table.tt{border-collapse:collapse;width:100%;min-width:660px;font-size:.86rem}
 .st.few{background:var(--amber-bg);color:var(--amber)}
 .st.full{background:var(--full-bg);color:var(--full)}
 .closed{color:var(--full)}
+
+/* 時間割からの日時選択 */
+.slot.pickable{cursor:pointer;border-radius:6px;padding:6px 10px;margin:-6px -10px;transition:background .2s,box-shadow .2s}
+.slot.pickable:hover{background:var(--bg2)}
+.slot.pickable:focus-visible{outline:2px solid var(--bronze);outline-offset:2px}
+.slot.selected{background:var(--ok-bg);box-shadow:0 0 0 2px var(--bronze-deep)}
+.slot-hint{margin-top:12px;font-size:.82rem;color:var(--bronze-deep)}
 .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;font-size:.8rem;color:var(--ink2);align-items:center}
 
 /* Price */
@@ -332,6 +339,7 @@ footer .fname{font-family:var(--f-serif);font-size:1rem;color:var(--ink);letter-
       </tbody>
     </table></div>
     <div class="legend"><span class="st ok">空きあり</span><span class="st few">残りわずか</span><span class="st full">満席</span><span>水・日・祝日はお休みです</span></div>
+    <p class="slot-hint">「空きあり」「残りわずか」の枠をクリック（タップ）すると、体験レッスンのお申込みフォームに、その日時が第1希望として入ります。</p>
   </div>
 </section>
 
@@ -498,6 +506,36 @@ footer .fname{font-family:var(--f-serif);font-size:1rem;color:var(--ink);letter-
   $("back").addEventListener("click",function(){step(1)});
   $("send").addEventListener("click",function(){$("done-msg").textContent=$("a-name").value.trim()+" 様、2日以内に "+$("a-mail").value.trim()+" へ体験レッスンの日時をご連絡します。";step(3)});
   $("again").addEventListener("click",function(){$("ap").reset();fields.forEach(function(f){$(f[1]).textContent="";$(f[0]).removeAttribute("aria-invalid")});step(1)});
+})();
+</script>
+
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var days=["月","火","水","木","金","土"];
+  var selected=null;
+  document.querySelectorAll("table.tt tbody tr").forEach(function(tr){
+    var time=tr.querySelector("th").textContent.trim();
+    tr.querySelectorAll("td").forEach(function(td,ci){
+      var slot=td.querySelector(".slot"); if(!slot)return;
+      var st=slot.querySelector(".st");
+      if(st.classList.contains("full"))return; // 満席は選べない（休講はそもそも枠がない）
+      var label=days[ci]+" "+time; // フォームの選択肢と同じ表記
+      slot.classList.add("pickable");
+      slot.setAttribute("role","button"); slot.setAttribute("tabindex","0");
+      slot.setAttribute("aria-label",days[ci]+"曜 "+time+" を第1希望に選ぶ");
+      function choose(){
+        if(selected)selected.classList.remove("selected");
+        selected=slot; slot.classList.add("selected");
+        $("a-day1").value=label;
+        $("apply").scrollIntoView({block:"start"});
+        setTimeout(function(){$("a-day1").focus({preventScroll:true})},500);
+      }
+      slot.addEventListener("click",choose);
+      slot.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();choose()}});
+    });
+  });
 })();
 </script>
 
