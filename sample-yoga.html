@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="架空のヨガ教室のサイト見本（Rinka 制作室の制作サンプル）。">
+<title>ヨガ教室 しずく</title>
+<style>
+/* Layout: サンプル表示帯 → 固定ヘッダー → 写真ヒーロー → About（特徴・講師）→ Class（写真・週間スケジュール）→ Price（料金）→ Flow（体験の流れ）→ Access → FAQ → CTA帯 → 体験申込フォーム → フッター */
+:root{
+  color-scheme:light;
+  --bg:#FDFDFA; --bg2:#EEF3EA; --surface:#FFFFFF;
+  --ink:#2E3830; --ink2:#66736A; --line:#DCE5D8; --line-strong:#B3C6AC;
+  --bronze:#75906E; --bronze-deep:#4F6B52;
+  --amber-bg:#F5EEDF; --amber:#8A6D1F;
+  --ok:#5F7A4E; --ok-bg:#EAF0E0;
+  --full:#93A08F; --full-bg:#EFF2EC;
+  --dark:#26302A; --cream:#F4F7EF;
+  --f-serif:"Hiragino Mincho ProN","Hiragino Mincho Pro","YuMincho","Yu Mincho","Noto Serif JP",serif;
+  --f-sans:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Yu Gothic UI",sans-serif;
+  --f-en:"Hiragino Mincho ProN",Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-sans);font-size:15.5px;line-height:1.9;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+[hidden]{display:none!important}
+a{color:var(--bronze-deep)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--bronze);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-serif);font-weight:600;margin:0;line-height:1.5}
+p{margin:0}
+.inner{max-width:1080px;margin:0 auto;padding-inline:24px}
+.en{font-family:var(--f-en);font-size:.72rem;letter-spacing:.34em;text-transform:uppercase;color:var(--bronze)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font:inherit;font-size:.92rem;font-weight:600;letter-spacing:.08em;text-decoration:none;border:0;border-radius:2px;padding:13px 30px;cursor:pointer;transition:opacity .2s}
+.btn:hover{opacity:.85}
+.btn.solid{background:var(--dark);color:var(--cream)}
+.btn.bronze{background:var(--bronze);color:#FFFFFF}
+.btn.ghost{background:transparent;border:1px solid var(--ink);color:var(--ink)}
+.btn.ghost-w{background:transparent;border:1px solid rgba(244,247,239,.85);color:var(--cream)}
+
+/* サンプル表示帯 */
+.sampleband{background:var(--dark);color:var(--cream);font-size:.76rem;line-height:1.6}
+.sampleband .inner{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding-block:7px}
+.sampleband a{color:#BFD6B4;text-decoration:none}
+.sampleband a:hover{text-decoration:underline}
+
+/* ヘッダー */
+.hdr{position:sticky;top:0;z-index:20;background:rgba(253,253,250,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.hdr .inner{display:flex;align-items:center;gap:18px;padding-block:12px}
+.brand{text-decoration:none;color:var(--ink);line-height:1.25}
+.brand .bname{font-family:var(--f-serif);font-size:1.14rem;letter-spacing:.08em;display:block}
+.brand .ben{font-family:var(--f-en);font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--bronze);display:block}
+.hdr nav{margin-left:auto;min-width:0}
+.hdr ul{list-style:none;margin:0;padding:0;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.hdr ul::-webkit-scrollbar{display:none}
+.hdr li a{display:block;padding:6px 11px;text-decoration:none;color:var(--ink);font-size:.86rem;white-space:nowrap;border-radius:2px}
+.hdr li a:hover{background:var(--bg2)}
+.hdr .btn{padding:8px 20px;font-size:.84rem;white-space:nowrap}
+
+/* ヒーロー */
+.hero{position:relative;min-height:min(92vh,780px);display:flex;align-items:flex-end;color:var(--cream);overflow:hidden;background:#243028}
+.hero .photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+.hero .scrim{position:absolute;inset:0;background:linear-gradient(to top,rgba(24,36,28,.8) 0%,rgba(24,36,28,.36) 42%,rgba(24,36,28,.06) 68%),linear-gradient(78deg,rgba(24,36,28,.44) 0%,rgba(24,36,28,0) 55%)}
+.hero .inner{position:relative;width:100%;padding-block:120px 64px}
+.hero .eyebrow{display:flex;align-items:center;gap:14px;font-family:var(--f-en);font-size:.74rem;letter-spacing:.34em;text-transform:uppercase;color:#CFE3C2}
+.hero .eyebrow::before{content:"";width:44px;height:1px;background:#CFE3C2}
+.hero h1{font-size:clamp(2rem,5.2vw,3.3rem);line-height:1.45;letter-spacing:.04em;margin-top:20px;text-wrap:balance}
+.hero p.lead{margin-top:20px;max-width:34em;font-size:.98rem;line-height:2;color:rgba(244,247,239,.92)}
+.hero .btns{display:flex;gap:14px;flex-wrap:wrap;margin-top:32px}
+.hero .facts{display:flex;gap:0;flex-wrap:wrap;margin-top:38px;border-top:1px solid rgba(244,247,239,.35);padding-top:18px;font-size:.82rem;letter-spacing:.08em;color:rgba(244,247,239,.85)}
+.hero .facts span{padding-right:22px;margin-right:22px;border-right:1px solid rgba(244,247,239,.3)}
+.hero .facts span:last-child{border-right:0;margin-right:0;padding-right:0}
+.hero .facts b{font-family:var(--f-serif);font-size:1.25rem;font-weight:600;color:#fff;margin-right:3px}
+
+/* セクション共通 */
+section.blk{padding-block:96px}
+section.blk.tint{background:var(--bg2)}
+section.blk.surface{background:var(--surface)}
+.head{margin-bottom:44px}
+.head .rule{width:52px;height:1px;background:var(--bronze);margin-bottom:18px}
+.head h2{font-size:clamp(1.55rem,3.4vw,2.1rem);letter-spacing:.06em;margin-top:10px}
+.head p{color:var(--ink2);max-width:42em;margin-top:12px;font-size:.94rem}
+
+/* About */
+.about-lead{font-family:var(--f-serif);font-size:clamp(1.12rem,2.2vw,1.35rem);line-height:2.1;letter-spacing:.03em;max-width:44em}
+.feats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:36px;margin-top:56px}
+.feat{border-top:1px solid var(--bronze);padding-top:20px;min-width:0}
+.feat .no{font-family:var(--f-en);font-size:.8rem;letter-spacing:.2em;color:var(--bronze)}
+.feat h3{font-size:1.12rem;letter-spacing:.05em;margin-top:10px}
+.feat p{font-size:.9rem;color:var(--ink2);margin-top:10px;line-height:1.95}
+.teacher{display:grid;grid-template-columns:220px minmax(0,1fr);gap:40px;margin-top:72px;padding:40px;border:1px solid var(--line);background:var(--surface);align-items:center}
+.teacher .mono{aspect-ratio:1;border:1px solid var(--line);background:var(--bg2);display:grid;place-items:center}
+.teacher .mono span{font-family:var(--f-serif);font-size:3.4rem;color:var(--bronze-deep)}
+.teacher .role{font-size:.8rem;letter-spacing:.18em;color:var(--bronze-deep)}
+.teacher h3{font-size:1.45rem;letter-spacing:.08em;margin-top:6px}
+.teacher p{margin-top:14px;color:var(--ink2);font-size:.94rem;max-width:42em}
+.teacher ul{list-style:none;margin:20px 0 0;padding:16px 0 0;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:4px;font-size:.88rem}
+.teacher ul b{font-weight:600;color:var(--ink);margin-right:.6em}
+
+/* Class */
+.lesson-grid{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:48px;align-items:center}
+.lesson-grid figure{margin:0}
+.lesson-grid figure img{width:100%;height:100%;object-fit:cover;aspect-ratio:3/2.1}
+.lesson-grid figcaption{font-size:.78rem;color:var(--ink2);margin-top:10px;letter-spacing:.05em}
+.lesson-txt h3{font-size:1.3rem;letter-spacing:.05em;line-height:1.7}
+.lesson-txt p{color:var(--ink2);font-size:.94rem;margin-top:16px}
+.lesson-points{list-style:none;margin:26px 0 0;padding:0;display:flex;flex-direction:column}
+.lesson-points li{display:flex;gap:14px;padding-block:13px;border-top:1px solid var(--line);font-size:.92rem;align-items:baseline}
+.lesson-points li:last-child{border-bottom:1px solid var(--line)}
+.lesson-points .k{font-family:var(--f-serif);white-space:nowrap;color:var(--bronze-deep);letter-spacing:.05em}
+.tt-head{display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;margin-top:76px;margin-bottom:20px}
+.tt-head h3{font-size:1.3rem;letter-spacing:.05em}
+.tt-head p{color:var(--ink2);font-size:.88rem}
+.tt-wrap{overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
+table.tt{border-collapse:collapse;width:100%;min-width:660px;font-size:.86rem}
+.tt th,.tt td{border-bottom:1px solid var(--line);padding:13px 12px;text-align:center}
+.tt thead th{font-family:var(--f-serif);font-weight:600;letter-spacing:.1em;background:var(--bg);border-bottom:1px solid var(--bronze)}
+.tt tbody th{text-align:left;font-weight:500;white-space:nowrap;color:var(--ink2)}
+.tt tbody tr:last-child th,.tt tbody tr:last-child td{border-bottom:0}
+.slot{display:inline-flex;flex-direction:column;gap:3px;align-items:center;font-size:.78rem;line-height:1.35}
+.slot b{font-size:.84rem;font-weight:600}
+.st{border-radius:999px;padding:1px 9px;font-size:.7rem;font-weight:700;letter-spacing:.05em}
+.st.ok{background:var(--ok-bg);color:var(--ok)}
+.st.few{background:var(--amber-bg);color:var(--amber)}
+.st.full{background:var(--full-bg);color:var(--full)}
+.closed{color:var(--full)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;font-size:.8rem;color:var(--ink2);align-items:center}
+
+/* Price */
+.courses{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.course{border:1px solid var(--line);background:var(--bg);padding:32px 28px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.course .age{align-self:flex-start;font-size:.74rem;font-weight:700;letter-spacing:.14em;border:1px solid var(--bronze);color:var(--bronze-deep);padding:2px 12px;border-radius:999px}
+.course h3{font-size:1.22rem;letter-spacing:.04em;line-height:1.6}
+.course p{font-size:.89rem;color:var(--ink2);line-height:1.95}
+.course dl{margin:auto 0 0;display:grid;grid-template-columns:auto 1fr;gap:5px 14px;font-size:.87rem;border-top:1px solid var(--line);padding-top:16px}
+.course dt{color:var(--ink2)}
+.course dd{margin:0;text-align:right}
+.course .fee{font-family:var(--f-serif);text-align:right;line-height:1.2;padding-top:6px}
+.course .fee .yen{font-size:1rem}
+.course .fee .num{font-size:2rem;letter-spacing:.02em}
+.course .fee small{font-size:.78rem;color:var(--ink2)}
+.feenote{margin-top:26px;border:1px solid var(--line);background:var(--surface);padding:20px 26px;display:flex;flex-direction:column;gap:6px;font-size:.89rem}
+.feenote span{display:flex;gap:12px;align-items:baseline}
+.feenote span::before{content:"";width:6px;height:6px;background:var(--bronze);border-radius:50%;flex:none;transform:translateY(-2px)}
+
+/* Flow */
+.year{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0}
+.year li{padding:6px 26px 6px 0;margin-right:26px;border-top:1px solid var(--bronze);padding-top:22px;min-width:0;position:relative}
+.year .mo-en{font-family:var(--f-en);font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:var(--bronze)}
+.year .mo{font-family:var(--f-serif);font-size:1.9rem;line-height:1.3;display:block;margin-top:2px}
+.year h3{font-size:1.02rem;letter-spacing:.04em;margin-top:12px}
+.year p{font-size:.85rem;color:var(--ink2);margin-top:8px;line-height:1.9}
+
+/* Access */
+.access{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:44px;align-items:start}
+.map{border:1px solid var(--line);overflow:hidden;background:var(--surface)}
+.map svg{display:block;width:100%;height:auto}
+.addr dl{margin:0;display:grid;grid-template-columns:96px 1fr;gap:0 20px;font-size:.93rem}
+.addr dt{color:var(--bronze-deep);font-family:var(--f-serif);letter-spacing:.1em;padding-block:13px;border-bottom:1px solid var(--line)}
+.addr dd{margin:0;padding-block:13px;border-bottom:1px solid var(--line)}
+
+/* FAQ */
+.faq{display:flex;flex-direction:column;max-width:820px}
+.faq details{border-bottom:1px solid var(--line)}
+.faq details:first-child{border-top:1px solid var(--line)}
+.faq summary{cursor:pointer;font-weight:600;list-style:none;display:flex;gap:16px;padding-block:20px;font-size:.97rem;align-items:baseline}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::before{content:"Q";font-family:var(--f-en);color:var(--bronze);font-size:1.05rem}
+.faq summary::after{content:"＋";margin-left:auto;color:var(--bronze);font-weight:400}
+.faq details[open] summary::after{content:"−"}
+.faq details p{font-size:.92rem;color:var(--ink2);padding:0 0 22px 34px;max-width:40em}
+
+/* CTA帯 */
+.ctaband{background:var(--dark);color:var(--cream);text-align:center;padding-block:84px}
+.ctaband .en{color:#A9C69B}
+.ctaband h2{font-size:clamp(1.5rem,3.4vw,2.1rem);letter-spacing:.07em;margin-top:14px;line-height:1.7}
+.ctaband p{color:rgba(244,247,239,.8);font-size:.93rem;margin-top:14px}
+.ctaband .btn{margin-top:32px;background:var(--cream);color:var(--dark)}
+
+/* 申込フォーム */
+.apply{border:1px solid var(--line);background:var(--surface);padding:44px;display:flex;flex-direction:column;gap:22px}
+.progress{list-style:none;margin:0;padding:0;display:flex;gap:8px;font-size:.82rem;letter-spacing:.06em}
+.progress li{flex:1;text-align:center;border-bottom:2px solid var(--line);padding-bottom:8px;color:var(--ink2)}
+.progress li.on{border-color:var(--bronze);color:var(--ink);font-weight:700}
+form.ap{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+form.ap label,form.ap fieldset{display:flex;flex-direction:column;gap:5px;font-size:.85rem;min-width:0;margin:0}
+form.ap fieldset{border:0;padding:0}
+form.ap legend{padding:0;margin-bottom:5px}
+form.ap .full{grid-column:1/-1}
+form.ap .lab{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-weight:700}
+form.ap .req,form.ap .opt{font-size:.68rem;font-weight:700;border-radius:2px;padding:1px 7px;line-height:1.6;letter-spacing:.06em}
+form.ap .req{background:var(--bronze);color:#FFFFFF}
+form.ap .opt{background:var(--full-bg);color:var(--ink2)}
+form.ap input,form.ap select,form.ap textarea{font:inherit;font-size:.95rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:2px;padding:11px 13px;width:100%}
+form.ap textarea{min-height:96px;resize:vertical}
+form.ap .err{color:#B3402A;font-size:.78rem;min-height:1em}
+form.ap [aria-invalid="true"]{border-color:#B3402A}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.actions{grid-column:1/-1;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.small{font-size:.8rem;color:var(--ink2)}
+.confirm dl{margin:0;display:grid;grid-template-columns:minmax(120px,auto) 1fr;gap:9px 18px;font-size:.92rem}
+.confirm dt{color:var(--ink2)}
+.confirm dd{margin:0;overflow-wrap:anywhere;white-space:pre-wrap}
+.done{text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center;padding-block:12px}
+.done .ring{width:70px;height:70px;border:1px solid var(--bronze);border-radius:50%;display:grid;place-items:center}
+.done .ring svg{width:34px;height:34px}
+.done h3{font-size:1.35rem;letter-spacing:.06em}
+.done p{color:var(--ink2);max-width:34em;font-size:.93rem}
+
+footer{border-top:1px solid var(--line);padding-block:44px 110px;font-size:.82rem;color:var(--ink2)}
+footer .inner{display:flex;flex-direction:column;gap:6px}
+footer .fname{font-family:var(--f-serif);font-size:1rem;color:var(--ink);letter-spacing:.08em}
+.mobile-cta{display:none}
+
+@media (max-width:900px){
+  .feats{grid-template-columns:minmax(0,1fr);gap:26px}
+  .courses{grid-template-columns:minmax(0,1fr)}
+  .year{grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 0}
+  .lesson-grid{grid-template-columns:minmax(0,1fr)}
+  .access{grid-template-columns:minmax(0,1fr)}
+  .teacher{grid-template-columns:150px minmax(0,1fr);gap:26px;padding:28px}
+  section.blk{padding-block:72px}
+}
+@media (max-width:620px){
+  .inner{padding-inline:18px}
+  .hdr .btn{display:none}
+  .hdr .inner{flex-wrap:wrap;gap:2px}
+  .hdr nav{margin-left:0;width:100%}
+  form.ap{grid-template-columns:minmax(0,1fr)}
+  .teacher{grid-template-columns:minmax(0,1fr)}
+  .teacher .mono{width:130px}
+  .year{grid-template-columns:minmax(0,1fr)}
+  .apply{padding:26px 20px}
+  .hero .photo{object-position:62% center}
+  .hero .inner{padding-block:96px 48px}
+  .hero .facts span{padding-right:14px;margin-right:14px}
+  footer{padding-bottom:110px}
+  .mobile-cta{display:block;position:fixed;left:0;right:0;bottom:0;z-index:30;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(253,253,250,.94);backdrop-filter:blur(8px);border-top:1px solid var(--line)}
+  .mobile-cta .btn{width:100%}
+}
+</style>
+</head>
+<body>
+
+<div class="sampleband"><div class="inner"><span>これは制作サンプルです。教室・講師・料金・住所はすべて架空のものです。</span><a href="./">Rinka 制作室に戻る →</a></div></div>
+
+<header class="hdr">
+  <div class="inner">
+    <a class="brand" href="#top" aria-label="ヨガ教室 しずく トップ">
+      <span class="bname">ヨガ教室 しずく</span>
+      <span class="ben">Yoga Studio Shizuku</span>
+    </a>
+    <nav aria-label="メニュー"><ul>
+      <li><a href="#about">教室について</a></li>
+      <li><a href="#class">クラス</a></li>
+      <li><a href="#price">料金</a></li>
+      <li><a href="#flow">体験の流れ</a></li>
+      <li><a href="#access">アクセス</a></li>
+      <li><a href="#faq">よくある質問</a></li>
+    </ul></nav>
+    <a class="btn bronze" href="#apply">体験レッスン申込</a>
+  </div>
+</header>
+
+<main>
+<section class="hero" id="top">
+  <img class="photo" src="yoga-hero.jpg" alt="朝の光が入るスタジオと並んだヨガマット">
+  <div class="scrim" aria-hidden="true"></div>
+  <div class="inner">
+    <p class="eyebrow">Yoga Studio Shizuku</p>
+    <h1>静かな呼吸が、<br>一日を整える。</h1>
+    <p class="lead">住宅街の小さなヨガ教室です。定員8名の少人数制で、初めての方も、体が硬いと感じている方も、自分のペースで。朝の光の入るスタジオでお待ちしています。</p>
+    <div class="btns">
+      <a class="btn bronze" href="#apply">体験レッスンを申し込む</a>
+      <a class="btn ghost-w" href="#price">クラスと料金を見る</a>
+    </div>
+    <div class="facts"><span><b>最大8</b>名の少人数制</span><span>体験 <b>¥1,000</b></span><span><b>朝7時</b>〜夜21時</span><span>マット・ウェア貸出 無料</span></div>
+  </div>
+</section>
+
+<section class="blk" id="about">
+  <div class="inner">
+    <div class="head"><div class="rule"></div><span class="en">About</span><h2>教室について</h2></div>
+    <p class="about-lead">「しずく」は、緑の見える窓と木の床の、小さなヨガ教室です。ポーズの完成を目指すのではなく、呼吸とともに体をほぐし、日常に戻るための静かな時間をお渡しします。</p>
+    <div class="feats">
+      <div class="feat"><span class="no">01</span><h3>定員8名の少人数制</h3><p>講師の目が全員に届く人数に絞っています。一人ひとりの様子を見ながら進めるので、置いていかれる心配がありません。</p></div>
+      <div class="feat"><span class="no">02</span><h3>初めての方のためのクラス</h3><p>「やさしいヨガ」は、ポーズの形より呼吸を大切にするクラス。運動が久しぶりの方や、体が硬いと感じている方のための入口です。</p></div>
+      <div class="feat"><span class="no">03</span><h3>朝と夜、選べる時間</h3><p>出勤前の朝ヨガから、仕事帰りの夜のリラックスまで。月謝プランでは、週ごとに好きなクラスを選べます。</p></div>
+    </div>
+    <div class="teacher">
+      <div class="mono" aria-hidden="true"><span>藤</span></div>
+      <div>
+        <span class="role">主宰・インストラクター</span>
+        <h3>藤田 かなえ</h3>
+        <p>会社員時代に体調を崩したことをきっかけにヨガを始め、続けるうちに講師の資格を取りました。全米ヨガアライアンス認定講師（RYT200）。二児の母でもあり、「がんばらないヨガ」を大切にしています。</p>
+        <ul>
+          <li><b>担当</b>全クラス</li>
+          <li><b>得意</b>初心者向けのクラス、産後のリカバリー</li>
+          <li><b>好きなポーズ</b>木のポーズ（ぐらぐらする日も楽しみます）</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="blk surface" id="class">
+  <div class="inner">
+    <div class="head"><div class="rule"></div><span class="en">Class</span><h2>クラスとスケジュール</h2></div>
+    <div class="lesson-grid">
+      <figure>
+        <img src="yoga-lesson.jpg" alt="大きな窓のあるスタジオでヨガをする参加者">
+        <figcaption>朝の光が入るスタジオ ・ 定員8名の少人数制</figcaption>
+      </figure>
+      <div class="lesson-txt">
+        <h3>がんばりすぎない、<br>自分のための60分。</h3>
+        <p>どのクラスも60分。呼吸に合わせてゆっくり動くので、運動が久しぶりの方でも大丈夫です。きついポーズは無理にしなくて構いません。休みたいときは、その場で休んでください。</p>
+        <ul class="lesson-points">
+          <li><span class="k">定員</span><span>8名までの少人数制（要予約）</span></li>
+          <li><span class="k">持ち物</span><span>動きやすい服装・タオル・飲み物（マットは無料でお貸しします）</span></li>
+          <li><span class="k">予約</span><span>前日の21時まで ・ キャンセルも同じ時刻まで無料</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="tt-head"><h3>週間のスケジュール</h3><p>2026年11月のスケジュールです。祝日は日曜日の時間割になります。</p></div>
+    <div class="tt-wrap"><table class="tt">
+      <thead><tr><th>時間</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th><th>日</th></tr></thead>
+      <tbody>
+        <tr><th>7:00〜8:00</th><td><span class="slot"><b>朝ヨガ</b><span class="st ok">空きあり</span></span></td><td><span class="closed">—</span></td><td><span class="slot"><b>朝ヨガ</b><span class="st ok">空きあり</span></span></td><td><span class="closed">—</span></td><td><span class="slot"><b>朝ヨガ</b><span class="st few">残りわずか</span></span></td><td><span class="closed">—</span></td><td><span class="closed">—</span></td></tr>
+        <tr><th>10:30〜11:30</th><td><span class="slot"><b>やさしいヨガ</b><span class="st ok">空きあり</span></span></td><td><span class="slot"><b>ハタヨガ</b><span class="st few">残りわずか</span></span></td><td><span class="closed">—</span></td><td><span class="slot"><b>やさしいヨガ</b><span class="st ok">空きあり</span></span></td><td><span class="slot"><b>ハタヨガ</b><span class="st ok">空きあり</span></span></td><td><span class="slot"><b>やさしいヨガ</b><span class="st full">満席</span></span></td><td><span class="slot"><b>やさしいヨガ</b><span class="st ok">空きあり</span></span></td></tr>
+        <tr><th>19:30〜20:30</th><td><span class="slot"><b>夜のリラックス</b><span class="st ok">空きあり</span></span></td><td><span class="closed">—</span></td><td><span class="slot"><b>夜のリラックス</b><span class="st few">残りわずか</span></span></td><td><span class="slot"><b>ハタヨガ</b><span class="st ok">空きあり</span></span></td><td><span class="slot"><b>夜のリラックス</b><span class="st full">満席</span></span></td><td><span class="closed">—</span></td><td><span class="closed">—</span></td></tr>
+      </tbody>
+    </table></div>
+    <div class="legend"><span class="st ok">空きあり</span><span class="st few">残りわずか</span><span class="st full">満席</span><span>満席のクラスはキャンセル待ちも受け付けています</span></div>
+  </div>
+</section>
+
+<section class="blk" id="price">
+  <div class="inner">
+    <div class="head"><div class="rule"></div><span class="en">Price</span><h2>料金</h2><p>表示はすべて税込みです。入会金はありません。</p></div>
+    <div class="courses">
+      <article class="course"><span class="age">初めての方</span><h3>体験レッスン</h3><p>60分のクラスを1回。マットとウェアの貸出つきで、手ぶらで来られます。</p><dl><dt>時間</dt><dd>60分</dd><dt>対象</dt><dd>初めての方（お一人1回まで）</dd></dl><div class="fee"><span class="yen">¥</span><span class="num">1,000</span><small> ／回</small></div></article>
+      <article class="course"><span class="age">月謝</span><h3>月4回プラン</h3><p>週1回のペースで続ける方に。好きなクラスを自由に選べます。</p><dl><dt>回数</dt><dd>月4回</dd><dt>振替</dt><dd>翌月まで1回だけ繰り越し可</dd></dl><div class="fee"><span class="yen">¥</span><span class="num">7,700</span><small> ／月</small></div></article>
+      <article class="course"><span class="age">都度</span><h3>ドロップイン</h3><p>予定が不規則な方に。行ける週だけ、1回ごとに予約できます。</p><dl><dt>回数</dt><dd>1回ごと</dd><dt>予約</dt><dd>前日の21時まで</dd></dl><div class="fee"><span class="yen">¥</span><span class="num">2,200</span><small> ／回</small></div></article>
+    </div>
+    <div class="feenote">
+      <span>入会金はありません</span>
+      <span>5回回数券 9,900円（3か月有効）もあります</span>
+      <span>マット・ウェアのレンタルは無料です</span>
+    </div>
+  </div>
+</section>
+
+<section class="blk tint" id="flow">
+  <div class="inner">
+    <div class="head"><div class="rule"></div><span class="en">Flow</span><h2>体験の流れ</h2></div>
+    <ol class="year">
+      <li><span class="mo-en">Step</span><span class="mo">1</span><h3>お申込み</h3><p>下のフォームから、クラスと希望の日時を選んでお申し込みください。</p></li>
+      <li><span class="mo-en">Step</span><span class="mo">2</span><h3>ご案内のメール</h3><p>持ち物や当日の流れ、スタジオまでの道順をメールでお知らせします。</p></li>
+      <li><span class="mo-en">Step</span><span class="mo">3</span><h3>体験レッスン</h3><p>15分前に到着して着替え。60分のレッスンを受けます。</p></li>
+      <li><span class="mo-en">Step</span><span class="mo">4</span><h3>入会は後日でも</h3><p>その場で決める必要はありません。続けたいと思えたら、次回までにご連絡ください。</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="blk" id="access">
+  <div class="inner">
+    <div class="head"><div class="rule"></div><span class="en">Access</span><h2>アクセス</h2></div>
+    <div class="access">
+      <div class="map" aria-hidden="true"><svg viewBox="0 0 400 240">
+        <rect width="400" height="240" fill="#EDF2E8"/>
+        <g fill="#FFFFFF"><rect x="0" y="100" width="400" height="26"/><rect x="232" y="0" width="22" height="240"/></g>
+        <g fill="#D8E2D2"><rect x="20" y="20" width="80" height="60" rx="4"/><rect x="120" y="20" width="90" height="60" rx="4"/><rect x="20" y="146" width="90" height="70" rx="4"/><rect x="274" y="20" width="106" height="60" rx="4"/><rect x="274" y="146" width="106" height="70" rx="4"/></g>
+        <rect x="130" y="146" width="80" height="70" rx="4" fill="#E7EFDD" stroke="#75906E" stroke-width="1.5"/>
+        <g transform="translate(170 150)"><path d="M0 0c-9 0-15 7-15 15 0 11 15 25 15 25s15-14 15-25c0-8-6-15-15-15z" fill="#4F6B52"/><circle cy="15" r="5" fill="#FFFFFF"/></g>
+        <rect x="292" y="104" width="88" height="18" rx="3" fill="#26302A"/>
+        <text x="336" y="117" text-anchor="middle" font-size="11" fill="#F4F7EF" font-family="Hiragino Sans,sans-serif">こかげ駅</text>
+        <text x="170" y="208" text-anchor="middle" font-size="11" fill="#2E3830" font-family="Hiragino Sans,sans-serif">スタジオ</text>
+        <path d="M292 113 H200 V146" fill="none" stroke="#4F6B52" stroke-width="2.5" stroke-dasharray="6 5"/>
+      </svg></div>
+      <div class="addr">
+        <dl>
+          <dt>住所</dt><dd>こかげ市わかば町1-5（架空の住所です）</dd>
+          <dt>最寄り駅</dt><dd>こかげ駅 東口から徒歩4分</dd>
+          <dt>開室時間</dt><dd>7:00〜21:00（クラスのある時間のみ開室）</dd>
+          <dt>定休日</dt><dd>不定休（月ごとのスケジュールをご確認ください）</dd>
+          <dt>駐車場</dt><dd>なし ・ 駐輪場あり（近隣のコインパーキングをご利用ください）</dd>
+          <dt>お問い合わせ</dt><dd>体験レッスンのお申込みフォームからどうぞ</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="blk surface" id="faq">
+  <div class="inner">
+    <div class="head"><div class="rule"></div><span class="en">FAQ</span><h2>よくある質問</h2></div>
+    <div class="faq">
+      <details><summary>体が硬くても大丈夫ですか？</summary><p>大丈夫です。ポーズの形を競う場所ではありません。届かないところは、補助の道具（ブロックやベルト）を使って、無理のない形で進めます。参加者の多くが「体が硬い」と言って始めた方です。</p></details>
+      <details><summary>持ち物は何が必要ですか？</summary><p>動きやすい服装、タオル、飲み物です。ヨガマットとウェアは無料でお貸しできますので、仕事帰りに手ぶらで来る方も多いです。更衣スペースがあります。</p></details>
+      <details><summary>予約のキャンセルはいつまでできますか？</summary><p>前日の21時まで無料でキャンセル・変更ができます。それ以降は1回分として数えますので、体調がすぐれないときは早めにご連絡ください。</p></details>
+      <details><summary>妊娠中・産後でも参加できますか？</summary><p>妊娠中の方は、医師の許可がある場合のみ「やさしいヨガ」にご参加いただけます。産後の方は、産後2か月以降で、体調を見ながら少しずつどうぞ。不安な方は申込時にご相談ください。</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="ctaband">
+  <div class="inner">
+    <span class="en">Trial Lesson</span>
+    <h2>まずは、体験レッスンから。</h2>
+    <p>60分のレッスンとマットの貸出つきで1,000円。その場で入会を決める必要はありません。</p>
+    <a class="btn" href="#apply">体験レッスンを申し込む</a>
+  </div>
+</section>
+
+<section class="blk" id="apply">
+  <div class="inner">
+    <div class="apply">
+      <div class="head" style="margin:0"><div class="rule"></div><span class="en">Trial Lesson</span><h2 style="font-size:clamp(1.4rem,3vw,1.8rem);margin-top:10px">体験レッスンのお申込み</h2><p>ご希望の日時をうかがい、2日以内にメールでご連絡します。</p></div>
+      <ol class="progress" aria-label="お申込みの手順"><li class="on" id="pg1">1. 入力</li><li id="pg2">2. 確認</li><li id="pg3">3. 完了</li></ol>
+
+      <form class="ap" id="ap" novalidate>
+        <label><span class="lab">お名前<span class="req">必須</span></span><input id="a-name" type="text" autocomplete="name" placeholder="例：山田 花子"><span class="err" id="e-name"></span></label>
+        <label><span class="lab">メールアドレス<span class="req">必須</span></span><input id="a-mail" type="email" autocomplete="email" placeholder="例：hanako@example.com"><span class="err" id="e-mail"></span></label>
+        <label><span class="lab">ご希望のクラス<span class="req">必須</span></span><select id="a-course"><option value="">選んでください</option><option>朝ヨガ</option><option>やさしいヨガ</option><option>ハタヨガ</option><option>夜のリラックス</option><option>まだ決めていない</option></select><span class="err" id="e-course"></span></label>
+        <label><span class="lab">ヨガの経験<span class="req">必須</span></span><select id="a-exp"><option value="">選んでください</option><option>初めて</option><option>少しある（1年未満）</option><option>定期的にしている</option></select><span class="err" id="e-exp"></span></label>
+        <fieldset class="full"><legend><span class="lab">ご希望の日時<span class="req">必須</span></span></legend>
+          <div class="pair">
+            <label><span class="lab">第1希望</span><select id="a-day1"><option value="">選んでください</option></select></label>
+            <label><span class="lab">第2希望<span class="opt">任意</span></span><select id="a-day2"><option value="">選んでください</option></select></label>
+          </div><span class="err" id="e-day1"></span>
+        </fieldset>
+        <label class="full"><span class="lab">ご質問・ご相談<span class="opt">任意</span></span><textarea id="a-note" maxlength="500" placeholder="例：腰痛持ちでも大丈夫ですか？／産後でも参加できますか？"></textarea></label>
+        <div class="actions"><button class="btn bronze" type="submit">入力内容を確認する</button><span class="small">サンプルのため、実際には送信されません。</span></div>
+      </form>
+
+      <div class="confirm" id="confirm" hidden>
+        <p style="margin-bottom:12px">以下の内容でお申込みします。よろしければ「申し込む」を押してください。</p>
+        <dl id="confirm-list"></dl>
+        <div class="actions" style="margin-top:18px"><button class="btn ghost" type="button" id="back">修正する</button><button class="btn bronze" type="button" id="send">申し込む</button></div>
+      </div>
+
+      <div class="done" id="done" hidden>
+        <div class="ring" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M14 34l12 12 24-26" fill="none" stroke="#4F6B52" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>お申込みありがとうございます</h3>
+        <p id="done-msg">2日以内に、ご入力のメールアドレスへ体験レッスンの日時をご連絡します。</p>
+        <p class="small">これは制作サンプルのため、実際には送信されていません。本番では、お申込みが教室のメールに届き、お客様にも受付メールが自動で送られる形にできます。</p>
+        <button class="btn ghost" type="button" id="again">もう一度試す</button>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="inner">
+    <span class="fname">ヨガ教室 しずく</span>
+    <span>© ヨガ教室 しずく（架空の教室）</span>
+    <span>このサイトは <a href="./">Rinka 制作室</a> の制作サンプルです。</span>
+  </div>
+</footer>
+
+<div class="mobile-cta"><a class="btn bronze" href="#apply">体験レッスンを申し込む</a></div>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var slots=["月 7:00 朝ヨガ","月 10:30 やさしいヨガ","月 19:30 夜のリラックス","火 10:30 ハタヨガ","水 7:00 朝ヨガ","水 19:30 夜のリラックス","木 10:30 やさしいヨガ","木 19:30 ハタヨガ","金 7:00 朝ヨガ","金 10:30 ハタヨガ","土 10:30 やさしいヨガ","日 10:30 やさしいヨガ"];
+  ["a-day1","a-day2"].forEach(function(id){var s=$(id);slots.forEach(function(t){var o=document.createElement("option");o.textContent=t;s.appendChild(o)})});
+  var fields=[
+    ["a-name","e-name","お名前を入力してください。",function(v){return v.trim()!==""}],
+    ["a-mail","e-mail","メールアドレスを正しく入力してください（例：hanako@example.com）。",function(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())}],
+    ["a-course","e-course","クラスを選んでください（未定でも構いません）。",function(v){return v!==""}],
+    ["a-exp","e-exp","ヨガの経験を選んでください。",function(v){return v!==""}],
+    ["a-day1","e-day1","第1希望の日時を選んでください。",function(v){return v!==""}]
+  ];
+  function check(){
+    var ok=true,first=null;
+    fields.forEach(function(f){var el=$(f[0]),good=f[3](el.value);$(f[1]).textContent=good?"":f[2];el.setAttribute("aria-invalid",String(!good));if(!good&&!first)first=el;ok=ok&&good});
+    if(first)first.focus();
+    return ok;
+  }
+  function step(n){
+    $("ap").hidden=n!==1;$("confirm").hidden=n!==2;$("done").hidden=n!==3;
+    ["pg1","pg2","pg3"].forEach(function(id,i){$(id).className=i===n-1?"on":""});
+    $("apply").scrollIntoView({block:"start"});
+  }
+  var labels=[["お名前","a-name"],["メールアドレス","a-mail"],["ご希望のクラス","a-course"],["ヨガの経験","a-exp"],["第1希望","a-day1"],["第2希望","a-day2"],["ご質問・ご相談","a-note"]];
+  $("ap").addEventListener("submit",function(e){
+    e.preventDefault(); if(!check())return;
+    var dl=$("confirm-list"); dl.textContent="";
+    labels.forEach(function(l){var dt=document.createElement("dt"),dd=document.createElement("dd");dt.textContent=l[0];dd.textContent=$(l[1]).value.trim()||"（なし）";dl.appendChild(dt);dl.appendChild(dd)});
+    step(2);
+  });
+  $("back").addEventListener("click",function(){step(1)});
+  $("send").addEventListener("click",function(){$("done-msg").textContent=$("a-name").value.trim()+" 様、2日以内に "+$("a-mail").value.trim()+" へ体験レッスンの日時をご連絡します。";step(3)});
+  $("again").addEventListener("click",function(){$("ap").reset();fields.forEach(function(f){$(f[1]).textContent="";$(f[0]).removeAttribute("aria-invalid")});step(1)});
+})();
+</script>
+
+</body>
+</html>

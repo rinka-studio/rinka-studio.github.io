@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="架空のパン屋カフェのサイト見本（Rinka 制作室の制作サンプル）。">
+<title>パン工房 ひだまり</title>
+<style>
+/* Layout: サンプル表示帯 → 固定ヘッダー → 写真ヒーロー → About（こだわり・店主）→ Menu（写真・メニューカード）→ Flow（お取り置きの流れ）→ Access → FAQ → CTA帯 → お取り置きフォーム → フッター */
+:root{
+  color-scheme:light;
+  --bg:#FBF5EA; --bg2:#F4EADA; --surface:#FFFDF7;
+  --ink:#33261A; --ink2:#77644F; --line:#E7D9C0; --line-strong:#CDAF85;
+  --bronze:#A9713A; --bronze-deep:#7C4F22;
+  --amber-bg:#F7EACB; --amber:#8A6414;
+  --ok:#6B7F43; --ok-bg:#EDF1DF;
+  --full:#9A8B74; --full-bg:#F0EADD;
+  --dark:#2E2013; --cream:#F9F2E2;
+  --f-serif:"Hiragino Mincho ProN","Hiragino Mincho Pro","YuMincho","Yu Mincho","Noto Serif JP",serif;
+  --f-sans:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","Yu Gothic UI",sans-serif;
+  --f-en:"Hiragino Mincho ProN",Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-sans);font-size:15.5px;line-height:1.9;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+[hidden]{display:none!important}
+a{color:var(--bronze-deep)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--bronze);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-serif);font-weight:600;margin:0;line-height:1.5}
+p{margin:0}
+.inner{max-width:1080px;margin:0 auto;padding-inline:24px}
+.en{font-family:var(--f-en);font-size:.72rem;letter-spacing:.34em;text-transform:uppercase;color:var(--bronze)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font:inherit;font-size:.92rem;font-weight:600;letter-spacing:.08em;text-decoration:none;border:0;border-radius:2px;padding:13px 30px;cursor:pointer;transition:opacity .2s}
+.btn:hover{opacity:.85}
+.btn.solid{background:var(--dark);color:var(--cream)}
+.btn.bronze{background:var(--bronze);color:#FFFDF7}
+.btn.ghost{background:transparent;border:1px solid var(--ink);color:var(--ink)}
+.btn.ghost-w{background:transparent;border:1px solid rgba(249,242,226,.85);color:var(--cream)}
+
+/* サンプル表示帯 */
+.sampleband{background:var(--dark);color:var(--cream);font-size:.76rem;line-height:1.6}
+.sampleband .inner{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding-block:7px}
+.sampleband a{color:#EBCB9C;text-decoration:none}
+.sampleband a:hover{text-decoration:underline}
+
+/* ヘッダー */
+.hdr{position:sticky;top:0;z-index:20;background:rgba(251,245,234,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.hdr .inner{display:flex;align-items:center;gap:18px;padding-block:12px}
+.brand{text-decoration:none;color:var(--ink);line-height:1.25}
+.brand .bname{font-family:var(--f-serif);font-size:1.14rem;letter-spacing:.08em;display:block}
+.brand .ben{font-family:var(--f-en);font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--bronze);display:block}
+.hdr nav{margin-left:auto;min-width:0}
+.hdr ul{list-style:none;margin:0;padding:0;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.hdr ul::-webkit-scrollbar{display:none}
+.hdr li a{display:block;padding:6px 11px;text-decoration:none;color:var(--ink);font-size:.86rem;white-space:nowrap;border-radius:2px}
+.hdr li a:hover{background:var(--bg2)}
+.hdr .btn{padding:8px 20px;font-size:.84rem;white-space:nowrap}
+
+/* ヒーロー */
+.hero{position:relative;min-height:min(92vh,780px);display:flex;align-items:flex-end;color:var(--cream);overflow:hidden;background:#3A2A18}
+.hero .photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+.hero .scrim{position:absolute;inset:0;background:linear-gradient(to top,rgba(38,26,13,.8) 0%,rgba(38,26,13,.36) 42%,rgba(38,26,13,.06) 68%),linear-gradient(78deg,rgba(38,26,13,.46) 0%,rgba(38,26,13,0) 55%)}
+.hero .inner{position:relative;width:100%;padding-block:120px 64px}
+.hero .eyebrow{display:flex;align-items:center;gap:14px;font-family:var(--f-en);font-size:.74rem;letter-spacing:.34em;text-transform:uppercase;color:#F0D29A}
+.hero .eyebrow::before{content:"";width:44px;height:1px;background:#F0D29A}
+.hero h1{font-size:clamp(2rem,5.2vw,3.3rem);line-height:1.45;letter-spacing:.04em;margin-top:20px;text-wrap:balance}
+.hero p.lead{margin-top:20px;max-width:34em;font-size:.98rem;line-height:2;color:rgba(249,242,226,.92)}
+.hero .btns{display:flex;gap:14px;flex-wrap:wrap;margin-top:32px}
+.hero .facts{display:flex;gap:0;flex-wrap:wrap;margin-top:38px;border-top:1px solid rgba(249,242,226,.35);padding-top:18px;font-size:.82rem;letter-spacing:.08em;color:rgba(249,242,226,.85)}
+.hero .facts span{padding-right:22px;margin-right:22px;border-right:1px solid rgba(249,242,226,.3)}
+.hero .facts span:last-child{border-right:0;margin-right:0;padding-right:0}
+.hero .facts b{font-family:var(--f-serif);font-size:1.25rem;font-weight:600;color:#fff;margin-right:3px}
+
+/* セクション共通 */
+section.blk{padding-block:96px}
+section.blk.tint{background:var(--bg2)}
+section.blk.surface{background:var(--surface)}
+.head{margin-bottom:44px}
+.head .rule{width:52px;height:1px;background:var(--bronze);margin-bottom:18px}
+.head h2{font-size:clamp(1.55rem,3.4vw,2.1rem);letter-spacing:.06em;margin-top:10px}
+.head p{color:var(--ink2);max-width:42em;margin-top:12px;font-size:.94rem}
+
+/* About */
+.about-lead{font-family:var(--f-serif);font-size:clamp(1.12rem,2.2vw,1.35rem);line-height:2.1;letter-spacing:.03em;max-width:44em}
+.feats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:36px;margin-top:56px}
+.feat{border-top:1px solid var(--bronze);padding-top:20px;min-width:0}
+.feat .no{font-family:var(--f-en);font-size:.8rem;letter-spacing:.2em;color:var(--bronze)}
+.feat h3{font-size:1.12rem;letter-spacing:.05em;margin-top:10px}
+.feat p{font-size:.9rem;color:var(--ink2);margin-top:10px;line-height:1.95}
+.teacher{display:grid;grid-template-columns:220px minmax(0,1fr);gap:40px;margin-top:72px;padding:40px;border:1px solid var(--line);background:var(--surface);align-items:center}
+.teacher .mono{aspect-ratio:1;border:1px solid var(--line);background:var(--bg2);display:grid;place-items:center}
+.teacher .mono span{font-family:var(--f-serif);font-size:3.4rem;color:var(--bronze-deep)}
+.teacher .role{font-size:.8rem;letter-spacing:.18em;color:var(--bronze-deep)}
+.teacher h3{font-size:1.45rem;letter-spacing:.08em;margin-top:6px}
+.teacher p{margin-top:14px;color:var(--ink2);font-size:.94rem;max-width:42em}
+.teacher ul{list-style:none;margin:20px 0 0;padding:16px 0 0;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:4px;font-size:.88rem}
+.teacher ul b{font-weight:600;color:var(--ink);margin-right:.6em}
+
+/* Menu */
+.lesson-grid{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:48px;align-items:center}
+.lesson-grid figure{margin:0}
+.lesson-grid figure img{width:100%;height:100%;object-fit:cover;aspect-ratio:3/2.1}
+.lesson-grid figcaption{font-size:.78rem;color:var(--ink2);margin-top:10px;letter-spacing:.05em}
+.lesson-txt h3{font-size:1.3rem;letter-spacing:.05em;line-height:1.7}
+.lesson-txt p{color:var(--ink2);font-size:.94rem;margin-top:16px}
+.lesson-points{list-style:none;margin:26px 0 0;padding:0;display:flex;flex-direction:column}
+.lesson-points li{display:flex;gap:14px;padding-block:13px;border-top:1px solid var(--line);font-size:.92rem;align-items:baseline}
+.lesson-points li:last-child{border-bottom:1px solid var(--line)}
+.lesson-points .k{font-family:var(--f-serif);white-space:nowrap;color:var(--bronze-deep);letter-spacing:.05em}
+.courses{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-top:64px}
+.course{border:1px solid var(--line);background:var(--bg);padding:32px 28px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.course .age{align-self:flex-start;font-size:.74rem;font-weight:700;letter-spacing:.14em;border:1px solid var(--bronze);color:var(--bronze-deep);padding:2px 12px;border-radius:999px}
+.course h3{font-size:1.22rem;letter-spacing:.04em;line-height:1.6}
+.course p{font-size:.89rem;color:var(--ink2);line-height:1.95}
+.course dl{margin:auto 0 0;display:grid;grid-template-columns:1fr auto;gap:9px 14px;font-size:.9rem;border-top:1px solid var(--line);padding-top:16px}
+.course dt{color:var(--ink)}
+.course dt small{display:block;color:var(--ink2);font-size:.76rem}
+.course dd{margin:0;text-align:right;font-family:var(--f-serif);font-size:1.02rem;white-space:nowrap}
+.feenote{margin-top:26px;border:1px solid var(--line);background:var(--surface);padding:20px 26px;display:flex;flex-direction:column;gap:6px;font-size:.89rem}
+.feenote span{display:flex;gap:12px;align-items:baseline}
+.feenote span::before{content:"";width:6px;height:6px;background:var(--bronze);border-radius:50%;flex:none;transform:translateY(-2px)}
+
+/* Flow */
+.year{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0}
+.year li{padding:6px 26px 6px 0;margin-right:26px;border-top:1px solid var(--bronze);padding-top:22px;min-width:0;position:relative}
+.year .mo-en{font-family:var(--f-en);font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:var(--bronze)}
+.year .mo{font-family:var(--f-serif);font-size:1.9rem;line-height:1.3;display:block;margin-top:2px}
+.year h3{font-size:1.02rem;letter-spacing:.04em;margin-top:12px}
+.year p{font-size:.85rem;color:var(--ink2);margin-top:8px;line-height:1.9}
+
+/* Access */
+.access{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:44px;align-items:start}
+.map{border:1px solid var(--line);overflow:hidden;background:var(--surface)}
+.map svg{display:block;width:100%;height:auto}
+.addr dl{margin:0;display:grid;grid-template-columns:96px 1fr;gap:0 20px;font-size:.93rem}
+.addr dt{color:var(--bronze-deep);font-family:var(--f-serif);letter-spacing:.1em;padding-block:13px;border-bottom:1px solid var(--line)}
+.addr dd{margin:0;padding-block:13px;border-bottom:1px solid var(--line)}
+
+/* FAQ */
+.faq{display:flex;flex-direction:column;max-width:820px}
+.faq details{border-bottom:1px solid var(--line)}
+.faq details:first-child{border-top:1px solid var(--line)}
+.faq summary{cursor:pointer;font-weight:600;list-style:none;display:flex;gap:16px;padding-block:20px;font-size:.97rem;align-items:baseline}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::before{content:"Q";font-family:var(--f-en);color:var(--bronze);font-size:1.05rem}
+.faq summary::after{content:"＋";margin-left:auto;color:var(--bronze);font-weight:400}
+.faq details[open] summary::after{content:"−"}
+.faq details p{font-size:.92rem;color:var(--ink2);padding:0 0 22px 34px;max-width:40em}
+
+/* CTA帯 */
+.ctaband{background:var(--dark);color:var(--cream);text-align:center;padding-block:84px}
+.ctaband .en{color:#D8A860}
+.ctaband h2{font-size:clamp(1.5rem,3.4vw,2.1rem);letter-spacing:.07em;margin-top:14px;line-height:1.7}
+.ctaband p{color:rgba(249,242,226,.8);font-size:.93rem;margin-top:14px}
+.ctaband .btn{margin-top:32px;background:var(--cream);color:var(--dark)}
+
+/* 予約フォーム */
+.apply{border:1px solid var(--line);background:var(--surface);padding:44px;display:flex;flex-direction:column;gap:22px}
+.progress{list-style:none;margin:0;padding:0;display:flex;gap:8px;font-size:.82rem;letter-spacing:.06em}
+.progress li{flex:1;text-align:center;border-bottom:2px solid var(--line);padding-bottom:8px;color:var(--ink2)}
+.progress li.on{border-color:var(--bronze);color:var(--ink);font-weight:700}
+form.ap{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+form.ap label,form.ap fieldset{display:flex;flex-direction:column;gap:5px;font-size:.85rem;min-width:0;margin:0}
+form.ap fieldset{border:0;padding:0}
+form.ap legend{padding:0;margin-bottom:5px}
+form.ap .full{grid-column:1/-1}
+form.ap .lab{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-weight:700}
+form.ap .req,form.ap .opt{font-size:.68rem;font-weight:700;border-radius:2px;padding:1px 7px;line-height:1.6;letter-spacing:.06em}
+form.ap .req{background:var(--bronze);color:#FFFDF7}
+form.ap .opt{background:var(--full-bg);color:var(--ink2)}
+form.ap input,form.ap select,form.ap textarea{font:inherit;font-size:.95rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:2px;padding:11px 13px;width:100%}
+form.ap textarea{min-height:96px;resize:vertical}
+form.ap .err{color:#B3402A;font-size:.78rem;min-height:1em}
+form.ap [aria-invalid="true"]{border-color:#B3402A}
+.actions{grid-column:1/-1;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.small{font-size:.8rem;color:var(--ink2)}
+.confirm dl{margin:0;display:grid;grid-template-columns:minmax(120px,auto) 1fr;gap:9px 18px;font-size:.92rem}
+.confirm dt{color:var(--ink2)}
+.confirm dd{margin:0;overflow-wrap:anywhere;white-space:pre-wrap}
+.done{text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center;padding-block:12px}
+.done .ring{width:70px;height:70px;border:1px solid var(--bronze);border-radius:50%;display:grid;place-items:center}
+.done .ring svg{width:34px;height:34px}
+.done h3{font-size:1.35rem;letter-spacing:.06em}
+.done p{color:var(--ink2);max-width:34em;font-size:.93rem}
+
+footer{border-top:1px solid var(--line);padding-block:44px 110px;font-size:.82rem;color:var(--ink2)}
+footer .inner{display:flex;flex-direction:column;gap:6px}
+footer .fname{font-family:var(--f-serif);font-size:1rem;color:var(--ink);letter-spacing:.08em}
+.mobile-cta{display:none}
+
+@media (max-width:900px){
+  .feats{grid-template-columns:minmax(0,1fr);gap:26px}
+  .courses{grid-template-columns:minmax(0,1fr)}
+  .year{grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 0}
+  .lesson-grid{grid-template-columns:minmax(0,1fr)}
+  .access{grid-template-columns:minmax(0,1fr)}
+  .teacher{grid-template-columns:150px minmax(0,1fr);gap:26px;padding:28px}
+  section.blk{padding-block:72px}
+}
+@media (max-width:620px){
+  .inner{padding-inline:18px}
+  .hdr .btn{display:none}
+  .hdr .inner{flex-wrap:wrap;gap:2px}
+  .hdr nav{margin-left:0;width:100%}
+  form.ap{grid-template-columns:minmax(0,1fr)}
+  .teacher{grid-template-columns:minmax(0,1fr)}
+  .teacher .mono{width:130px}
+  .year{grid-template-columns:minmax(0,1fr)}
+  .apply{padding:26px 20px}
+  .hero .photo{object-position:38% center}
+  .hero .inner{padding-block:96px 48px}
+  .hero .facts span{padding-right:14px;margin-right:14px}
+  footer{padding-bottom:110px}
+  .mobile-cta{display:block;position:fixed;left:0;right:0;bottom:0;z-index:30;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(251,245,234,.94);backdrop-filter:blur(8px);border-top:1px solid var(--line)}
+  .mobile-cta .btn{width:100%}
+}
+</style>
+</head>
+<body>
+
+<div class="sampleband"><div class="inner"><span>これは制作サンプルです。お店・メニュー・料金・住所はすべて架空のものです。</span><a href="./">Rinka 制作室に戻る →</a></div></div>
+
+<header class="hdr">
+  <div class="inner">
+    <a class="brand" href="#top" aria-label="パン工房 ひだまり トップ">
+      <span class="bname">パン工房 ひだまり</span>
+      <span class="ben">Hidamari Bakery &amp; Café</span>
+    </a>
+    <nav aria-label="メニュー"><ul>
+      <li><a href="#about">お店について</a></li>
+      <li><a href="#menu">メニュー</a></li>
+      <li><a href="#flow">お取り置き</a></li>
+      <li><a href="#access">アクセス</a></li>
+      <li><a href="#faq">よくある質問</a></li>
+    </ul></nav>
+    <a class="btn bronze" href="#reserve">お取り置き予約</a>
+  </div>
+</header>
+
+<main>
+<section class="hero" id="top">
+  <img class="photo" src="cafe-hero.jpg" alt="木のカウンターに並ぶ焼きたてのパンとコーヒー">
+  <div class="scrim" aria-hidden="true"></div>
+  <div class="inner">
+    <p class="eyebrow">Hidamari Bakery &amp; Café</p>
+    <h1>焼きたての香りで、<br>一日が始まる。</h1>
+    <p class="lead">住宅街の小さなパン屋カフェです。国産小麦と自家製酵母で、毎朝ていねいに焼き上げています。焼きたては朝・昼・午後の3回。店内の小さなカフェスペースでもお召し上がりいただけます。</p>
+    <div class="btns">
+      <a class="btn bronze" href="#reserve">パンをお取り置きする</a>
+      <a class="btn ghost-w" href="#menu">メニューを見る</a>
+    </div>
+    <div class="facts"><span><b>7:00</b>オープン</span><span><b>1日3回</b>の焼きたて</span><span><b>12</b>席のカフェスペース</span><span>お取り置き・テイクアウト可</span></div>
+  </div>
+</section>
+
+<section class="blk" id="about">
+  <div class="inner">
+    <div class="head"><div class="rule"></div><span class="en">About</span><h2>お店について</h2></div>
+    <p class="about-lead">「ひだまり」は、住宅街の角にある小さなパン屋カフェです。朝の光が入る木の店内で、焼きたてのパンと淹れたてのコーヒーを。毎日通いたくなる、ふだんの美味しさを目指しています。</p>
+    <div class="feats">
+      <div class="feat"><span class="no">01</span><h3>国産小麦と自家製酵母</h3><p>北海道産小麦を中心に、その日のパンに合わせて粉を配合。レーズンから起こした自家製酵母で、ゆっくり発酵させています。</p></div>
+      <div class="feat"><span class="no">02</span><h3>焼きたては1日3回</h3><p>7時・11時・15時に焼きたてが並びます。朝は食パンとクロワッサン、昼は惣菜パン、午後はお菓子パンが中心です。</p></div>
+      <div class="feat"><span class="no">03</span><h3>小さなカフェスペース</h3><p>12席のイートインスペースがあります。焼きたてのパンはもちろん、季節のスープや自家製レモネードもご用意しています。</p></div>
+    </div>
+    <div class="teacher">
+      <div class="mono" aria-hidden="true"><span>高</span></div>
+      <div>
+        <span class="role">店主・パン職人</span>
+        <h3>高橋 陽子</h3>
+        <p>製パンスクールを卒業後、市内のベーカリーで8年間修業し、生まれ育ったこの町にお店を開きました。夫とふたりで営む小さなお店です。「明日の朝が楽しみになるパン」を焼きたいと思っています。</p>
+        <ul>
+          <li><b>担当</b>パン製造・カフェ全般</li>
+          <li><b>得意</b>酵母のパン、季節の果物のデニッシュ</li>
+          <li><b>好きなパン</b>休みの日に焼く、全粒粉のカンパーニュ</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="blk surface" id="menu">
+  <div class="inner">
+    <div class="head"><div class="rule"></div><span class="en">Menu</span><h2>メニュー</h2><p>表示はすべて税込みです。季節のパンは、その日に店頭とSNSでお知らせしています。</p></div>
+    <div class="lesson-grid">
+      <figure>
+        <img src="cafe-bread.jpg" alt="焼きたてのクロワッサンとカンパーニュを天板にのせる店主の手">
+        <figcaption>朝いちばんの焼きたて ・ 店内の工房で焼き上げています</figcaption>
+      </figure>
+      <div class="lesson-txt">
+        <h3>毎朝、店の奥の工房で<br>焼いています。</h3>
+        <p>生地の仕込みは前日の夕方から。当日の朝、焼きたての香りと一緒に開店します。人気のパンは午前中に売り切れることもあるため、確実に買いたい日はお取り置きがおすすめです。</p>
+        <ul class="lesson-points">
+          <li><span class="k">焼き上がり</span><span>7:00 ／ 11:00 ／ 15:00 の1日3回</span></li>
+          <li><span class="k">売り切れ</span><span>その日の分がなくなり次第終了（お取り置き可）</span></li>
+          <li><span class="k">アレルギー</span><span>特定原材料の表示を、各商品の札に付けています</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="courses">
+      <article class="course"><span class="age">定番</span><h3>食パンと食事パン</h3><p>毎日の食卓に。トーストすると香ばしい、ふだん使いのパンです。</p><dl><dt>ひだまり食パン<small>1斤 ・ もっちり、ほんのり甘い</small></dt><dd>¥480</dd><dt>全粒粉のカンパーニュ<small>自家製酵母 ・ ずっしり大きめ</small></dt><dd>¥680</dd><dt>バゲット<small>皮はパリッと、中はもちもち</small></dt><dd>¥320</dd><dt>くるみパン<small>香ばしくローストしたくるみ入り</small></dt><dd>¥300</dd></dl></article>
+      <article class="course"><span class="age">季節とおやつ</span><h3>季節のパンとお菓子パン</h3><p>旬の果物や、その季節だけの味を。午後3時の焼きたてが中心です。</p><dl><dt>クロワッサン<small>発酵バターの香り ・ 朝の焼きたて</small></dt><dd>¥280</dd><dt>栗とくるみのデニッシュ<small>秋の限定 ・ 渋皮栗のクリーム</small></dt><dd>¥420</dd><dt>あんバターサンド<small>自家製あんこと有塩バター</small></dt><dd>¥350</dd><dt>メロンパン<small>クッキー生地はザクザク</small></dt><dd>¥240</dd></dl></article>
+      <article class="course"><span class="age">カフェ</span><h3>ドリンクと朝のセット</h3><p>カフェスペースでは、焼きたてのパンと一緒にどうぞ。テイクアウトもできます。</p><dl><dt>ブレンドコーヒー<small>深煎り ・ パンに合わせてブレンド</small></dt><dd>¥450</dd><dt>カフェラテ<small>ミルクたっぷり、やさしい味</small></dt><dd>¥520</dd><dt>自家製レモネード<small>はちみつ漬けレモンの爽やかさ</small></dt><dd>¥500</dd><dt>モーニングセット<small>7:00〜10:30 ・ トースト＋卵＋ドリンク</small></dt><dd>¥650</dd></dl></article>
+    </div>
+    <div class="feenote">
+      <span>朝のセット（モーニングセット）は10:30までのご注文です</span>
+      <span>パンとドリンクを一緒に買うと、ドリンクが50円引きになります</span>
+      <span>売り切れの際はご容赦ください。お取り置きで確実にご用意できます</span>
+    </div>
+  </div>
+</section>
+
+<section class="blk tint" id="flow">
+  <div class="inner">
+    <div class="head"><div class="rule"></div><span class="en">Reserve</span><h2>お取り置きの流れ</h2><p>人気のパンは午前中に売り切れることも。お取り置きなら、焼きたてを確実にご用意できます。</p></div>
+    <ol class="year">
+      <li><span class="mo-en">Step</span><span class="mo">1</span><h3>前日の17時までにご連絡</h3><p>下のフォームかお電話で、パンと個数、受け取りの時間帯をお知らせください。</p></li>
+      <li><span class="mo-en">Step</span><span class="mo">2</span><h3>焼きたてからご用意</h3><p>当日の焼きたての中から、ご注文分を先に取り置きます。</p></li>
+      <li><span class="mo-en">Step</span><span class="mo">3</span><h3>店頭でお渡し</h3><p>ご希望の時間帯に合わせてご用意します。焼きたてが良い方は、焼き上がり時間にどうぞ。</p></li>
+      <li><span class="mo-en">Step</span><span class="mo">4</span><h3>お支払いは受け取り時に</h3><p>現金・クレジットカード・電子マネーが使えます。</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="blk" id="access">
+  <div class="inner">
+    <div class="head"><div class="rule"></div><span class="en">Access</span><h2>アクセス</h2></div>
+    <div class="access">
+      <div class="map" aria-hidden="true"><svg viewBox="0 0 400 240">
+        <rect width="400" height="240" fill="#F1E7D2"/>
+        <g fill="#FFFDF7"><rect x="0" y="100" width="400" height="26"/><rect x="232" y="0" width="22" height="240"/></g>
+        <g fill="#E4D5B6"><rect x="20" y="20" width="80" height="60" rx="4"/><rect x="120" y="20" width="90" height="60" rx="4"/><rect x="20" y="146" width="90" height="70" rx="4"/><rect x="274" y="20" width="106" height="60" rx="4"/><rect x="274" y="146" width="106" height="70" rx="4"/></g>
+        <rect x="130" y="146" width="80" height="70" rx="4" fill="#F7EACB" stroke="#A9713A" stroke-width="1.5"/>
+        <g transform="translate(170 150)"><path d="M0 0c-9 0-15 7-15 15 0 11 15 25 15 25s15-14 15-25c0-8-6-15-15-15z" fill="#7C4F22"/><circle cy="15" r="5" fill="#FFFDF7"/></g>
+        <rect x="292" y="104" width="88" height="18" rx="3" fill="#2E2013"/>
+        <text x="336" y="117" text-anchor="middle" font-size="11" fill="#F9F2E2" font-family="Hiragino Sans,sans-serif">さんさん駅</text>
+        <text x="170" y="208" text-anchor="middle" font-size="11" fill="#33261A" font-family="Hiragino Sans,sans-serif">お店</text>
+        <path d="M292 113 H200 V146" fill="none" stroke="#7C4F22" stroke-width="2.5" stroke-dasharray="6 5"/>
+      </svg></div>
+      <div class="addr">
+        <dl>
+          <dt>住所</dt><dd>さんさん市あおぞら町3-8（架空の住所です）</dd>
+          <dt>最寄り駅</dt><dd>さんさん駅 北口から徒歩7分</dd>
+          <dt>営業時間</dt><dd>7:00〜18:00（売り切れ次第閉店）</dd>
+          <dt>定休日</dt><dd>月曜日・火曜日</dd>
+          <dt>駐車場</dt><dd>店前に3台 ・ 駐輪場あり</dd>
+          <dt>お問い合わせ</dt><dd>お取り置きフォームからどうぞ</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="blk surface" id="faq">
+  <div class="inner">
+    <div class="head"><div class="rule"></div><span class="en">FAQ</span><h2>よくある質問</h2></div>
+    <div class="faq">
+      <details><summary>パンのお取り置きはできますか？</summary><p>できます。前日の17時までに、下のフォームかお電話でお知らせください。当日のお取り置きは、お電話で在庫を確認のうえ承ります。</p></details>
+      <details><summary>アレルギー表示はありますか？</summary><p>各商品の札に、特定原材料（小麦・卵・乳など）の表示を付けています。心配な方は、店頭でもお気軽におたずねください。</p></details>
+      <details><summary>イートインはできますか？</summary><p>12席の小さなカフェスペースがあります。お買い上げのパンはもちろん、モーニングセットやドリンクだけのご利用も歓迎です。</p></details>
+      <details><summary>駐車場はありますか？</summary><p>店前に3台分あります。自転車は店横の駐輪スペースにどうぞ。満車の際は、近隣のコインパーキングをご利用ください。</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="ctaband">
+  <div class="inner">
+    <span class="en">Reserve</span>
+    <h2>焼きたてを、明日の朝に。</h2>
+    <p>前日の17時までのご予約で、焼きたてを確実にご用意します。</p>
+    <a class="btn" href="#reserve">パンをお取り置きする</a>
+  </div>
+</section>
+
+<section class="blk" id="reserve">
+  <div class="inner">
+    <div class="apply">
+      <div class="head" style="margin:0"><div class="rule"></div><span class="en">Reserve</span><h2 style="font-size:clamp(1.4rem,3vw,1.8rem);margin-top:10px">お取り置きのご予約</h2><p>前日の17時までにお送りください。当日朝に確認のご連絡をします。</p></div>
+      <ol class="progress" aria-label="ご予約の手順"><li class="on" id="pg1">1. 入力</li><li id="pg2">2. 確認</li><li id="pg3">3. 完了</li></ol>
+
+      <form class="ap" id="ap" novalidate>
+        <label><span class="lab">お名前<span class="req">必須</span></span><input id="a-name" type="text" autocomplete="name" placeholder="例：佐藤 美咲"><span class="err" id="e-name"></span></label>
+        <label><span class="lab">電話番号<span class="req">必須</span></span><input id="a-tel" type="tel" autocomplete="tel" placeholder="例：090-0000-0000"><span class="err" id="e-tel"></span></label>
+        <label><span class="lab">受け取り希望日<span class="req">必須</span></span><input id="a-date" type="date"><span class="err" id="e-date"></span></label>
+        <label><span class="lab">受け取りの時間帯<span class="req">必須</span></span><select id="a-time"><option value="">選んでください</option><option>開店すぐ（7:00〜9:00）</option><option>午前（9:00〜12:00）</option><option>午後（12:00〜15:00）</option><option>夕方（15:00〜18:00）</option></select><span class="err" id="e-time"></span></label>
+        <label class="full"><span class="lab">ご注文内容（パンと個数）<span class="req">必須</span></span><textarea id="a-order" maxlength="500" placeholder="例：ひだまり食パン 1斤、クロワッサン 2個、あんバターサンド 1個"></textarea><span class="err" id="e-order"></span></label>
+        <label class="full"><span class="lab">ご要望<span class="opt">任意</span></span><textarea id="a-note" maxlength="500" placeholder="例：食パンは5枚切りにしてください"></textarea></label>
+        <div class="actions"><button class="btn bronze" type="submit">入力内容を確認する</button><span class="small">サンプルのため、実際には送信されません。</span></div>
+      </form>
+
+      <div class="confirm" id="confirm" hidden>
+        <p style="margin-bottom:12px">以下の内容でご予約します。よろしければ「予約する」を押してください。</p>
+        <dl id="confirm-list"></dl>
+        <div class="actions" style="margin-top:18px"><button class="btn ghost" type="button" id="back">修正する</button><button class="btn bronze" type="button" id="send">予約する</button></div>
+      </div>
+
+      <div class="done" id="done" hidden>
+        <div class="ring" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M14 34l12 12 24-26" fill="none" stroke="#7C4F22" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>ご予約ありがとうございます</h3>
+        <p id="done-msg">当日朝に、お電話で確認のご連絡をします。</p>
+        <p class="small">これは制作サンプルのため、実際には送信されていません。本番では、ご予約がお店のメールに届き、お客様にも受付メールが自動で送られる形にできます。</p>
+        <button class="btn ghost" type="button" id="again">もう一度試す</button>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="inner">
+    <span class="fname">パン工房 ひだまり</span>
+    <span>© パン工房 ひだまり（架空のお店）</span>
+    <span>このサイトは <a href="./">Rinka 制作室</a> の制作サンプルです。</span>
+  </div>
+</footer>
+
+<div class="mobile-cta"><a class="btn bronze" href="#reserve">パンをお取り置きする</a></div>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var fields=[
+    ["a-name","e-name","お名前を入力してください。",function(v){return v.trim()!==""}],
+    ["a-tel","e-tel","電話番号は数字とハイフンで入力してください。",function(v){return /^[0-9\-]{10,13}$/.test(v.trim())}],
+    ["a-date","e-date","受け取り希望日を選んでください。",function(v){return v!==""}],
+    ["a-time","e-time","受け取りの時間帯を選んでください。",function(v){return v!==""}],
+    ["a-order","e-order","ご注文内容（パンと個数）を入力してください。",function(v){return v.trim()!==""}]
+  ];
+  function check(){
+    var ok=true,first=null;
+    fields.forEach(function(f){var el=$(f[0]),good=f[3](el.value);$(f[1]).textContent=good?"":f[2];el.setAttribute("aria-invalid",String(!good));if(!good&&!first)first=el;ok=ok&&good});
+    if(first)first.focus();
+    return ok;
+  }
+  function step(n){
+    $("ap").hidden=n!==1;$("confirm").hidden=n!==2;$("done").hidden=n!==3;
+    ["pg1","pg2","pg3"].forEach(function(id,i){$(id).className=i===n-1?"on":""});
+    $("reserve").scrollIntoView({block:"start"});
+  }
+  var labels=[["お名前","a-name"],["電話番号","a-tel"],["受け取り希望日","a-date"],["受け取りの時間帯","a-time"],["ご注文内容","a-order"],["ご要望","a-note"]];
+  $("ap").addEventListener("submit",function(e){
+    e.preventDefault(); if(!check())return;
+    var dl=$("confirm-list"); dl.textContent="";
+    labels.forEach(function(l){var dt=document.createElement("dt"),dd=document.createElement("dd");dt.textContent=l[0];dd.textContent=$(l[1]).value.trim()||"（なし）";dl.appendChild(dt);dl.appendChild(dd)});
+    step(2);
+  });
+  $("back").addEventListener("click",function(){step(1)});
+  $("send").addEventListener("click",function(){$("done-msg").textContent=$("a-name").value.trim()+" 様、ご予約を受け付けました。当日朝に "+$("a-tel").value.trim()+" へ確認のご連絡をします。";step(3)});
+  $("again").addEventListener("click",function(){$("ap").reset();fields.forEach(function(f){$(f[1]).textContent="";$(f[0]).removeAttribute("aria-invalid")});step(1)});
+})();
+</script>
+
+</body>
+</html>
