@@ -102,6 +102,66 @@ section.block{padding-block:56px;border-top:1px solid var(--line)}
 .ideas{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
 .ideas li{font-size:.86rem;background:var(--accent-soft);border-radius:999px;padding:5px 14px}
 
+/* できること（形式を変えた見せ方） */
+.feat{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:26px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:28px;align-items:start;min-width:0}
+.feat + .feat{margin-top:16px}
+.feat.flip{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}
+.feat .txt{display:flex;flex-direction:column;gap:12px;min-width:0}
+.feat .tag{align-self:flex-start;font-size:.72rem;font-weight:700;color:var(--accent);background:var(--accent-soft);border-radius:4px;padding:1px 8px}
+.feat h3{font-size:1.3rem}
+.feat ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:4px;font-size:.92rem}
+.feat .for{font-size:.84rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:10px}
+.feat .fee-line{font-size:.9rem}
+.feat .fee-line b{font-family:var(--f-num);font-size:1.05rem}
+.shot{border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 14px 30px -22px rgba(15,60,50,.4);background:var(--surface)}
+.shot img{display:block;width:100%;height:auto}
+.shot figcaption{font-size:.74rem;color:var(--muted);padding:8px 12px;border-top:1px solid var(--line)}
+.files{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.78rem;margin-bottom:10px}
+.files .f{border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:3px 10px;font-family:var(--f-num);font-size:.74rem}
+.files .to{font-weight:700;color:var(--accent)}
+.simframe{border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 14px 30px -22px rgba(15,60,50,.4);background:var(--surface)}
+.simframe iframe{display:block;width:100%;height:600px;border:0;background:#fff}
+.sim-note{font-size:.78rem;color:var(--muted);margin-top:8px}
+.showcase{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:4px}
+.showcase a{display:flex;flex-direction:column;gap:6px;text-decoration:none;color:var(--ink);min-width:0}
+.showcase .ph{border:1px solid var(--line);border-radius:10px;overflow:hidden;aspect-ratio:4/3;background:var(--surface)}
+.showcase img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;transition:transform .35s ease}
+.showcase a:hover img{transform:scale(1.04)}
+.showcase .nm{font-weight:700;font-size:.88rem;line-height:1.5}
+.showcase .tp{align-self:flex-start;font-size:.7rem;font-weight:700;color:var(--accent);background:var(--accent-soft);border-radius:4px;padding:0 7px}
+.band{background:var(--accent-soft);border-radius:16px;padding:26px;margin-top:16px;min-width:0}
+.band > h3{font-size:1.25rem}
+.band > p{color:var(--muted);font-size:.92rem;margin-top:6px;max-width:44em}
+.mini{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:center;background:var(--surface);border-radius:14px;padding:20px 22px;margin-top:16px;min-width:0}
+.mini.flip > .vis{order:2}
+.mini h4{font-family:var(--f-display);font-size:1.05rem;margin:0 0 6px}
+.mini p{font-size:.9rem;color:var(--muted)}
+.mini .fee-line{margin-top:8px;font-size:.88rem;color:var(--ink)}
+.mini .fee-line b{font-family:var(--f-num)}
+.mech{display:flex;align-items:stretch;gap:8px}
+.mech .box{flex:1;border:1.5px solid var(--accent);border-radius:10px;padding:12px 10px;text-align:center;font-size:.84rem;font-weight:700;display:flex;flex-direction:column;gap:2px;justify-content:center;background:var(--surface);min-width:0}
+.mech .box small{font-weight:400;color:var(--muted);font-size:.74rem}
+.mech .arr{align-self:center;color:var(--accent);font-weight:900}
+.mini .sheet{font-size:.76rem}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips span{font-size:.84rem;background:var(--accent-soft);border-radius:999px;padding:5px 14px}
+.demos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:16px}
+.demo{background:var(--surface);border-top:2px solid var(--ink);padding:14px 4px 2px;display:flex;flex-direction:column;gap:6px;font-size:.9rem;min-width:0}
+.demo h4{font-family:var(--f-display);font-size:1rem;margin:0}
+.demo p{color:var(--muted);font-size:.88rem}
+.demo .go{margin-top:auto;font-weight:700;font-size:.9rem;text-decoration:none}
+@media (max-width:820px){
+  .feat,.feat.flip,.mini{grid-template-columns:minmax(0,1fr)}
+  .mini.flip > .vis{order:0}
+  .showcase{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .demos{grid-template-columns:minmax(0,1fr)}
+  .simframe iframe{height:540px}
+  .band{padding:20px}
+  .feat{padding:20px}
+}
+.smp .thumb.pic{padding:0;background:var(--surface);overflow:hidden}
+.smp .thumb.pic img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+
 /* サンプル */
 .samples{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .smp{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
@@ -109,7 +169,10 @@ section.block{padding-block:56px;border-top:1px solid var(--line)}
 .smp .thumb.live{background:var(--accent);color:var(--accent-ink)}
 .smp.wide{grid-column:1/-1;flex-direction:row}
 .smp.wide .thumb{aspect-ratio:auto;width:34%;min-height:150px;border-bottom:0;border-right:1px solid var(--line)}
-@media (max-width:600px){.smp.wide{flex-direction:column}.smp.wide .thumb{width:auto;aspect-ratio:16/7;border-right:0;border-bottom:1px solid var(--line)}}
+@media (max-width:600px){
+  .mech{gap:5px}
+  .mech .box{font-size:.74rem;padding:10px 5px}
+  .mech .box small{font-size:.66rem}.smp.wide{flex-direction:column}.smp.wide .thumb{width:auto;aspect-ratio:16/7;border-right:0;border-bottom:1px solid var(--line)}}
 .smp .body{padding:16px 18px;display:flex;flex-direction:column;gap:8px;flex:1}
 .smp .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .status{font-size:.72rem;font-weight:700;border-radius:4px;padding:1px 8px}
@@ -280,29 +343,142 @@ footer .inner{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap
       <h2>お引き受けしていること</h2>
       <p>「毎回同じ作業をしている」「お店のページがほしいけれど何から始めればいいかわからない」といったご相談を、形にしてお渡しします。</p>
     </div>
-    <div class="services">
-      <article class="svc main">
+    <article class="feat">
+      <div class="txt">
         <span class="tag">いちばん多いご相談</span>
-        <h3>スプレッドシート・Excelの業務自動化</h3>
+        <h3>毎月の集計作業を、自動化します</h3>
         <ul>
           <li>予約表や売上表から、月ごとの集計表を自動で作成</li>
           <li>フォームの回答をまとめて、決まった形の表に整理</li>
           <li>毎週の報告メールや請求書の下書きを自動で作成</li>
           <li>複数のファイルに分かれたデータを1つにまとめる</li>
         </ul>
-        <p class="for">こんな方に：個人事業主の方、小さなお店・教室の方、事務作業を減らしたい方</p></article><article class="svc"><span class="tag">業務自動化: シフト</span><h3>シフト表の自動作成</h3><ul><li>曜日ごとの必要人数と、スタッフの希望休から、月のシフト表の下書きを作成</li><li>定休日・出勤日数の上限など、お店のルールに合わせて設定</li><li>人数が足りない日や上限に達したスタッフを、注意リストで表示</li><li>最終的な調整はお店で行える、下書きの形でお渡しします</li></ul><p class="for">こんな方に：スタッフのいる小さなお店・教室の方</p></article><article class="svc"><span class="tag">業務自動化: 在庫</span><h3>在庫・発注の見える化</h3><ul><li>入庫・出庫を入力すると、現在庫がその場で計算される在庫表</li><li>発注点を下回った商品に目印を付け、発注の下書きリストを作成</li><li>発注の数え方（ロット・目標在庫）はお店のルールに合わせて設定</li><li>発注リストはテキストでコピーでき、メールやメッセージに貼り付けられます</li></ul><p class="for">こんな方に：小さな小売店・カフェ・ハンドメイド販売の方</p></article><article class="svc"><span class="tag">業務自動化: CSV</span><h3>会計ソフト用CSV整形</h3><ul><li>銀行明細などのCSVを、会計ソフトに取り込みやすい形式へ変換</li><li>お決まりの摘要（電気代・交通費など）を、決めたルールで勘定科目に当てはめ</li><li>ルールに当たらない行は「要確認」として分けて表示</li><li>お引き受けするのは、形式の変換と、決めたルールでの勘定科目の当てはめのみです。税務の判断は行わず、税務相談・申告の代行もお受けしていません</li></ul><p class="for">こんな方に：経理の入力作業を減らしたい個人事業主の方（科目の確認は、税理士などの専門家にご相談ください）</p></article>
-      <article class="svc main">
+        <p class="fee-line">料金の目安：<b>15,000円〜</b>（小さな作業1つ）</p>
+        <p class="for">こんな方に：個人事業主の方、小さなお店・教室の方、事務作業を減らしたい方</p>
+        <div><a class="btn primary" href="./sample-sales.html">集計デモを触ってみる</a></div>
+      </div>
+      <div>
+        <div class="files" aria-hidden="true"><span class="f">売上_9月.xlsx</span><span class="f">売上_10月.xlsx</span><span class="f">売上_11月.xlsx</span><span class="to">→ 1つの集計画面に</span></div>
+        <figure class="shot" style="margin:0">
+          <img src="./img/demo-sales.jpg" alt="売上集計デモの画面。月の売上合計・来店件数・客単価と、日別の売上グラフ、メニュー別の集計表が並ぶ" loading="lazy">
+          <figcaption>実際に公開している売上集計デモの画面です。記録を付けると、集計とグラフが自動で更新されます。</figcaption>
+        </figure>
+      </div>
+    </article>
+
+    <article class="feat flip">
+      <div>
+        <div class="simframe"><iframe src="./sample-estimate.html" title="料金シミュレーターのデモ（その場で操作できます）" loading="lazy"></iframe></div>
+        <p class="sim-note">このページの中で、そのまま操作できます。大きく試したいときは <a href="./sample-estimate.html">シミュレーターのページを開く →</a></p>
+      </div>
+      <div class="txt">
+        <span class="tag">ホームページに組み込む部品</span>
+        <h3>料金シミュレーター</h3>
+        <ul>
+          <li>項目を選ぶだけで、料金の目安がその場で出ます</li>
+          <li>セット割・平日割など、お店のルールに合わせた計算に対応</li>
+          <li>お使いのホームページへの組み込み、または単独ページでの設置</li>
+          <li>「料金が分からないから問い合わせをやめた」を減らすための部品です</li>
+        </ul>
+        <p class="fee-line">料金の目安：<b>30,000円〜</b>（組み込み）</p>
+        <p class="for">こんな方に：料金の問い合わせ対応に時間を取られているお店・教室の方</p>
+      </div>
+    </article>
+
+    <article class="feat" style="display:block">
+      <div class="txt">
         <span class="tag">ホームページ</span>
         <h3>小さなお店・教室のホームページ制作</h3>
         <ul>
-          <li>1〜5ページほどの紹介サイト（メニュー・料金・アクセス）</li>
+          <li>1ページ完結の紹介サイトから、ページを分けた複数ページ構成まで</li>
           <li>スマートフォンで見やすい作り（このページも対応しています）</li>
           <li>予約ページやInstagram、LINEへの案内ボタン</li>
           <li>公開の手順までご案内します</li>
         </ul>
+        <p class="fee-line">料金の目安：<b>50,000円〜</b>（1ページ）／<b>120,000円〜</b>（3〜5ページ）</p>
         <p class="for">こんな方に：開業したばかりの方、SNSしかなくて情報がまとまっていない方</p>
-      </article>
+      </div>
+      <div class="showcase" style="margin-top:18px">
+        <a href="./sample-school.html"><span class="ph"><img src="./img/sample-school.jpg" alt="こもれび音楽教室のサイト画面" loading="lazy"></span><span class="tp">1ページ型 ・ 教室</span><span class="nm">こもれび音楽教室（架空のピアノ教室）</span></a>
+        <a href="./sample-cafe.html"><span class="ph"><img src="./img/sample-cafe.jpg" alt="パン工房 ひだまりのサイト画面" loading="lazy"></span><span class="tp">1ページ型 ・ お店</span><span class="nm">パン工房 ひだまり（架空のパン屋カフェ）</span></a>
+        <a href="./sample-yoga.html"><span class="ph"><img src="./img/sample-yoga.jpg" alt="ヨガ教室 しずくのサイト画面" loading="lazy"></span><span class="tp">1ページ型 ・ 教室</span><span class="nm">ヨガ教室 しずく（架空のヨガ教室）</span></a>
+        <a href="./sample-salon/"><span class="ph"><img src="./img/sample-salon.jpg" alt="ヘアアトリエ つむぎのサイト画面" loading="lazy"></span><span class="tp">複数ページ型 ・ お店</span><span class="nm">ヘアアトリエ つむぎ（架空の美容室）</span></a>
+      </div>
+    </article>
+
+    <div class="band">
+      <h3>表まわりの「仕組み化」</h3>
+      <p>フォーム・名簿・在庫など、日々の記録が集まる場所を整えるお仕事です。決まった形にしておくと、あとの集計や確認がぐっと楽になります。</p>
+
+      <div class="mini">
+        <div class="vis">
+          <div class="mech" aria-label="予約フォーム自動化の仕組み">
+            <div class="box">申込フォーム<small>受付ける</small></div><span class="arr" aria-hidden="true">→</span>
+            <div class="box">一覧表<small>自動で記録</small></div><span class="arr" aria-hidden="true">→</span>
+            <div class="box">通知メール<small>新しい申込をお知らせ</small></div>
+          </div>
+        </div>
+        <div>
+          <h4>予約・申込フォームの自動化</h4>
+          <p>申込を受け付けるフォームから、申込の一覧表の作成、新しい申込を知らせる通知メールまでを一式で整えます。申込のたびに手で書き写す作業がなくなります。</p>
+          <p class="fee-line">料金の目安：<b>15,000円〜</b></p>
+        </div>
+      </div>
+
+      <div class="mini flip">
+        <div class="vis">
+          <div class="sheet" aria-label="生徒名簿・月謝管理表のイメージ">
+            <table>
+              <thead><tr><th>生徒名</th><th>コース</th><th>月謝</th><th>11月分</th></tr></thead>
+              <tbody>
+                <tr><td>山田 はな</td><td>ピアノ</td><td class="n">¥8,000</td><td>入金済</td></tr>
+                <tr><td>佐藤 そら</td><td>ピアノ</td><td class="n">¥8,000</td><td>入金済</td></tr>
+                <tr><td>鈴木 りく</td><td>習字</td><td class="n">¥6,500</td><td>未入金</td></tr>
+                <tr><td>高橋 ゆい</td><td>ピアノ</td><td class="n">¥8,000</td><td>入金済</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <h4>教室の生徒名簿と月謝管理</h4>
+          <p>生徒名簿・出欠・月謝の請求と入金確認を、1つの表で管理できる形に整えます。月末の確認と請求書づくりに追われる教室の先生向けです。</p>
+          <p class="fee-line">料金の目安：<b>30,000円〜</b></p>
+        </div>
+      </div>
+
+      <div class="mini">
+        <div class="vis">
+          <div class="chips"><span>集計ツール</span><span>見積り計算</span><span>シフト表作成</span><span>在庫チェック</span><span>CSV整形</span><span>チェックリスト</span></div>
+        </div>
+        <div>
+          <h4>小さな業務ツール</h4>
+          <p>「こんな道具があれば」で止まっている小さなツールを、見積りを先にお出ししてから作ります。大規模なシステムや決済の仕組みはお受けしていません。</p>
+          <p class="fee-line">料金の目安：<b>30,000円〜</b>（お見積りは無料）</p>
+        </div>
+      </div>
+
+      <div class="demos">
+        <div class="demo">
+          <h4>シフト表の自動作成</h4>
+          <p>必要人数とスタッフの希望休から、月のシフト表の下書きを作成。人数が足りない日は注意リストで表示します。</p>
+          <p class="fee-line" style="font-size:.88rem">料金の目安：<b style="font-family:var(--f-num)">30,000円〜</b></p>
+          <a class="go" href="./sample-shift.html">デモを触ってみる →</a>
+        </div>
+        <div class="demo">
+          <h4>在庫・発注の見える化</h4>
+          <p>入庫・出庫を入力すると現在庫が計算され、発注点を下回った商品と発注の下書きリストが表示されます。</p>
+          <p class="fee-line" style="font-size:.88rem">料金の目安：<b style="font-family:var(--f-num)">30,000円〜</b></p>
+          <a class="go" href="./sample-inventory.html">デモを触ってみる →</a>
+        </div>
+        <div class="demo">
+          <h4>会計ソフト用CSV整形</h4>
+          <p>銀行明細などのCSVを、決めたルールで勘定科目に当てはめて会計ソフト用に変換。形式の変換のみで、税務の判断は行いません。</p>
+          <p class="fee-line" style="font-size:.88rem">料金の目安：<b style="font-family:var(--f-num)">15,000円〜</b></p>
+          <a class="go" href="./sample-csv.html">デモを触ってみる →</a>
+        </div>
+      </div>
     </div>
+
     <div class="subs">
       <div class="sub"><h3>資料・データ整理の作成代行</h3><p>集計表、マニュアル、説明資料の作成など、プログラミング以外のご相談もどうぞ。</p></div>
       <div class="sub"><h3>既存サイト・ファイルの修正</h3><p>「ここだけ直したい」という小さな修正もお引き受けします。</p></div>
@@ -360,7 +536,7 @@ footer .inner{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap
         </div>
       </article>
       <article class="smp">
-        <div class="thumb live">教室のサイト見本</div>
+        <div class="thumb pic"><img src="./img/sample-school.jpg" alt="こもれび音楽教室のサイト画面" loading="lazy"></div>
         <div class="body">
           <div class="row"><span class="status ok">公開中</span><span class="kind">ホームページ制作</span></div>
           <h3>こもれび音楽教室（架空のピアノ教室）</h3>
@@ -370,7 +546,7 @@ footer .inner{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap
         </div>
       </article>
       <article class="smp">
-        <div class="thumb live">お店のサイト見本</div>
+        <div class="thumb pic"><img src="./img/sample-cafe.jpg" alt="パン工房 ひだまりのサイト画面" loading="lazy"></div>
         <div class="body">
           <div class="row"><span class="status ok">公開中</span><span class="kind">ホームページ制作</span></div>
           <h3>パン工房 ひだまり（架空のパン屋カフェ）</h3>
@@ -380,7 +556,7 @@ footer .inner{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap
         </div>
       </article>
       <article class="smp">
-        <div class="thumb live">教室のサイト見本</div>
+        <div class="thumb pic"><img src="./img/sample-yoga.jpg" alt="ヨガ教室 しずくのサイト画面" loading="lazy"></div>
         <div class="body">
           <div class="row"><span class="status ok">公開中</span><span class="kind">ホームページ制作</span></div>
           <h3>ヨガ教室 しずく（架空のヨガ教室）</h3>
@@ -390,7 +566,7 @@ footer .inner{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap
         </div>
       </article>
       <article class="smp">
-        <div class="thumb live">お店のサイト見本</div>
+        <div class="thumb pic"><img src="./img/sample-salon.jpg" alt="ヘアアトリエ つむぎのサイト画面" loading="lazy"></div>
         <div class="body">
           <div class="row"><span class="status ok">公開中</span><span class="kind">ホームページ制作</span></div>
           <h3>ヘアアトリエ つむぎ（架空の美容室）</h3>
